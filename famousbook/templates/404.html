@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="not-fond-title letter-space-3 font-110 color-004872 weight-700 text-center">
+            404 Not Found
+        </div>
+        <div class="not-found-sub-title font-24 color-black text-center">
+            Your visited page not found. You may go home page.
+        </div>
+        <div class="not-found-btn text-center">
+            <a class="color-white" href="{% url 'book:home' %}">Back to Homepage</a>
+        </div>
+    </div>
+{% endblock content %}

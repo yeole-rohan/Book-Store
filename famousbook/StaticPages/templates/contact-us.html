@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <!-- Arrow for select is pending -->
+    
+    <div class="container">
+        <div class="contact-us-head">
+            <div class="contact-us-head-title weight-700 font-32 color-004872">
+                Contact Us
+            </div>
+            <div class="contact-us-head-sub-title font-18 color-gray">
+                Please fill up the form below to send us a message. We will contact you very soon.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <form method="POST" id="contactUsForm">
+                    {{contactUsForm.as_p}}
+                    <div class="contact-btn-wrap text-center">
+                        <button class="color-white" type="submit">Send Massage</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="contact-information color-white">
+                    <div class="contact-information-title font-32 weight-600">
+                        Contact Information
+                    </div>
+                    <div class="contact-information-sub-title font-18 color-light-gray weight-400">
+                        Say something to start a live chat!
+                    </div>
+                    <div class="contact-information-shop-time font-24 color-light-white weight-400">
+                        Shop Timing 9:00 AM to 6:00 PM
+                    </div>
+                    <div class="contact-information-wrap">
+                        <div class="contact-information-number-call d-flex">
+                            <div class="contact-information-number-call-icon ">
+                                <img src="{% static 'img/bxs_phone-call.svg' %}">
+                            </div>
+                            <div class="contact-information-text font-20 weight-400">
+                                +91 8012 3456 78
+                            </div>
+                        </div>
+                        <div class="contact-information-number-whatsapp d-flex">
+                            <div class="contact-information-number-whatsapp-icon">
+                                <img src="{% static 'img/mail.svg' %}">
+                            </div>
+                            <div class="contact-information-text font-20 weight-400">
+                                abc@gmail.com
+                            </div>
+                        </div>
+                        <div class="contact-information-address d-flex">
+                            <div class="contact-information-address-icon">
+                                <img src="{% static 'img/carbon_location-filled.svg' %}">
+                            </div>
+                            <div class="contact-information-text mb-0 font-20 weight-400">
+                                132 Dartmouth Street Boston, Massachusetts 02156 United States
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-margin"></div>
+{% endblock content %}

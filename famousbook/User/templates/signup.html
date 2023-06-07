@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="sign-wrapper">
+        <div class="sign-outer d-flex justify-content-center">
+            <div class="sign-wrapper-img">
+                <img class="img-fluid" src="{% static 'img/login-img.svg' %}">
+            </div>
+            <div class="sign-wrapper-content">
+                <div class="sign-wrapper-content-head weight-700 color-004872 font-32">Sign In 
+                </div>
+                <div class="sign-wrapper-content-head-sub font-18 weight-400">
+                    Sign up or Sign in to access your orders, special offers, New Books and more!
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="sign-input">
+                        <label>Email Id</label>
+                        <input value="{{email_or_mobile}}" id="email_or_mobile" name="email_or_mobile" placeholder="Email id">
+                    </div>
+                    {% if not hideNext %}
+                        <button type="submit" name="next-step" class="next font-24 w-100">Send OTP</button>
+                    {% endif %}
+                    {% if isPassword %}
+                    <div class="sign-input-password">
+                        <input id="otp" name="otp" placeholder="Enter OTP">
+                        <input id="password" name="password" placeholder="Enter Password">
+                        <button type="submit" name="isPassword" class="signUp font-24 w-100">Sign Up</button>
+                    </div>
+                    {% elif isMobile %}
+
+                    <div class="sign-input-otp">
+                        <input id="otp" name="otp" placeholder="Enter OTP">
+                        <button type="submit" name="isMobile" class="signUp font-24 w-100">Sign Up</button>
+                    </div>
+                    {% endif %}
+                </form>
+                <div class="weight-400 text-center">Already have account?<a href="{% url 'user:loginView' %}" class="color-004872 font-20 weight-700 px-2">Log In</a></div>
+            </div>
+        </div>
+        <div class="sign-wrapper-terms-section text-center">
+            By continuing you agree to our <a href="#" class="color-red">Terms of service</a> and <a href="#" class="color-red">Privacy Policy</a>.
+        </div>
+    </div>
+</div>
+<div class="footer-margin"></div>
+{% endblock content %}

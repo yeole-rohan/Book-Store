@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="account-info-details d-flex">
+        <div class="account-info-left-menu">
+            <div class="user-details">
+                <div class="user-details-head font-32 color-004872 weight-700">
+                    Your Account
+                </div>
+            </div>
+            <ul>
+                <li>
+                    <a href="#" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/acc-info.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Account Information
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/favorite.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                My Wishlist
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/shopping_bag.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                My Orders
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/offers.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Offers
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/local_shipping.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Delivery Addresses
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="d-flex color-004872 justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/call.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Contact us
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#logout" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/thumb_up.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Rate Us
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#logout" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/support.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Help?
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#logout" class="d-flex color-dark-gray justify-content-between align-items-center">
+                        <span class="link-icon">
+                            <img src="{% static 'img/power_settings_new.svg' %}">
+                        </span>
+                        <span class="back-text-arrow-wrap">
+                            <span class="link-text font-24 weight-400">
+                                Logout
+                            </span>
+                            <span class="link-arrow">
+                                <img src="{% static 'img/arrow_back_ios.svg' %}">
+                            </span>
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="account-info-right-details">
+        </div>
+    </div>
+</div>
+<div class="footer-margin"></div>
+{% endblock content %}

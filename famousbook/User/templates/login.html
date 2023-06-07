@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="login-wrapper">
+        <div class="login-outer d-flex justify-content-center">
+            <div class="login-wrapper-img">
+                <img class="img-fluid" src="{% static 'img/login-img.svg' %}">
+            </div>
+            <div class="login-wrapper-content">
+                <div class="login-wrapper-content-head weight-700 color-004872 font-32">Log In 
+                </div>
+                <div class="login-wrapper-content-head-sub font-18 weight-400">
+                    Log In to access your orders, special offers, New Books and more!
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="login-input">
+                        <label>Email</label>
+                        <input value="{{email_or_mobile}}" id="email_or_mobile" name="email_or_mobile" placeholder="Email id">
+                    </div>
+                    <div class="login-input-password">
+                        <input id="password" name="password" placeholder="Enter Password">
+                        <button type="submit" class="login font-24 w-100">Log In</button>
+                    </div>
+                    {% comment %} {% if not hideNext %}
+                        <button type="submit" name="next-step" class="next font-24 w-100">Next</button>
+                    {% endif %}
+                    {% if isPassword %}
+                    <div class="login-input-password">
+                        <input id="password" name="password" placeholder="Enter Password">
+                        <button type="submit" class="send-otp font-24 w-100">Log In</button>
+                    </div>
+                    {% elif isMobile %}
+
+                    <div class="login-input-otp">
+                        <input id="otp" name="otp" placeholder="Enter OTP">
+                        <button type="submit" class="send-otp font-24 w-100">Log In</button>
+                    </div>
+                    {% endif %} {% endcomment %}
+                </form>
+                <div class="weight-400 text-center">Don't have an account?<a href="{% url 'user:signUp' %}" class="color-004872 font-20 weight-700 px-2">Sign In</a></div>
+            </div>
+        </div>
+        <div class="login-wrapper-terms-section text-center">
+            By continuing you agree to our <a href="#" class="color-red">Terms of service</a> and <a href="#" class="color-red">Privacy Policy</a>.
+        </div>
+    </div>
+</div>
+<div class="footer-margin"></div>
+{% endblock content %}

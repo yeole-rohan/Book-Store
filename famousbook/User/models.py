@@ -14,3 +14,10 @@ class User(AbstractUser):
     def __str__(self):
         return str(self.id)
 
+
+class VerificationCode(models.Model):
+    code = models.BigIntegerField(_("Code"))
+    read = models.BooleanField(_("Read"))
+    email = models.EmailField(_("Email"), max_length=254, blank=True, null=True)
+    created = models.DateTimeField(_("Subscription created date"),auto_now_add=True)
+    last_updated = models.DateTimeField(_("Subscription last updated"), auto_now=True)

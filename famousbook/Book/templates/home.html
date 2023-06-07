@@ -1,1 +1,806 @@
 {% extends './base.html' %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/slick.min.css' %}">
+{% endblock css %}
+{% block content %}
+{% comment %} <div class="container">
+{{books}}
+</div> {% endcomment %}
+<section id="home-banner">
+    <div class="container">
+        <div class="home-banner-slider">
+            <div class="">
+                <img src="{% static 'img/banner.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/banner.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/banner.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/banner.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/banner.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/banner.png' %}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+<section id="book-categories">
+    <div class="container">
+        <div class="book-categories-wrap">
+            <div class="book-categories-head color-004872 font-32 weight-600">
+                Categories
+            </div>
+        </div>
+    </div>
+    <div class="book-categories-slider">
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span class=""><img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+        <div class="book-categories-card">
+            <div class="book-categories-img">
+                <img src="{% static 'img/cat.png' %}" class="img-fluid">
+            </div>
+            <div class="book-categories-title weight-500 font-24 color-004872">
+                Best Seller Books
+            </div>
+            <div class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
+                Shop Now
+                <span> <img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="bundle-deals">
+    <div class="container">
+        <div class="bundle-deals-head color-004872 font-32 weight-600">
+            Bundle Deals
+        </div>
+        <div class="bundle-deals-slider">
+            <div class="">
+                <img src="{% static 'img/deals1.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals2.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals3.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals1.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals2.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals3.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals1.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals2.png' %}" class="img-fluid">
+            </div>
+            <div class="">
+                <img src="{% static 'img/deals3.png' %}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+<section id="featured-book">
+    <div class="container">
+        <div class="featured-book-wrap d-flex justify-content-between">
+            <div class="featured-book-head color-004872 font-32 weight-600">
+                Bestseller Books
+            </div>
+            <div class="featured-book-see-all color-red weight-500 font-28">
+                See All  
+            </div>
+        </div>
+    </div>
+    <div class="featured-book-slider">
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="child-author">
+    <div class="container">
+        <img src="{% static 'img/child-book.png' %}" class="img-fluid">
+    </div>
+</section>
+<section id="featured-books">
+    <div class="container">
+        <div class="featured-book-wrap d-flex justify-content-between">
+            <div class="featured-book-head color-004872 font-32 weight-600">
+                Featured Books
+            </div>
+            <div class="featured-book-see-all color-red weight-500 font-28">
+                See All  
+            </div>
+        </div>
+    </div>
+    <div class="featured-book-slider">
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+        <div class="book-card">
+            <div class="book-img text-center position-relative">
+                <img src="{% static 'img/product_13.png' %}" class="img-fluid">
+                <div class="book-img-dis-percentage position-absolute font-12 weight-500">
+                    40% OFF
+                </div>
+            </div>
+            <div class="book-title weight-700 font-24 color-004872">
+                Secret TEEN Power
+            </div>
+            <div class="book-author weight-400 font-18">
+                Rhonda  Byrne
+            </div>
+            <div class="book-price weight-400 font-18">
+                MRP Rs. 360
+            </div>
+            <div class="book-best-price weight-400 font-18">
+                Best Price* 
+                <span class="book-best-price-value color-red weight-500">
+                    Rs 320.50
+                </span>
+            </div>
+            <div class="book-status color-red weight-400 font-18">
+                New Book
+            </div>
+            <div class="book-add-to-cart">
+                <a class="font-24 color-white weight-500">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="featured-author">
+    <div class="container">
+        <div class="featured-author-head color-004872 font-32 weight-600">
+            Featured Author
+        </div>
+        <div class="featured-author-head-wrap">
+            <div class="featured-author-loop text-center">
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+                <div class="featured-author-card">
+                    <div class="featured-author-card-img">
+                        <img src="{% static 'img/author.png' %}" class="img-fluid">
+                    </div>
+                    <div class="featured-author-card-title weight-32 color-black">
+                        Devid Miller
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="wp-link">
+    <img src="{% static 'img/wp.png' %}" class="img-fluid">
+</section>
+<section id="testimonials">
+    <div class="container">
+        <div class="testimonials-head font-32 weight-600 color-004872">
+            What Our Customer Say
+        </div>
+        <div class="testimonials-slider-wrap">
+            <div class="testimonials-slider-loop d-flex">
+                <div class="testimonials-slider-card">
+                    <div class="testimonials-slider-card-img">
+                        <img src="{% static 'img/testimonial.png' %}" class="img-fluid">
+                    </div>
+                    <div class="testimonials-slider-card-head font-24 color-004872 weight-400">
+                        Gerald Maldiliene
+                    </div>
+                    <div class="testimonials-slider-card-desc weight-400 font-20 color-black">
+                        An interesting tale about a man who owns the world yet is empty from within. Later, he transforms and becomes a satisfied, learned monk. Through a fable, he shares this secret with his friend. A must-read book toward a disciplined life.
+                    </div>
+                    <div class="testimonials-slider-card-rating">
+                        <img src="{% static 'img/rating.png' %}">
+                    </div>
+                    <div class="testimonials-slider-card-date color-black font-24 weight-400">
+                        20/03/2023
+                    </div>
+                </div>
+                <div class="testimonials-slider-card">
+                    <div class="testimonials-slider-card-img">
+                        <img src="{% static 'img/testimonial.png' %}" class="img-fluid">
+                    </div>
+                    <div class="testimonials-slider-card-head font-24 color-004872 weight-400">
+                        Gerald Maldiliene
+                    </div>
+                    <div class="testimonials-slider-card-desc weight-400 font-20 color-black">
+                        An interesting tale about a man who owns the world yet is empty from within. Later, he transforms and becomes a satisfied, learned monk. Through a fable, he shares this secret with his friend. A must-read book toward a disciplined life.
+                    </div>
+                    <div class="testimonials-slider-card-rating">
+                        <img src="{% static 'img/rating.png' %}">
+                    </div>
+                    <div class="testimonials-slider-card-date color-black font-24 weight-400">
+                        20/03/2023
+                    </div>
+                </div>
+                <div class="testimonials-slider-card">
+                    <div class="testimonials-slider-card-img">
+                        <img src="{% static 'img/testimonial.png' %}" class="img-fluid">
+                    </div>
+                    <div class="testimonials-slider-card-head font-24 color-004872 weight-400">
+                        Gerald Maldiliene
+                    </div>
+                    <div class="testimonials-slider-card-desc weight-400 font-20 color-black">
+                        An interesting tale about a man who owns the world yet is empty from within. Later, he transforms and becomes a satisfied, learned monk. Through a fable, he shares this secret with his friend. A must-read book toward a disciplined life.
+                    </div>
+                    <div class="testimonials-slider-card-rating">
+                        <img src="{% static 'img/rating.png' %}">
+                    </div>
+                    <div class="testimonials-slider-card-date color-black font-24 weight-400">
+                        20/03/2023
+                    </div>
+                </div>
+                <div class="testimonials-slider-card">
+                    <div class="testimonials-slider-card-img">
+                        <img src="{% static 'img/testimonial.png' %}" class="img-fluid">
+                    </div>
+                    <div class="testimonials-slider-card-head font-24 color-004872 weight-400">
+                        Gerald Maldiliene
+                    </div>
+                    <div class="testimonials-slider-card-desc weight-400 font-20 color-black">
+                        An interesting tale about a man who owns the world yet is empty from within. Later, he transforms and becomes a satisfied, learned monk. Through a fable, he shares this secret with his friend. A must-read book toward a disciplined life.
+                    </div>
+                    <div class="testimonials-slider-card-rating">
+                        <img src="{% static 'img/rating.png' %}">
+                    </div>
+                    <div class="testimonials-slider-card-date color-black font-24 weight-400">
+                        20/03/2023
+                    </div>
+                </div>
+                <div class="testimonials-slider-card">
+                    <div class="testimonials-slider-card-img">
+                        <img src="{% static 'img/testimonial.png' %}" class="img-fluid">
+                    </div>
+                    <div class="testimonials-slider-card-head font-24 color-004872 weight-400">
+                        Gerald Maldiliene
+                    </div>
+                    <div class="testimonials-slider-card-desc weight-400 font-20 color-black">
+                        An interesting tale about a man who owns the world yet is empty from within. Later, he transforms and becomes a satisfied, learned monk. Through a fable, he shares this secret with his friend. A must-read book toward a disciplined life.
+                    </div>
+                    <div class="testimonials-slider-card-rating">
+                        <img src="{% static 'img/rating.png' %}">
+                    </div>
+                    <div class="testimonials-slider-card-date color-black font-24 weight-400">
+                        20/03/2023
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block js %}
+    <script src="{% static 'js/slick.min.js' %}"></script>
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock js %}
