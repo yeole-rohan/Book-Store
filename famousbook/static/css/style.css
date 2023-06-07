@@ -780,13 +780,10 @@ margin: 7px 0;
 /* Book Details CSS End */
 
 /* Book Creation */
-#manualBook .form-label {}
 
 #manualBook p {
     width: 50%;
 }
-
-#manualBook p:nth-child(even) {}
 
 /* End Book Creation */
 /* Element Hover */
