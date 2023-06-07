@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os
+import os, json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+print(BASE_DIR)
+with open(os.path.join(BASE_DIR, "env.json")) as config_file:
+    config = json.load(config_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-r8khkz-l_1somj)(r@^swsj1k@6w7bvu(!uyigx36(a_r+i-0p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'administration.pythonanywhere.com']
 
 
 # Application definition
@@ -124,11 +126,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+if config["SERVERTYPE"] == "production":
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
 
-STATICFILES_DIRS = [
-	os.path.join(BASE_DIR, 'static'),
-]
+STATIC_URL = "static/"
+if config["SERVERTYPE"] == "local":
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
 
 MEDIA_URL = '/media/'
 
