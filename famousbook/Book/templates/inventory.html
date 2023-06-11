@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="inventory-wrap d-flex justify-content-between">
+            <div class="inventory-head weight-700 font-24 color-004872">Inventory</div>
+            <div class="inventory-head-dropdown">
+                <div class="dropdown">
+                    <a href="http://" class="dropdown-toggle account" data-bs-toggle="dropdown" aria-expanded="false">
+                        Create
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="account">
+                      <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Single ISBN</a></li>
+                      <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Bulk ISBN</a></li>
+                      <li><a class="dropdown-item" href="{% url 'book:manualBookCreate' %}">Manual Entry</a></li>
+                      <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Import Sheet</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="inventory-data-wrapper mt-4">
+            {% for book in books %}
+            <div class="inventory-data-wrapper-loop d-flex align-items-end flex-wrap">
+                <div class="inventory-data-wrapper-loop-title">
+                    {{book.title | truncatechars:"50"}}
+                </div>
+                <div class="inventory-data-wrapper-loop-description">
+                    {{book.description | safe | truncatechars_html:"50"}}
+                </div>
+                <div class="inventory-data-wrapper-loop-qty">
+                    {{book.quantity}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-price">
+                    {{book.price}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-d-price">
+                    {{book.discountPrice}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-position">
+                    {{book.book_position}}
+                </div>
+                <div class="inventory-data-wrapper-loop-published">
+                    {{book.is_published}}
+                </div>
+                <div class="inventory-data-wrapper-loop-primary-category">
+                    {{book.primaryCategory}}
+                </div>
+                <div class="inventory-data-wrapper-loop-secondary-category">
+                    {{book.secondaryCategory}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-size">
+                    {{book.bookSize}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-printed">
+                    {{book.bookPrintedIn}}
+                </div>
+                <div class="inventory-data-wrapper-loop-published-date">
+                    {{book.publishedDate | date}}
+                </div>
+                <div class="inventory-data-wrapper-loop-no-of-pages">
+                    {{book.noOfPages}}
+                </div>
+                <div class="inventory-data-wrapper-loop-isbn">
+                    {{book.isbn}}
+                </div>
+                <div class="inventory-data-wrapper-loop-reading-age">
+                    {{book.readingAge}}
+                </div>
+                <div class="inventory-data-wrapper-loop-publisher">
+                    {{book.publisher}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-language">
+                    {{book.bookLanguage}}
+                </div>
+                <div class="inventory-data-wrapper-loop-id-returnable">
+                    {{book.isReturnable}}
+                </div>
+                <div class="inventory-data-wrapper-loop-discount-percentage">
+                    {{book.discountPercentage}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-binding">
+                    {{book.bookBinding}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-url">
+                    {{book.bookURL}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-author">
+                    {{book.author}}
+                </div>
+                <div class="inventory-data-wrapper-loop-book-image">
+                    <img src="{{book.bookImage.url}}" class="img-fluid" alt="{{book.title}}" srcset="">
+                </div>
+                <div class="inventory-data-wrapper-loop-book-operation">
+                    <a href="{% url 'book:editBook' book.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'book:deleteSingleBook' book.id %}" class="btn btn-danger ms-3">Delete</a>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

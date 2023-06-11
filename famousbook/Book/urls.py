@@ -8,4 +8,8 @@ urlpatterns = [
     path("create/bulk/isbn", views.bulkISBNUpload, name="bulkISBNUpload"),
     path("create/book/", views.manualBookCreate, name="manualBookCreate"),
     path("create/book/sheet/", views.bulkSheetUpload, name="bulkSheetUpload"),
+    path("inventory", views.inventory, name="inventory"),
+    path("delete-single-book/<int:id>/", views.deleteSingleBook, name="deleteSingleBook"),
+    path("edit-single-book/<int:id>/", views.editBook, name="editBook"),
+    path("get/primary-category/ajax/<int:id>/", views.getBookPrimaryCategory, name="getBookPrimaryCategory")
 ]

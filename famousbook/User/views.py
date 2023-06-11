@@ -63,13 +63,13 @@ def signUp(request):
                     hideNext = True
                     code = getOTP()
                     print(code)
-                    VerificationCode.objects.create(code=code, email=email_or_mobile, read=False)
+                    createCode = VerificationCode.objects.create(code=code, email=email_or_mobile, read=False)
                     messages.success(request, "OTP is sent on email")
-                    # if createCode:
-                    #     subject = "Confirm your email address."
-                    #     loginHTMLTemplate = render_to_string("email-template/email-verification-code.html", context={"OTP" : code }, )
-                    #     body = strip_tags(loginHTMLTemplate)
-                    #     send_mail(subject, body, EMAIL_USER, [email_or_mobile], html_message=loginHTMLTemplate)
+                    if createCode:
+                        subject = "Confirm your email address."
+                        loginHTMLTemplate = render_to_string("email-template/email-verification-code.html", context={"OTP" : code }, )
+                        body = strip_tags(loginHTMLTemplate)
+                        send_mail(subject, body, EMAIL_USER, [email_or_mobile], html_message=loginHTMLTemplate)
             else:
                 # TODO Create Signup with Mobile Number
                 # isMobile =True

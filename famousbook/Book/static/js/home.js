@@ -82,7 +82,7 @@ $(document).ready(
       $(".featured-book-slider").slick({
         infinite: false,
         slidesToScroll: 1,
-        slidesToShow: 4,
+        slidesToShow: 3,
         autoplay: true,
         responsive: [
           {
@@ -118,7 +118,7 @@ $(document).ready(
       $(".book-categories-slider").slick({
         infinite: false,
         slidesToScroll: 1,
-        slidesToShow: 6,
+        slidesToShow: 4,
         autoplay: true,
         responsive: [
           {
@@ -159,6 +159,7 @@ $(document).ready(
         dots:true,
         arrows:false,
       });
+
       $(".bundle-deals-slider").slick({
         infinite: false,
         slidesToScroll: 1,

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+        <form method="POST" id="manualBook" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form | crispy}}
+            <div class="check-btn text-right mt-4">
+                <button class="btn btn-success" type="submit">Save</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
     <div class="container">
         <div class="book-details d-flex justify-content-between">
@@ -7,47 +8,47 @@
                     40% OFF
                 </div>
                 <div class="book-img m-auto">
-                    <img src="" class="" title="" alt="">
+                    <img src="{% static 'img/product_13.png' %}" class="" title="" alt="">
                 </div>
             </div>
             <div class="book-details-details">
-                <div class="book-details-title font-32 color-004872 weight-700">
+                <div class="book-details-title font-24 color-004872 weight-700">
                     Black Holes: The Reith Lectures
                 </div>
-                <div class="book-details-date-and-back-type font-24 weight-500">
+                <div class="book-details-date-and-back-type font-18 weight-500">
                     (Paperback) | Released: 05 May 2016
                 </div>
-                <div class="book-details-author font-24 weight-500">
+                <div class="book-details-author font-18 weight-500">
                     By: Stephen Hawking (Author) , Stephen (University of Cambridge) Hawking (Author) | 
                 </div>
-                <div class="book-details-pulisher font-24 weight-500">
+                <div class="book-details-pulisher font-18 weight-500">
                     Publisher: Transworld Publishers Ltd
                 </div>
                 <div class="book-details-price">
                     <span class="book-details-best-price color-dark-gray">
                         Best Price* 
-                        <span class="book-details-price color-red font-32 weight-500">
+                        <span class="book-details-price color-red font-24 weight-500">
                             ₹ 85.00
                         </span>
                     </span>
                 </div>
-                <div class="book-details-mrp font-24 weight-500 color-dark-gray">
+                <div class="book-details-mrp font-18 weight-500 color-dark-gray">
                     MRP <span class="book-details-mrp-value">
                         ₹ 100.00
                     </span>
                 </div>
-                <div class="book-details-availability color-red weight-500 font-32">
+                <div class="book-details-availability color-red weight-500 font-24">
                     Available
                 </div>
-                <div class="book-details-shipment-details">
+                <div class="book-details-shipment-details font-18 weight-500 ">
                     Ships within 2-4 Business 
                 </div>
-                <div class="book-details-shipping-charge">
+                <div class="book-details-shipping-charge font-18 weight-500 ">
                     ₹39 shipping in India per item and low cost Worldwide.
                 </div>
                 <div class="book-details-cart-buy-btns">
-                    <a href="#" class="d-inline-block">Add to Cart</a>
-                    <a href="#" class="d-inline-block">Buy Now</a>
+                    <a href="#" class="d-inline-block weight-500 font-24">Add to Cart</a>
+                    <a href="#" class="d-inline-block weight-500 font-24">Buy Now</a>
                 </div>
             </div>
         </div>

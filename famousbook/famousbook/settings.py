@@ -149,7 +149,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'User.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "webmail.famousbookshop.in"
+EMAIL_HOST = "us3.webmail.mailhostbox.com"
+# EMAIL_HOST = "webmail.famousbookshop.in"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "admin@famousbookshop.in"

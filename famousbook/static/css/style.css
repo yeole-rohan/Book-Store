@@ -18,6 +18,7 @@ ul {
 input[type="text"],
 input[type="number"],
 input[type="email"],
+input[type="password"],
 select,
 textarea {
     font-weight: 400 !important;
@@ -171,7 +172,7 @@ button,
     border-radius: 20px;
     padding: 20px;
     max-width: 350px;
-    margin: 20px 30px;
+    margin: 20px 0;
 }
 
 .slick-arrow.slick-disabled {
@@ -270,11 +271,16 @@ button,
 }
 
 .book-img {
-    width: 150px;
+    width: 200px;
     max-width: 100%;
     margin: auto;
 }
-
+.book-other-details-left .book-other-details-span{
+    margin: 2px 0;
+}
+.book-other-details-left .book-other-details-span span:nth-child(2){
+    margin-left: 5px;
+}
 .book-img img {
     width: 100%;
     height: auto;
@@ -727,9 +733,11 @@ margin: 7px 0;
 }
 
 .book-details-cart-buy-btns {
-    margin-top: 55px;
+    margin-top: 30px;
 }
-
+.book-details-details{
+    margin-left: 135px;
+}
 .book-details-cart-buy-btns a {
     max-width: 280px;
     padding: 14px 80px;
@@ -753,15 +761,18 @@ margin: 7px 0;
 .book-details-about-author,
 .book-other-details-wrapper,
 .book-details-related-categories {
-    margin-top: 30px;
+    margin-top: 10px;
 }
-
+.book-details-img{
+    width: 400px;
+}
 .book-details-discount-percentage {
     position: absolute;
-    padding: 9px;
+    padding: 4px 10px;
     color: white;
     background-color: #FF4141;
     border-radius: 6px;
+    right: -45px;
 }
 
 .book-details-about-book {
@@ -779,6 +790,32 @@ margin: 7px 0;
 
 /* Book Details CSS End */
 
+/* Inventory Page */
+.inventory-data-wrapper-loop-description *{
+    margin: 0;
+    padding: 0;
+}
+.inventory-data-wrapper-loop div{
+    margin: 0 10px;
+}
+.inventory-data-wrapper-loop-book-image{
+    width: 5%;
+    word-break: break-word;
+}
+.inventory-data-wrapper-loop-book-author,.inventory-data-wrapper-loop .inventory-data-wrapper-loop-title{
+width: 10%;
+word-break: break-word;
+}
+.inventory-data-wrapper-loop-description, .inventory-data-wrapper-loop-book-url{
+width: 20%;
+word-break: break-word;
+}
+.inventory-data-wrapper-loop div:first-child{
+    margin-left: 0;
+}
+.inventory-data-wrapper-loop div:last-child{
+    margin-right: 0;
+}
 /* Book Creation */
 
 #manualBook p {
@@ -824,6 +861,10 @@ button:hover,
     .sign-wrapper-content {
         margin-left: 100px;
     }
+}
+@media screen and (max-width: 1190px) {
+
+   
 }
 
 @media screen and (max-width: 1024px) {

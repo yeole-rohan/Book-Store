@@ -15,7 +15,7 @@
     <header>
         <div class="container d-flex">
             <div class="head-left">
-                <a href="#" class="head-logo">
+                <a href="{% url 'book:home' %}" class="head-logo">
                     <img src="{% static '/img/logo.svg' %}" alt="Famous Book" srcset="">
                 </a>
             </div>
@@ -94,9 +94,19 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="http://">
-                                    <img src="{% static 'img/account_circle.png' %}" alt="" srcset="">
-                                </a>
+                                <div class="dropdown">
+                                    <a href="http://" class="dropdown-toggle account" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="{% static 'img/account_circle.png' %}" alt="" srcset="">
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="account">
+                                      <li><a class="dropdown-item" href="{% url 'book:inventory' %}">Inventory</a></li>
+                                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                      <li><hr class="dropdown-divider"></li>
+                                      <li><a class="dropdown-item" href="#">Separated link</a></li>
+                                    </ul>
+                                  </div>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -104,7 +114,7 @@
             </div>
         </div>
     </header>
-    {% block content %}{% endblock content %}
+    {% spaceless %}{% block content %}{% endblock content %}{% endspaceless %}
  
     <footer>
         <div class="container">

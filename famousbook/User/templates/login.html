@@ -17,10 +17,10 @@
                     {% csrf_token %}
                     <div class="login-input">
                         <label>Email</label>
-                        <input value="{{email_or_mobile}}" id="email_or_mobile" name="email_or_mobile" placeholder="Email id">
+                        <input type="email" value="{{email_or_mobile}}" id="email_or_mobile" name="email_or_mobile" placeholder="Email id">
                     </div>
                     <div class="login-input-password">
-                        <input id="password" name="password" placeholder="Enter Password">
+                        <input type="password" id="password" name="password" placeholder="Enter Password">
                         <button type="submit" class="login font-24 w-100">Log In</button>
                     </div>
                     {% comment %} {% if not hideNext %}

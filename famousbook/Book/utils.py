@@ -43,7 +43,7 @@ def createBook(data, isbn):
         bindingList = ['paperback', 'hardcore']
         bookLanguageList = ['english', 'hindi', 'marathi']
         if title:
-            book = Book.objects.create(title= title.strip(), price= price, discountPrice=discountPrice,author=author.strip(), bookBinding= binding.lower() if binding.lower() in bindingList else 'paperback', description=about.strip(), bookURL=bookUrl, bookLanguage=bookLanguage.strip() if bookLanguage.strip() in bookLanguageList else 'india', publisher=publisher.strip(), isbn=isbn, noOfPages=int(noOfPages), bookSize=bookSize, publishedDate=datetime.strptime(publishedDate.strip().replace(" ", "/"), '%d/%b/%Y').date() if publishedDate else '')
+            book = Book.objects.create(title= title.strip(), price= price, discountPrice=discountPrice,author=author.strip(), bookBinding= binding.lower() if binding.lower() in bindingList else 'paperback', description=about.strip(), bookURL=bookUrl, bookLanguage=bookLanguage.strip() if bookLanguage.strip() in bookLanguageList else 'india', publisher=publisher.strip(), isbn=isbn, noOfPages=int(noOfPages), bookSize=bookSize, publishedDate=datetime.strptime(publishedDate.strip().replace(" ", "/"), '%d/%b/%Y').date() if publishedDate else '', discountPercentage = 100 * (float(price) - float(discountPrice)) / float(price) * 100)
             book.save()
             return True
         else:
