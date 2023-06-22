@@ -7,7 +7,7 @@ from tempfile import NamedTemporaryFile
 
 class PrimaryCategory(models.Model):
     name = models.CharField(_("Primary Category"), max_length=100)
-    image = models.ImageField(_("Image"), upload_to="category-image/", height_field=None, width_field=None, max_length=None)
+    image = models.ImageField(_("Image"), upload_to="category-image/", null=True)
     created = models.DateTimeField(_("Created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Last updated"), auto_now=True)
 
