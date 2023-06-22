@@ -183,7 +183,7 @@ class PromoBanner(models.Model):
         return str(self.id)
 
 class CouponCode(models.Model):
-    coupon_image = models.ImageField(_("Coupon Code"), upload_to=None, height_field=None, width_field=None, max_length=None)
+    coupon_image = models.ImageField(_("Coupon Code"), upload_to="coupen-image/", null=True)
     coupon_code = models.CharField(_("Coupon Code"), max_length=50)
     expiry_time = models.DateTimeField(_("Expiry Date Time"))
     details = models.TextField(_("Coupon Code Details"))
