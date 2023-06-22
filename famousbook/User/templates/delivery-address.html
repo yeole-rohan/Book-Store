@@ -148,24 +148,42 @@
             </ul>
         </div>
         <div class="account-info-right-details">
-            <form method="POST">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.first_name | as_crispy_field}}
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.last_name | as_crispy_field}}
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.contactNumber | as_crispy_field}}
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.email | as_crispy_field}}
-                    </div>
+            <div class="delivery-addres-loop">
+                {% if getAddress %}
+                    {% for address in getAddress %}
+                        <div class="delivery-addres-loop-wrap d-flex justify-content-between">
+                            <div class="delivery-addres-loop-wrap-checkbox">
+                        
+                            </div>
+                            <div class="delivery-addres-loop-wrap-details">
+                                <div class="delivery-addres-loop-wrap-details-name">
+                                    {{address.name}}
+                                </div>
+                                <div class="delivery-addres-loop-wrap-details-address">
+                                    {{address.adddress}}, {{address.city}}, {{address.state}}, {{address.landmark}}, {{address.pinCode}}, 
+                                    {{address.contactNumber}}
+                                </div>
+                            </div>
+                            <div class="delivery-addres-loop-wrap-edit-delete">
+                                <a href="{% url 'user:deliveryAddressEdit' address.id %}" class="delivery-addres-loop-wrap-edit">
+                                    <img src="{% static 'img/edit.png' %}" alt="Edit" srcset="">
+                                </a>
+                                <a href="{% url 'user:deliveryAddressDelete' address.id %}" class="delivery-addres-loop-wrap-delete">
+                                    <img src="{% static 'img/delete.png' %}" alt="Delete" srcset="">
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <a href="{% url 'user:deliveryAddressAdd' %}" class="add-address d-flex ">
+                <div class="add-address-img">
+                    <img src="{% static 'img/add.png' %}" alt="Create" srcset="">
                 </div>
-                <button type="submit" class="update-profile">Update Profile</button>
-            </form>
+                <div class="add-address-text">
+                    Add New Address
+                </div>
+            </a>
         </div>
     </div>
 </div>

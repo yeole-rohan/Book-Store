@@ -1,6 +1,5 @@
 var $ = jQuery.noConflict();
-$(document).ready(
-  (function () {
+$(document).ready((function () {
     $.ajax({
         url: "/get/primary-category/ajax/" + document.querySelector(".book-id").dataset.id + "/",
         type: "GET",

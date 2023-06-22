@@ -22,6 +22,7 @@ $(document).ready(
           settings: {
             slidesToShow: 1,
             slidesToScroll: 1,
+            arrows:false,
           },
         },
       ],
@@ -57,24 +58,11 @@ $(document).ready(
         autoplay: false,
         responsive: [
           {
-            breakpoint: 1025,
+            breakpoint: 767,
             settings: {
               slidesToShow: 3,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 899,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 676,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
+             arrows:false,
+             centerMode:false,
             },
           },
         ],
@@ -82,18 +70,18 @@ $(document).ready(
       $(".featured-book-slider").slick({
         infinite: false,
         slidesToScroll: 1,
-        slidesToShow: 3,
+        slidesToShow: 4,
         autoplay: true,
         responsive: [
           {
-            breakpoint: 1024,
+            breakpoint: 1300,
             settings: {
               slidesToShow: 3,
               slidesToScroll: 1,
             },
           },
           {
-            breakpoint: 899,
+            breakpoint: 1024,
             settings: {
               slidesToShow: 2,
               slidesToScroll: 1,
@@ -102,15 +90,9 @@ $(document).ready(
           {
             breakpoint: 767,
             settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 676,
-            settings: {
               slidesToShow: 1,
               slidesToScroll: 1,
+              arrows:false,
             },
           },
         ],
@@ -140,13 +122,7 @@ $(document).ready(
             settings: {
               slidesToShow: 2,
               slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 676,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
+              arrows:false,
             },
           },
         ],
@@ -159,43 +135,38 @@ $(document).ready(
         dots:true,
         arrows:false,
       });
-
       $(".bundle-deals-slider").slick({
         infinite: false,
         slidesToScroll: 1,
         slidesToShow: 3,
-        autoplay: false,
+        autoplay: true,
         variableWidth: true,
         responsive: [
           {
+            breakpoint: 1300,
+            settings: {
+              slidesToShow: 2,
+              slidesToScroll: 1,
+            },
+          },
+          {
             breakpoint: 1024,
             settings: {
-              slidesToShow: 3,
+              slidesToShow: 2,
               slidesToScroll: 1,
             },
           },
           {
             breakpoint: 899,
             settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 2,
-              slidesToScroll: 1,
-            },
-          },
-          {
-            breakpoint: 676,
-            settings: {
               slidesToShow: 1,
               slidesToScroll: 1,
+              arrows:false,
             },
           },
+      
         ],
       });
+     
   })(jQuery)
 );

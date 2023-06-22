@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Cart.middleware.ClearCartCookieMiddleware',
 ]
 
 ROOT_URLCONF = 'famousbook.urls'
@@ -73,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'Book.context_processors.primaryCategory',
             ],
         },
     },
@@ -116,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -149,9 +151,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'User.User'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "us3.webmail.mailhostbox.com"
-# EMAIL_HOST = "webmail.famousbookshop.in"
-EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.famousbookshop.in"
+EMAIL_USE_TLS = False
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "admin@famousbookshop.in"
 EMAIL_HOST_PASSWORD = "NogieYO9"

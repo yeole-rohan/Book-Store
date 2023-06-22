@@ -4,50 +4,60 @@
     <div class="container">
         <div class="book-details d-flex justify-content-between">
             <div class="book-details-img position-relative">
-                <div class="book-details-discount-percentage font-14 weight-500">
-                    40% OFF
-                </div>
+                {% if book.discountPercentage %}
+                    <div class="book-details-discount-percentage font-14 weight-500">
+                        {{book.discountPercentage}}% OFF
+                    </div>
+                {% endif %}
                 <div class="book-img m-auto">
-                    <img src="{% static 'img/product_13.png' %}" class="" title="" alt="">
+                    <img src="{{book.bookURL}}" class="" title="{{book.title}}" alt="{{book.title}}">
                 </div>
             </div>
             <div class="book-details-details">
                 <div class="book-details-title font-24 color-004872 weight-700">
-                    Black Holes: The Reith Lectures
+                    {{book.title}}
                 </div>
                 <div class="book-details-date-and-back-type font-18 weight-500">
-                    (Paperback) | Released: 05 May 2016
+                    ({{book.get_bookBinding_display}}) | Released: {{book.publishedDate | date}}
                 </div>
                 <div class="book-details-author font-18 weight-500">
-                    By: Stephen Hawking (Author) , Stephen (University of Cambridge) Hawking (Author) | 
+                    By: {{book.author}} 
                 </div>
                 <div class="book-details-pulisher font-18 weight-500">
-                    Publisher: Transworld Publishers Ltd
+                    Publisher: {{book.publisher}}
                 </div>
-                <div class="book-details-price">
-                    <span class="book-details-best-price color-dark-gray">
-                        Best Price* 
-                        <span class="book-details-price color-red font-24 weight-500">
-                            ₹ 85.00
+                {% if book.discountPrice %}
+                    <div class="book-details-price">
+                        <span class="book-details-best-price color-dark-gray">
+                            Best Price* 
+                            <span class="book-details-price color-red font-24 weight-500">
+                                ₹ {{book.discountPrice}}
+                            </span>
                         </span>
-                    </span>
-                </div>
+                    </div>
+                {% endif %}
                 <div class="book-details-mrp font-18 weight-500 color-dark-gray">
-                    MRP <span class="book-details-mrp-value">
-                        ₹ 100.00
+                    MRP <span class="{% if book.discountPrice %}book-details-mrp-value {% else %}color-red font-24 weight-500{% endif %}">
+                        ₹ {{book.price}}
                     </span>
                 </div>
-                <div class="book-details-availability color-red weight-500 font-24">
-                    Available
-                </div>
+                {% if book.is_published %}
+                    <div class="book-details-availability color-red weight-500 font-24">
+                        Available
+                    </div>
+                {% endif %}
                 <div class="book-details-shipment-details font-18 weight-500 ">
-                    Ships within 2-4 Business 
+                    Ships within 3-4 Business (Standard Shipping)
                 </div>
                 <div class="book-details-shipping-charge font-18 weight-500 ">
                     ₹39 shipping in India per item and low cost Worldwide.
                 </div>
                 <div class="book-details-cart-buy-btns">
-                    <a href="#" class="d-inline-block weight-500 font-24">Add to Cart</a>
+                    {% if book.id in userCart %}
+                        <a href="{% url 'cart:view_cart' %}" class="d-inline-block weight-500 font-24">Go to Cart</a>
+                    {% else %}
+                        <a href="{% url 'cart:add_to_cart' %}" data-book-id="{{book.id}}" class="add-to-cart d-inline-block weight-500 font-24">Add to Cart</a>
+                    {% endif %}
                     <a href="#" class="d-inline-block weight-500 font-24">Buy Now</a>
                 </div>
             </div>
@@ -57,74 +67,50 @@
                 About the Book
             </div>
             <div class="book-details-about-book-content">
-                “It is said that fact is sometimes stranger than fiction, and nowhere is that more true than in the case of black holes. Black holes are stranger than anything dreamed up by science fiction writers.”In 2016 Professor Stephen Hawking delivered the BBC Reith Lectures on a subject that has fascinated him for decades – black holes.In these flagship lectures the legendary physicist argues that if we could only understand black holes and how they challenge the very nature of space and time, we could unlock the secrets of the universe.
+                {{book.description | safe}}
             </div>
         </div>
-        <div class="book-details-about-author">
+        {% comment %} <div class="book-details-about-author">
             <div class="book-details-about-author-head color-004872 font-28 weight-600">
                 About the Author
             </div>
             <div class="book-details-about-author-content">
                 STEPHEN HAWKING is regarded as one of the most brilliant theoretical physicists since Einstein. He held the position of Lucasian Professor of Mathematics at the University of Cambridge for thirty years and is the author of A Brief History of Time which was an international bestseller. His other books for the general reader include A Briefer History of Time, the essay collection Black Holes and Baby Universe and The Universe in a Nutshell.
             </div>
-        </div>
+        </div> {% endcomment %}
         <div class="book-other-details">
             <div class="book-other-details-head">
             </div>
-            <div class="book-other-details-wrapper">
-                <div class="book-other-details-wrapper-head color-004872 font-28 weight-600">
-                    Product Details
-                </div>
+            <div class="book-other-details-wrapper-head color-004872 font-28 weight-600">
+                Product Details
+            </div>
+            <div class="book-other-details-wrapper d-flex ">
                 <div class="book-other-details-left">
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">ISBN-13:</span><span>9780857503572</span>
+                        <span class="weight-500 font-20 color-black">ISBN:</span><span>{{book.isbn}}</span>
                     </div>
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Publisher: </span><span>Transworld Publishers Ltd</span>
+                        <span class="weight-500 font-20 color-black">Publisher: </span><span>{{book.publisher}}</span>
                     </div>
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Binding:</span><span>Paperback</span>
+                        <span class="weight-500 font-20 color-black">Binding:</span><span>{{book.get_bookBinding_display}}</span>
                     </div>
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">No of Pages:</span><span> 64</span>
+                        <span class="weight-500 font-20 color-black">No of Pages:</span><span> {{book.noOfPages}}</span>
                     </div>
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Spine Width:</span><span> 11 mm</span>
-                    </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Width:</span><span>160 mm</span>
+                        <span class="weight-500 font-20 color-black">Size:</span><span> {{book.bookSize}}</span>
                     </div>
                 </div>
                 <div class="book-other-details-right">
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black"></span><span></span>
+                        <span class="weight-500 font-20 color-black">Publisher Date:</span><span>{{book.publishedDate | date}}</span>
                     </div>
                     <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black"></span><span></span>
-                    </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black"></span><span></span>
-                    </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black"></span><span></span>
-                    </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black"></span><span></span>
+                        <span class="weight-500 font-20 color-black">Returnable:</span><span> {% if book.isReturnable %}Yes{% else %}No{% endif %}</span>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="book-details-related-categories">
-            <div class="book-details-related-categories-head color-004872 font-32 weight-600">
-                Related Categories
-            </div>
-            <span>
-            General
-            Arts & Photography > Film, tv & radio > Films, cinema > Documentary films
-            Biographies & Memoirs > Biography: general > Biography: arts & entertainment
-            Science & Mathematics > Astronomy, space & time > Theoretical & mathematical astronomy
-            Science & Mathematics > Astronomy, space & time > Galaxies & stars
-            </span>
         </div>
     </div>
 {% endblock content %}

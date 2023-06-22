@@ -1,16 +1,130 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from random import random
-from .models import User, VerificationCode
+from .models import User, VerificationCode, DeliveryAddress
+from .forms import UserForm, DeliveryAddressForm, QueryForm
 from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
 
-'''User Account'''
+"""
+This function handles the user account information page. It retrieves the user's information and displays it on the page. If the user submits a form with updated information, it updates the user's information and redirects them back to the account information page. If the form is not valid, it displays the errors on the page.
+@param request - the HTTP request object
+@return the rendered account-info.html template with the user's information and form.
+"""
 def accountInfo(request):
-    return render(request, template_name="account-info.html", context={})
+    userForm =UserForm(instance=request.user)
+    if request.method == "POST":
+        userForm =UserForm(request.POST or None, instance=request.user)
+        print(userForm.is_valid())
+        if userForm.is_valid():
+            userForm.save()
+            messages.success(request, "Profile Updated")
+            return redirect("user:accountInfo")
+        else:
+            print(userForm.errors)
+    return render(request, template_name="account-info.html", context={'form' : userForm})
+
+"""
+This function adds a delivery address to the user's account. It first initializes a `DeliveryAddressForm` with the user's full name and contact number. If the request method is POST, it checks if the form is valid. If it is, it saves the form with the user's information and redirects to the delivery address page. If the form is not valid, it prints the errors and returns the delivery address page with the form. 
+@param request - the HTTP request
+@return the delivery address page with the form
+"""
+def deliveryAddressAdd(request):
+    deliveryAddressForm =DeliveryAddressForm(initial={"name" : request.user.get_full_name, "contactNumber" : request.user.contactNumber})
+    if request.method == "POST":
+        deliveryAddressForm =DeliveryAddressForm(request.POST or None)
+        print(deliveryAddressForm.is_valid())
+        if deliveryAddressForm.is_valid():
+            deliveryAddressForm = deliveryAddressForm.save(commit=False)
+            deliveryAddressForm.user = request.user
+            deliveryAddressForm.save()
+            messages.success(request, "Address Added")
+            return redirect("user:deliveryAddress")
+        else:
+            print(deliveryAddressForm.errors)
+    return render(request, template_name="delivery-address-add.html", context={'form' : deliveryAddressForm})
+
+"""
+This function allows a user to edit a delivery address. It takes in a request and an id of the address to be edited. It retrieves the address from the database using the id and creates a form with the retrieved address. If the request method is POST, it updates the form with the new data and saves it to the database. If the form is valid, it redirects the user to the delivery address page and displays a success message. If the form is not valid, it prints the errors and returns the same page with the form and errors displayed. 
+@param request - the HTTP request object
+@param id - the id of the delivery address to be edited
+@return the rendered HTML template with the updated delivery address form.
+"""
+def deliveryAddressEdit(request, id):
+    editAddress = DeliveryAddress.objects.get(id=id)
+    deliveryAddressForm =DeliveryAddressForm(instance=editAddress)
+    if request.method == "POST":
+        deliveryAddressForm =DeliveryAddressForm(request.POST or None, instance=editAddress)
+        print(deliveryAddressForm.is_valid())
+        if deliveryAddressForm.is_valid():
+            deliveryAddressForm.save()
+            messages.success(request, "Address Updated")
+            return redirect("user:deliveryAddress")
+        else:
+            print(deliveryAddressForm.errors)
+    return render(request, template_name="delivery-address-add.html", context={'form' : deliveryAddressForm})
+
+"""
+This function deletes a delivery address from the database and redirects the user to the delivery address page.
+@param request - the HTTP request object
+@param id - the id of the delivery address to be deleted
+@returns a redirect to the delivery address page
+"""
+def deliveryAddressDelete(request, id):
+    try:
+        editAddress = DeliveryAddress.objects.filter(id=id).delete()
+        messages.success(request, "Address deleted.")
+    except DeliveryAddress.DoesNotExist:
+        messages.error(request, "Address not exist.")
+    return redirect("user:deliveryAddress")
+
+"""
+Given a request, retrieve the delivery address for the user and render the delivery address page.
+@param request - the request object
+@return the delivery address page with the user's address information.
+"""
+def deliveryAddress(request):
+    getAddress = DeliveryAddress.objects.filter(user=request.user)
+    return render(request, template_name="delivery-address.html", context={'getAddress' : getAddress})
+
+"""
+This function handles user contact requests. It renders a form for the user to fill out and submit. If the form is submitted, it validates the form data and saves it to the database. If the form is not valid, it prints the errors to the console. Finally, it renders the user-contact.html template with the form as context.
+@param request - the HTTP request object
+@return the rendered user-contact.html template with the form as context.
+"""
+def userContact(request):
+    queryForm =QueryForm()
+    if request.method == "POST":
+        queryForm =QueryForm(request.POST or None)
+        print(queryForm.is_valid())
+        if queryForm.is_valid():
+            queryForm = queryForm.save(commit=False)
+            queryForm.user = request.user
+            queryForm.save()
+            messages.success(request, "Message Saved")
+            return redirect("user:userContact")
+        else:
+            print(queryForm.errors)
+    return render(request, template_name="user-contact.html", context={'form' : queryForm})
+
+def editPassword(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated.')
+            return redirect('userProfile')
+        else:
+            messages.error(request, 'Falied to update your password. Please check the errors.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, template_name="edit-password.html", context={'form' : form})
+
 
 '''Returns new OTP'''
 def getOTP():

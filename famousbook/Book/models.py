@@ -55,6 +55,10 @@ class Book(models.Model):
         ('china', 'China'),
         ('others', "Others")
     )
+    BOOK_TYPE = (
+        ("single", "Single"),
+        ("bundle", "Bundle")
+    )
     title = models.CharField(_("Book Title"), max_length=500, blank=False, null=False)
     price = models.FloatField(_("Price"),  default=0)
     bookImage = models.ImageField(_("Book Image"), upload_to="book-image/", default="", blank=True, null=True)
@@ -79,6 +83,7 @@ class Book(models.Model):
     is_published = models.BooleanField(_("Published?"), default=False)
     book_position = models.CharField(_("book rack"), max_length=50, blank=True, null=True)
     quantity = models.PositiveIntegerField(_("Book Quantity"), default=1)
+    book_type=models.CharField(_("Book Type"), choices=BOOK_TYPE, default="single", max_length=50)
     created = models.DateTimeField(_("Cart created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Cart last updated"), auto_now=True)
 
@@ -137,3 +142,56 @@ class BookSelectedCategory(models.Model):
     book = models.ForeignKey("Book", verbose_name=_("Book"), on_delete=models.CASCADE)
     created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
     last_updated = models.DateTimeField(_("Updated"), auto_now=True)
+
+class BundleBook(models.Model):
+    book_category = models.ForeignKey("PrimaryCategory", verbose_name=_("Book Category"), on_delete=models.CASCADE)
+    image = models.ImageField(_("Bundle Image"), upload_to="bundle-image/")
+    created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
+    last_updated = models.DateTimeField(_("Updated"), auto_now=True)
+    class Meta:
+        verbose_name = _("Bundle Book")
+        verbose_name_plural = _("Bundle Books")
+
+    def __str__(self):
+        return str(self.id)
+
+class HomeBanner(models.Model):
+    desktop_banner = models.ImageField(_("Desktop Banner"), upload_to="banner/")
+    mobile_bannner = models.ImageField(_("Mobile Banner"), upload_to="banner/")
+    created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
+    last_updated = models.DateTimeField(_("Updated"), auto_now=True)
+
+    class Meta:
+        verbose_name = _("Banner")
+        verbose_name_plural = _("Banners")
+
+    def __str__(self):
+        return str(self.id)
+
+class PromoBanner(models.Model):
+    desktop_banner = models.ImageField(_("Desktop Banner"), upload_to="banner/")
+    mobile_bannner = models.ImageField(_("Mobile Banner"), upload_to="banner/")
+    created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
+    last_updated = models.DateTimeField(_("Updated"), auto_now=True)
+    
+
+    class Meta:
+        verbose_name = _("Whatsapp")
+        verbose_name_plural = _("Whatsapps")
+
+    def __str__(self):
+        return str(self.id)
+
+class CouponCode(models.Model):
+    coupon_image = models.ImageField(_("Coupon Code"), upload_to=None, height_field=None, width_field=None, max_length=None)
+    coupon_code = models.CharField(_("Coupon Code"), max_length=50)
+    expiry_time = models.DateTimeField(_("Expiry Date Time"))
+    details = models.TextField(_("Coupon Code Details"))
+    created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
+    last_updated = models.DateTimeField(_("Updated"), auto_now=True)
+    class Meta:
+        verbose_name = _("Coupen Code")
+        verbose_name_plural = _("Coupen Codes")
+
+    def __str__(self):
+        return self.coupon_code

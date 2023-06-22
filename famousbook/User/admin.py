@@ -3,4 +3,4 @@ from .models import User
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ("username", "email", "first_name","last_name", "contactNumber", "created", "last_updated")
-    list_display_links = ("email", )
+    list_display_links = ("email","username" )

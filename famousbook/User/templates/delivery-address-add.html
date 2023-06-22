@@ -152,19 +152,28 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.first_name | as_crispy_field}}
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.last_name | as_crispy_field}}
+                        {{form.name | as_crispy_field}}
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         {{form.contactNumber | as_crispy_field}}
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        {{form.email | as_crispy_field}}
+                        {{form.address | as_crispy_field}}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        {{form.city | as_crispy_field}}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        {{form.state | as_crispy_field}}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        {{form.landmark | as_crispy_field}}
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        {{form.pinCode | as_crispy_field}}
                     </div>
                 </div>
-                <button type="submit" class="update-profile">Update Profile</button>
+                <button type="submit" class="save-address">Save Address</button>
             </form>
         </div>
     </div>

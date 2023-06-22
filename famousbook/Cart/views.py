@@ -1,29 +1,159 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect, render
 from Book.models import Book
+import json
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
 from .models import Cart
+from Wishlist.models import Wishlist
+from User.models import DeliveryAddress
+"""
+This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
+@param request - the HTTP request object
+@param book_id - the ID of the book to add to the cart
+@return a JSON response indicating whether the book was successfully added to the cart and any relevant messages
+"""
+def add_to_cart(request):
+    print(request.method)
+    if request.method=="POST":
+        book_id = request.POST.get("book_id")
+        print(book_id)
+        try:
+            book = Book.objects.get(id=int(book_id))
+        except Book.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Book does not exist.'})
 
-'''Ajax View for adding to cart'''
-def addToCart(request):
-    '''Need Code update for logged in user'''
-    if request.method == "POST":
-        bookId = request.POST.get("bookId")
         if request.user.is_authenticated:
-            if request.COOKIES.get('book'):
-                pass
-            createCart = Cart.objects.create(book=get_object_or_404(Book, id=bookId))
-            if createCart:
-                return JsonResponse({"status": "ok", "cartBookCount": Cart.objects.count()})
+            cart_item, created = Cart.objects.get_or_create(user=request.user, book=book)
+            if not created:
+                return JsonResponse({'success': False, 'message': 'Book is already in your cart.'})
+            
+            return JsonResponse({'success': True, 'message': 'Book added to cart.'})
         else:
-            if request.COOKIES.get('book'):
-                bookCookieValue = request.COOKIES.get('book')
-                response = JsonResponse({"status": "ok"}).set_cookie("book", bookCookieValue + bookId)
-                return response({"cartBookCount": len(request.COOKIES['book'])})
-            else:
-                response = JsonResponse({"status": "ok"}).set_cookie("book", bookId)
-                return response({"cartBookCount": len(request.COOKIES['book'])})
-                
-    return JsonResponse({"status": "error"})
+            cart_items = []
+            cart_cookie = request.COOKIES.get('cart')
 
+            if cart_cookie:
+                cart_items = json.loads(cart_cookie)
+            print(int(book_id) in cart_items)
+            if not int(book_id) in cart_items:
+                cart_items.append(book.id)
+            else:
+                return JsonResponse({'success': False, 'message': 'Book is already in your cart.'})
+        
+            response = JsonResponse({'success': True, 'message': 'Book added to cart.'})
+            response.set_cookie('cart', json.dumps(cart_items))
+            print(response, cart_cookie)
+            return response
+    return JsonResponse({'success': False, 'message': 'Failed to add in your cart.'})
+
+
+"""
+This function is used to display the contents of the cart. It first checks if the user is authenticated. If the user is authenticated, it retrieves the cart items from the database. If the user is not authenticated, it checks if there is a cart cookie in the request. If there is a cart cookie, it retrieves the cart items from the cookie. Finally, it renders the cart.html template with the cart items as context.
+@param request - the HTTP request object
+@return the rendered cart.html template with the cart items as context.
+"""
+def view_cart(request):
+    cart_items = []
+    wish_items = ''
+    print(request.COOKIES)
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+        wish_items = Wishlist.objects.filter(user=request.user)
+        amountPayable = paymentCost(cart_items)
+    elif 'cart' in request.COOKIES:
+        cart_cookie = request.COOKIES.get('cart')
+        if cart_cookie:
+            cart_ids = json.loads(cart_cookie)
+            cart_items = Book.objects.filter(id__in=cart_ids)
+        print(cart_items)
+    print(request.COOKIES.get('cart'))
+    return render(request, 'cart.html', context={'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable})
+
+def paymentCost(cart_items):
+    amountPayable = {}
+    mrpTotal, discount = 0, 0
+    for item in cart_items:
+        mrpTotal += item.book.price * item.qty
+        if item.book.discountPrice:
+            discount += item.book.discountPrice * item.qty
+    totalPayable = mrpTotal - discount
+    amountPayable['mrpTotal'] = mrpTotal
+    amountPayable['discount'] = discount
+    amountPayable['totalPayable'] = totalPayable
+    print(mrpTotal, discount, totalPayable, "bddddddddddddd")
+    return amountPayable
+
+def selectAddress(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    amountPayable = paymentCost(cart_items)
+    addressList = DeliveryAddress.objects.filter(user=request.user)
+    return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList})
+
+
+
+"""
+This function removes an item from the cart. If the user is authenticated, it deletes the item from the database. If not, it removes the item from the cookie.
+"""
+def remove_cart_item(request, cartId):
+    if request.user.is_authenticated:
+        try:
+            cart = Cart.objects.filter(id=cartId).delete()
+            messages.success(request, "Cart item deleted")
+            return redirect("cart:view_cart")
+        except Cart.DoesNotExist:
+            messages.error(request ,"Cart item not found")
+            return redirect("cart:view_cart")
+    else:
+        cart_items = []
+        cart_cookie = request.COOKIES.get('cart')
+
+        if cart_cookie:
+            cart_items = json.loads(cart_cookie)
+        else:
+            messages.error(request, "Add book to cart")
+            return redirect("cart:view_cart")
+        
+        if cart_items:
+            cart_items.remove(int(cartId))
+            messages.success(request, "Cart item deleted")
+            response = redirect("cart:view_cart")
+            response.set_cookie('cart', json.dumps(cart_items))
+            return response
+        else:
+            messages.error(request ,"Cart item not found")
+            return redirect("cart:view_cart")
+        
+"""
+This function updates the quantity of a book in the user's cart. It takes in a POST request containing the cart ID and the new quantity. If the user is authenticated, it updates the quantity of the book in the cart and returns a success message. If the user is not authenticated, it returns a failure message. If the request method is not POST, it returns a failure message. 
+@param request - the POST request containing the cart ID and new quantity
+@return a JSON response containing a success message and a message indicating whether the update was successful or not.
+"""
+def update_quantity(request):
+    if request.method=="POST":
+        cart_id = request.POST.get("cartId")
+        qty = request.POST.get("qty")
+        if request.user.is_authenticated:
+            cart_item = Cart.objects.filter(id=int(cart_id)).update(qty=qty)
+            if  cart_item:
+                return JsonResponse({'success': True, 'message': 'Book qty updated.'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Log in for qty update'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Request is tempored'})
+    
+"""
+This function adds an item to the user's wishlist and removes it from their cart.
+@param request - the HTTP request object
+@param itemId - the ID of the item to add to the wishlist
+@return a redirect to the cart view page
+"""
+def toWishList(request, itemId):
+    getCart = Cart.objects.filter(id=int(itemId), user=request.user)
+    if getCart:
+        Wishlist.objects.create(user=request.user, book=getCart[0].book)
+        getCart.delete()
+        messages.success(request, "Added book to wishlist")
+        return redirect("cart:view_cart")
+    messages.error(request, "Something went wrong")
+    return redirect("cart:view_cart")

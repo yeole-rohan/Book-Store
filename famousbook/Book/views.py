@@ -5,7 +5,7 @@ from django.db.models import Q
 import requests, csv, io, pandas, time, random
 from datetime import datetime
 from django.http import JsonResponse
-from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory
+from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode
 from .utils import createBook
 from .forms import BookForm, SingleISBNForm, BulkSheetForm
 
@@ -24,14 +24,20 @@ isbns=[
 9781421539683]
 
 def home(request):
-    books = Book.objects.all()
-    return render(request, template_name="home.html", context={'books':books, 'html' : 'html'})
+    try:
+        featuredBooks = Book.objects.all()[:10]
+    except:
+        featuredBooks = Book.objects.all()
+    testimonials = Testimonials.objects.all()
+    authors = BookAuthor.objects.all()
+    bundleBook = BundleBook.objects.all()
+    primaryCategory = PrimaryCategory.objects.all()
+    print(testimonials, len(featuredBooks))
+    return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory})
 
-# def bookSearch(request):
-#     priceMin, priceMax = 0, 50000
-#     discountMin, discountMax = 0, 100
-#     if request.method == "POST":
-#         keyword = 
+def bundleDeals(request, category):
+    books = Book.objects.filter(primaryCategory__icontains=category, book_type="bundle").order_by("-created")
+    return render(request, template_name="book-bundle.html", context={'books':books})
 
 def findBookSingleISBN(request):
     singleISBNForm = SingleISBNForm()
@@ -123,17 +129,20 @@ def bulkSheetUpload(request):
     return render(request, template_name="bulk-sheet-upload.html", context={'form' : bulkSheetForm})
 
 
-def bookDetails(request):
-    return render(request, template_name="details.html", context={})
+def bookDetails(request, id):
+    book = Book.objects.get(id=int(id))
+    return render(request, template_name="details.html", context={'book' : book})
 
+"""
+Given a request and a category, retrieve all books that have the category as either their primary or secondary category and order them by creation date. Then render the book-category.html template with the retrieved books.
+@param request - the request object
+@param category - the category to filter books by
+@return the rendered book-category.html template with the retrieved books
+"""
 def bookCategory(request, category):
+    print(request.session.session_key)
     books = Book.objects.filter(Q(primaryCategory__icontains=category)|Q( secondaryCategory__icontains=category)).order_by("-created")
-    priceMin, priceMax = 0, 50000
-    discountMin, discountMax = 0, 100
-    language, binding = '', ''
-    # if request.method == "POST":
-    #     keyword = 
-    return render(request, template_name="categoryBooks.html", context={'books':books})
+    return render(request, template_name="book-category.html", context={'books':books, 'category' : category})
 
 def inventory(request):
     books = Book.objects.all()
@@ -190,3 +199,20 @@ def getBookPrimaryCategory(request, id):
         result.append(labelDict)
         labelDict = {}
     return JsonResponse({"status" : "ok", "label" : result})
+
+"""
+Given a request, return a list of book suggestions based on the keyword provided.
+@param request - the request object
+@return A JSON response containing the status and a list of book suggestions.
+"""
+def bookSuggestions(request):
+    if request.method == "POST":
+        keyword = request.POST.get("keyword")
+        print(keyword)
+        suggestions = list(Book.objects.filter(Q(title__icontains = keyword)|Q(author__icontains=keyword)| Q(publisher__icontains=keyword) | Q(isbn__icontains=keyword)).values_list("title", "id")) if keyword else ""
+        print(suggestions)
+        return JsonResponse({'status':'ok', 'suggestions': suggestions})
+
+def offers(request):
+    offers = CouponCode.objects.filter(expiry_time__gte=datetime.today())
+    return render(request, template_name="offers.html", context={'offers':offers})

@@ -19,12 +19,20 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+"""
+This code defines the URL patterns for a Django web application. 
+"""
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(("Book.urls", "book"), namespace="book")),
     path('pages/', include(("StaticPages.urls", "staticPages"), namespace="staticPages")),
     path('account/', include(("User.urls", "user"), namespace="user")),
+    path('cart/', include(("Cart.urls", "cart"), namespace="cart")),
+    path('wishlist/', include(("Wishlist.urls", "wishlist"), namespace="wishlist")),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
+"""
+This line of code sets the handler404 variable to the function redirect404 in the famousbook.views module. This is used to handle 404 errors in a web application.
+"""
 handler404 = "famousbook.views.redirect404"
