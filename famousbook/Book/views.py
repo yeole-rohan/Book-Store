@@ -120,7 +120,7 @@ def bulkSheetUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    if not Book.objects.filter(isbn__iexact=row['ISBN']).exists():
+                    if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
                         book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=row['ISBN'], author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=row['Primary Category'], secondaryCategory=row['Secondary Category'], bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
                         book.save()
             
