@@ -99,8 +99,9 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="account">
                                             {% if request.user.is_authenticated %}
-
-                                        <li><a class="dropdown-item" href="{% url 'book:inventory' %}">Inventory</a></li>
+                                        {% if request.user.is_superuser %}
+                                            <li><a class="dropdown-item" href="{% url 'book:inventory' %}">Inventory</a></li>
+                                        {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'book:offers' %}">Offers</a></li>
                                         <li><a class="dropdown-item" href="{% url 'user:accountInfo' %}">Account</a></li>
                                         <li><a class="dropdown-item" href="#">Something else here</a></li>

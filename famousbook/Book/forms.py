@@ -19,8 +19,11 @@ class BookForm(forms.ModelForm):
 #         fields = ("",)
 #         exclude = ("discountPercentage", "bookURL", "created", "last_updated")
 
-class SingleISBNForm(forms.Form):
-    ISBN = forms.CharField(label="Enter ISBN Number", max_length=100, required=True, )
+class SingleISBNForm(forms.ModelForm):
+    isbn = forms.CharField(label="Enter ISBN Number", max_length=100, required=True, )
 
+    class Meta:
+        model = Book
+        fields = ("isbn", )
 class BulkSheetForm(forms.Form):
     sheet = forms.FileField(label="xlsx Sheet", required=True)
