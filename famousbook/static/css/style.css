@@ -348,7 +348,12 @@ button,
 /* Book CSS End */
 /* Account CSS */
 .user-details-head {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
+}
+
+.user-details {
+    max-width: 370px;
+    width: 100%;
 }
 
 #logout .modal-body {
@@ -386,7 +391,7 @@ button,
 }
 
 .account-info-left-menu {
-    max-width: 465px;
+    max-width: 370px;
     width: 100%;
 }
 
@@ -682,7 +687,7 @@ footer {
 /* Featured Author CSS End */
 /* Header CSS */
 header {
-    margin-bottom: 80px;
+    margin-bottom: 25px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.06);
     margin-top: 25px;
 }
@@ -823,6 +828,11 @@ header {
 
 .account-info-right-details #id_address {
     height: auto !important;
+}
+
+.account-info-right-details {
+    margin-left: 60px;
+    width: 100%;
 }
 
 .cart-book-list-loop-img {
@@ -1104,6 +1114,8 @@ button:hover,
     background-color: initial;
 }
 
+
+/* Element Hover End */
 .mobile-menu,
 .mobile-search-box {
     display: none;
@@ -1126,8 +1138,20 @@ button:hover,
     width: 100%;
 }
 
-/* Element Hover End */
+.desktop-left-menu {
+    display: block;
+}
 
+.mobile-left-menu {
+    display: none;
+}
+.delivery-addres-loop-wrap-details{
+    margin-bottom: 40px;
+    max-width: 300px;
+}
+.delivery-addres-loop-wrap-edit, .add-address-img{
+    margin-right: 40px;
+}
 /* Media Queries */
 @media screen and (max-width: 1210px) {
 
@@ -1170,6 +1194,17 @@ button:hover,
         display: none;
     }
 
+    label {
+        font-size: 18px !important;
+        line-height: 28px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .save-address,
+    .update-profile {
+        padding: 10px 100px;
+    }
+
     .mobile-menu {
         display: flex;
         justify-content: end;
@@ -1207,7 +1242,15 @@ button:hover,
     .login-wrapper-img {
         text-align: center;
     }
-
+.delivery-addres-loop-wrap{
+    display: block !important;
+}
+.delivery-addres-loop-wrap-details{
+    margin-bottom: 10px;
+}
+.delivery-addres-loop-wrap {
+    margin-bottom: 40px;
+}
     .sign-outer,
     .login-outer {
         display: block !important;
@@ -1280,6 +1323,31 @@ button:hover,
     .sign-wrapper-img {
         text-align: center;
     }
+    .delivery-addres-loop-wrap{
+        display: block !important;
+    }
+    .delivery-addres-loop-wrap-details{
+        margin-bottom: 10px;
+    }
+    .delivery-addres-loop-wrap {
+        margin-bottom: 40px;
+    }
+    .desktop-left-menu {
+        display: none;
+    }
+    .account-info-left-menu{
+        max-width: inherit;
+    }
+    .account-info-left-menu ul li, .account-info-left-menu ul li:first-child{
+        margin: 0;
+    }
+    .mobile-left-menu {
+        display: block;
+    }
+
+    .account-info-right-details {
+        margin-left: 0;
+    }
 
     .desktop-filter {
         display: none;
@@ -1349,17 +1417,20 @@ button:hover,
         margin: 5px 0 10px 0;
     }
 
-    label {
-        font-size: 18px;
-        line-height: 28px;
-        margin-bottom: 10px;
-    }
-
     input,
     select,
     textarea {
         padding: 10px 13px;
         margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        padding: 10px 15px !important;
     }
 
     .font-24 {
@@ -1369,7 +1440,7 @@ button:hover,
 
     button,
     .book-details-cart-buy-btns a {
-        padding: 10px;
+        padding: 10px 45px;
     }
 
     footer {
@@ -1443,6 +1514,29 @@ button:hover,
     .book-categories-title {
         font-size: 10px;
         line-height: 20px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .res-class {
+        flex-direction: column-reverse;
+    }
+
+    .person-data-img img {
+        width: 150px;
+    }
+
+    .user-details {
+        text-align: center;
+    }
+
+    .user-details-head {
+        margin-bottom: 5px;
+    }
+
+    .save-address,
+    .update-profile {
+        padding: 10px 50px;
     }
 }
 
