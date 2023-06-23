@@ -4,29 +4,33 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        {% for offer in offers %}
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="coupon-wrapper">
-                    <div class="coupon-wrapper-img">
-                        <img src="{{offer.coupon_image.url}}" class="img-fluid">
-                    </div>
-                    <div class="coupon-wrapper-code font-18 weight-400 color-black d-flex justify-content-between">
-                        <span>
-                            {{offer.coupon_code}}
-                        </span>
-                        <span data-clipboard-text="{{offer.coupon_code}}" id="copyButton" class="color-red font-12 weight-700">
-                            Copy Code
-                        </span>
-                    </div>
-                    <div class="coupon-wrapper-description font-12 weight-400">
-                        {{offer.details}}
-                    </div>
-                    <div class="coupon-wrapper-valid font-18 weight-400 color-004872">
-                        VALID TILL {{offer.expiry_time}}
+        {% if offers %}
+            {% for offer in offers %}
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="coupon-wrapper">
+                        <div class="coupon-wrapper-img">
+                            <img src="{{offer.coupon_image.url}}" class="img-fluid">
+                        </div>
+                        <div class="coupon-wrapper-code font-18 weight-400 color-black d-flex justify-content-between">
+                            <span>
+                                {{offer.coupon_code}}
+                            </span>
+                            <span data-clipboard-text="{{offer.coupon_code}}" id="copyButton" class="color-red font-12 weight-700">
+                                Copy Code
+                            </span>
+                        </div>
+                        <div class="coupon-wrapper-description font-12 weight-400">
+                            {{offer.details}}
+                        </div>
+                        <div class="coupon-wrapper-valid font-18 weight-400 color-004872">
+                            VALID TILL {{offer.expiry_time}}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            No offers found
+        {% endif %}
     </div>
 </div>
 {% endblock content %}

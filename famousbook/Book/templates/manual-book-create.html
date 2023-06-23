@@ -10,7 +10,7 @@
             <ul class="dropdown-menu" aria-labelledby="account">
               <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Single ISBN</a></li>
               <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Bulk ISBN</a></li>
-              <li><a class="dropdown-item" href="{% url 'book:manualBookCreate' %}">Manual Entry</a></li>
+              {% comment %} <li><a class="dropdown-item" href="{% url 'book:manualBookCreate' %}">Manual Entry</a></li> {% endcomment %}
               <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Import Sheet</a></li>
             </ul>
         </div>

@@ -2,7 +2,7 @@
 {% block content %}
     <div class="container">
         <div class="inventory-wrap d-flex justify-content-between">
-            <div class="inventory-head weight-700 font-24 color-004872">Inventory</div>
+            <div class="inventory-head weight-700 font-24 color-004872">Inventory Create</div>
             <div class="inventory-head-dropdown">
                 <div class="dropdown">
                     <a href="http://" class="dropdown-toggle account" data-bs-toggle="dropdown" aria-expanded="false">
@@ -11,14 +11,152 @@
                     <ul class="dropdown-menu" aria-labelledby="account">
                       <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Single ISBN</a></li>
                       <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Bulk ISBN</a></li>
-                      <li><a class="dropdown-item" href="{% url 'book:manualBookCreate' %}">Manual Entry</a></li>
+                      {% comment %} <li><a class="dropdown-item" href="{% url 'book:manualBookCreate' %}">Manual Entry</a></li> {% endcomment %}
                       <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Import Sheet</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="inventory-data-wrapper mt-4">
+        {% comment %} <div class="inventory-data-wrapper mt-4">
+            <div class="container">
+              <h1>Age of Ultron (Avengers)</h1>
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <th>Title</th>
+                    <td>Age of Ultron (Avengers)</td>
+                  </tr>
+                  <tr>
+                    <th>Issue Number</th>
+                    <td>1</td>
+                  </tr>
+                  <tr>
+                    <th>Original Price</th>
+                    <td>1399.0</td>
+                  </tr>
+                  <tr>
+                    <th>Discounted Price</th>
+                    <td>799.0</td>
+                  </tr>
+                  <tr>
+                    <th>Author</th>
+                    <td>Remender, Rick; Immonen, Stuart</td>
+                  </tr>
+                  <tr>
+                    <th>Is Available</th>
+                    <td>False</td>
+                  </tr>
+                  <tr>
+                    <th>Genre</th>
+                    <td>Comic</td>
+                  </tr>
+                  <tr>
+                    <th>Publisher</th>
+                    <td>Dc</td>
+                  </tr>
+                  <tr>
+                    <th>Dimensions (cm)</th>
+                    <td>20 x 30 x 1</td>
+                  </tr>
+                  <tr>
+                    <th>Country</th>
+                    <td>India</td>
+                  </tr>
+                  <tr>
+                    <th>Page Count</th>
+                    <td>288</td>
+                  </tr>
+                  <tr>
+                    <th>ISBN</th>
+                    <td>9780785155669</td>
+                  </tr>
+                  <tr>
+                    <th>Weight (g)</th>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <th>Language</th>
+                    <td>English</td>
+                  </tr>
+                  <tr>
+                    <th>Rating</th>
+                    <td>False</td>
+                  </tr>
+                  <tr>
+                    <th>Price in USD</th>
+                    <td>175</td>
+                  </tr>
+                  <tr>
+                    <th>Format</th>
+                    <td>Paperback</td>
+                  </tr>
+                  <tr>
+                    <th>Image URL</th>
+                    <td>
+                      <img src="https://m.media-amazon.com/images/I/618Lt8tx-SL._SL500_.jpg" alt="Book Cover" style="max-height: 150px;">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+
             {% for book in books %}
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Original Price</th>
+                    <th scope="col">Discounted Price</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Is Published</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Genre</th>
+                    <th scope="col">Publisher</th>
+                    <th scope="col">Dimensions (cm)</th>
+                    <th scope="col">Country Origin</th>
+                    <th scope="col">Page Count</th>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Weight (g)</th>
+                    <th scope="col">Language</th>
+                    <th scope="col">Format</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Handle</th>
+                    <th scope="col">#</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Image</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{book.title | truncatechars:"30"}}</td>
+                    <td>{{book.description | safe | truncatechars_html:"5"}}</td>
+                    <td>{{book.price}}</td>
+                    <td>{{book.discountPrice}}</td>
+                    <td>{{book.author}}</td>
+                    <td>{{book.is_published}}</td>
+                    <td>{{book.discountPercentage}}</td>
+                    <td>{{book.quantity}}</td>
+                    <td>{{book.primaryCategory}}</td>
+                    <td>{{book.secondaryCategory}}</td>
+                    <td>{{book.book_position}}</td>
+                    <td>{{book.bookPrintedIn}}</td>
+                    <td>{{book.bookSize}}</td>
+                    <td>{{book.bookLanguage}}</td>
+                    <td>{{book.bookBinding}}</td>
+                    <td>{{book.readingAge}}</td>
+                    <td>{{book.isbn}}</td>
+                    <td>{{book.isReturnable}}</td>
+                    <td>{{book.quantity}}</td>
+                    <td> <img src="{{book.bookImage.url}}" class="img-fluid" alt="{{book.title}}" srcset=""></td>
+                  </tr>
+                </tbody>
+              </table>
+            
+
+
             <div class="inventory-data-wrapper-loop d-flex align-items-end flex-wrap">
                 <div class="inventory-data-wrapper-loop-title">
                     {{book.title | truncatechars:"50"}}
@@ -96,6 +234,6 @@
             </div>
             <hr>
             {% endfor %}
-        </div>
+        </div> {% endcomment %}
     </div>
 {% endblock content %}
