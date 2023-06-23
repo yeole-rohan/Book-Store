@@ -36,6 +36,24 @@ def home(request):
     print(testimonials, len(featuredBooks))
     return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory})
 
+def allBooks(request):
+    books = Book.objects.all().order_by("-created")
+    bookLanguage = set(list(books.values_list("bookLanguage", flat=True)))
+    primaryCategory = PrimaryCategory.objects.all()
+    # Get the page from get request
+    page = request.GET.get("page", 1)
+    # set default, how many posts to appear in in single page
+    paginator = Paginator(books, 60)
+
+    # try to find next page
+    try:
+        books = paginator.page(page)
+    except PageNotAnInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.page(paginator.num_pages)
+    return render(request, template_name="all-books.html", context={'books':books, 'bookLanguage' : bookLanguage, 'primaryCategory' :primaryCategory})
+
 def bundleDeals(request, category):
     books = Book.objects.filter(primaryCategory__icontains=category, book_type="bundle").order_by("-created")
     return render(request, template_name="book-bundle.html", context={'books':books})

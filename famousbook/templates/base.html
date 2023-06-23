@@ -69,7 +69,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="http://" class="font-20 color-004872 weight-500">
+                                    <a href="{% url 'book:allBooks' %}" class="font-20 color-004872 weight-500">
                                         Books
                                     </a>
                                 </li>
@@ -83,13 +83,20 @@
                         <div class="head-right-bottom-cart-bag-profile">
                             <ul class="d-flex">
                                 <li>
-                                    <a href="{% url 'wishlist:home' %}">
+                                    
+                                    <a href="{% url 'wishlist:home' %}" class="position-relative">
                                         <img src="{% static 'img/favorite.png' %}" alt="" srcset="">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {{wishList | length}}
+                                        </span>
                                     </a>
                                 </li>
                                 <li class="cart-link">
-                                    <a href="{% url 'cart:view_cart' %}">
+                                    <a href="{% url 'cart:view_cart' %}" class="position-relative">
                                         <img src="{% static 'img/shopping_bag.png' %}" alt="" srcset="">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {{userCart | length}}
+                                        </span>
                                     </a>
                                 </li>
                                 <li>

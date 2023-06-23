@@ -18,3 +18,6 @@ def primaryCategory(request):
         userCart = list(Cart.objects.filter(user=request.user).values_list("book", flat=True))
         wishList = list(Wishlist.objects.filter(user=request.user).values_list("book", flat= True))
     return {"bookCategory" : bookCategory, 'userCart' : userCart, "wishList" : wishList}
+
+# def wishCartCount(request):
+#     return {"wishCount" : wishCount, "cartCount" : cartCount}
