@@ -169,15 +169,35 @@ button,
     font-weight: 600;
 }
 
+.categoy-filter label {
+    color: #151B39 !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    margin-bottom: 0 !important;
+
+}
+
+.categoy-filter {
+    width: 240px;
+}
+
+.book-data {
+    width: calc(100% - 240px);
+}
+
+.mobile-filter {
+    display: none;
+}
+
 /* General CSS End */
 
 /* Book CSS */
 .book-card {
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.06);
     border-radius: 20px;
-    padding: 20px;
+    padding: 10px 0;
     /* max-width: 350px; */
-    margin: 20px 30px;
+    margin: 10px 0px;
 }
 
 .slick-arrow.slick-disabled {
@@ -269,18 +289,18 @@ button,
 }
 
 .book-title {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .book-img-dis-percentage {
     background: #FF4141;
-    border-radius: 6px;
+    border-radius: 5px;
     color: #fff;
-    padding: 1px 9px;
+    padding: 0px 10px;
     top: 0;
     left: -55px;
-    font-size: 12px;
-    line-height: 22px;
+    font-size: 10px;
+    line-height: 20px;
     right: auto;
 }
 
@@ -295,6 +315,7 @@ button,
     top: 18px;
     right: 20px;
     left: auto;
+    top: 5px;
     cursor: pointer;
 }
 
@@ -304,7 +325,7 @@ button,
 }
 
 .book-img {
-    width: 200px;
+    width: 100px;
     max-width: 100%;
     margin: auto;
 }
@@ -614,12 +635,15 @@ footer {
 .slick-prev::before {
     content: url(../img/left.png) !important;
 }
-.slick-prev{
+
+.slick-prev {
     left: 0 !important;
 }
-.slick-next{
+
+.slick-next {
     right: 0 !important;
 }
+
 /* End Testimonials CSS */
 /* Featured Author CSS */
 .featured-author-head {
@@ -987,15 +1011,21 @@ header {
 }
 
 /* Book Details CSS End */
-.cart-books-total-promo{
+.cart-books-total-promo {
     width: 330px;
 }
-.cart-book-list{
+
+.cart-book-list {
     width: calc(100% - 370px);
 }
-.amount-payable-mrp, .amount-payable-discount, .amount-payable-total-saving, .amount-payable-total{
+
+.amount-payable-mrp,
+.amount-payable-discount,
+.amount-payable-total-saving,
+.amount-payable-total {
     margin: 8px 0;
 }
+
 /* Inventory Page */
 .inventory-data-wrapper-loop-description * {
     margin: 0;
@@ -1036,7 +1066,8 @@ header {
 #manualBook p {
     width: 50%;
 }
-.book-categories-img{
+
+.book-categories-img {
     max-width: 150px;
     margin: auto;
 }
@@ -1250,6 +1281,18 @@ button:hover,
         text-align: center;
     }
 
+    .desktop-filter {
+        display: none;
+    }
+
+    .mobile-filter {
+        display: block;
+    }
+
+    .book-data {
+        width: 100%;
+    }
+
     .footer-logo img,
     .head-left img {
         width: 50px;
@@ -1353,20 +1396,25 @@ button:hover,
     #logout .modal-body {
         padding: 20px;
     }
-    .cart-book-list-loop-wrap{
+
+    .cart-book-list-loop-wrap {
 
         display: block;
     }
-    .cart-book-list-loop-img{
+
+    .cart-book-list-loop-img {
         margin: auto;
     }
-    .cart-book-list-loop-details{
+
+    .cart-book-list-loop-details {
         width: 100%;
         padding-top: 10px;
     }
-    .wish-head{
+
+    .wish-head {
         margin-top: 40px;
     }
+
     #logout .logout-body {
         font-size: 16px;
         line-height: 26px;

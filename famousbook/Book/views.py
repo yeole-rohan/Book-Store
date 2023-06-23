@@ -142,7 +142,10 @@ Given a request and a category, retrieve all books that have the category as eit
 def bookCategory(request, category):
     print(request.session.session_key)
     books = Book.objects.filter(Q(primaryCategory__icontains=category)|Q( secondaryCategory__icontains=category)).order_by("-created")
-    return render(request, template_name="book-category.html", context={'books':books, 'category' : category})
+    secondryCategory = SecondaryCategory.objects.filter(primaryCategory__name__icontains=category)
+    binding = set(list(books.values_list("bookBinding", flat=True)))
+    bookLanguage = set(list(books.values_list("bookLanguage", flat=True)))
+    return render(request, template_name="book-category.html", context={'books':books, 'category' : category, "secondryCategory" : secondryCategory, "binding" : binding, 'bookLanguage' : bookLanguage})
 
 def inventory(request):
     books = Book.objects.all()
