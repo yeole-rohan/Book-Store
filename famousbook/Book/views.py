@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode
 from .utils import createBook
 from .forms import BookForm, SingleISBNForm, BulkSheetForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 isbns=[
 9781421501246,
@@ -145,6 +146,19 @@ def bookCategory(request, category):
     secondryCategory = SecondaryCategory.objects.filter(primaryCategory__name__icontains=category)
     binding = set(list(books.values_list("bookBinding", flat=True)))
     bookLanguage = set(list(books.values_list("bookLanguage", flat=True)))
+
+    # Get the page from get request
+    page = request.GET.get("page", 1)
+    # set default, how many posts to appear in in single page
+    paginator = Paginator(books, 60)
+
+    # try to find next page
+    try:
+        books = paginator.page(page)
+    except PageNotAnInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.page(paginator.num_pages)
     return render(request, template_name="book-category.html", context={'books':books, 'category' : category, "secondryCategory" : secondryCategory, "binding" : binding, 'bookLanguage' : bookLanguage})
 
 def inventory(request):
