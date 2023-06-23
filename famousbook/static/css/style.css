@@ -614,7 +614,12 @@ footer {
 .slick-prev::before {
     content: url(../img/left.png) !important;
 }
-
+.slick-prev{
+    left: 0 !important;
+}
+.slick-next{
+    right: 0 !important;
+}
 /* End Testimonials CSS */
 /* Featured Author CSS */
 .featured-author-head {
@@ -1030,6 +1035,10 @@ header {
 
 #manualBook p {
     width: 50%;
+}
+.book-categories-img{
+    max-width: 150px;
+    margin: auto;
 }
 
 /* End Book Creation */

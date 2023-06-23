@@ -35,22 +35,22 @@
                 Categories
             </div>
         </div>
-    </div>
-    <div class="book-categories-slider">
-        {% for category in primaryCategory %}
-            <div class="book-categories-card">
-                <div class="book-categories-img">
-                    <img src="{{category.image.url}}" class="img-fluid">
+        <div class="book-categories-slider">
+            {% for category in primaryCategory %}
+                <div class="book-categories-card">
+                    <div class="book-categories-img">
+                        <img src="{{category.image.url}}" class="img-fluid">
+                    </div>
+                    <div class="book-categories-title weight-500 font-20 color-004872">
+                        {{category.name | capfirst}}
+                    </div>
+                    <a href="{% url 'book:bookCategory' category.name %}" class="book-categories-shop color-red weight-400 font-16 d-flex align-items-center">
+                        Shop Now
+                        <span><img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
+                    </a>
                 </div>
-                <div class="book-categories-title weight-500 font-24 color-004872">
-                    {{category.name | capfirst}}
-                </div>
-                <a href="{% url 'book:bookCategory' category.name %}" class="book-categories-shop color-red weight-400 font-18 d-flex align-items-center">
-                    Shop Now
-                    <span><img clas="img-fluid" src="{% static 'img/red-right.png' %}"></span>
-                </a>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </section>
 <section id="bundle-deals">
