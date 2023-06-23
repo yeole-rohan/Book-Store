@@ -26,4 +26,4 @@ class BundleBookAdmin(admin.ModelAdmin):
 
 @admin.register(CouponCode)
 class CouponCodeAdmin(admin.ModelAdmin):
-    list_display = ("id", "coupon_image", "coupon_code", "expiry_time", "details", "created_date", "last_updated")
+    list_display = ("id", "coupon_image", "discount_percentage", "coupon_code", "expiry_time", "details", "created_date", "last_updated")
