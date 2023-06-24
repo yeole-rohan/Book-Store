@@ -151,6 +151,10 @@ def bulkSheetUpload(request):
 
 def bookDetails(request, id):
     book = Book.objects.get(id=int(id))
+    try:
+        featuredBooks = Book.objects.all()[:10]
+    except:
+        featuredBooks = Book.objects.all()
     book_items, history_books = [], []
     book_cookie = request.COOKIES.get('history')
 
@@ -160,7 +164,7 @@ def bookDetails(request, id):
         book_items.append(book.id)
     history_books = Book.objects.filter(id__in=book_items)
     similary_books = Book.objects.filter(Q(primaryCategory__icontains=book.primaryCategory)|Q( secondaryCategory__icontains=book.secondaryCategory))
-    response = render(request, template_name="details.html", context={'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
+    response = render(request, template_name="details.html", context={'featuredBooks':featuredBooks,'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
     response.set_cookie('history', json.dumps(book_items))
     return response
 

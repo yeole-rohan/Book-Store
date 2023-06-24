@@ -4,5 +4,9 @@ $(document).ready((function () {
         console.log(this.value, this);
         
     })
+    $(document).on("click", ".mobile-category-filter", function(){
+      $(".categoy-filter").toggle()
+      
+  })
   })(jQuery)
 );

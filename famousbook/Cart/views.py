@@ -57,6 +57,10 @@ def view_cart(request):
     cart_items = []
     wish_items = ''
     print(request.COOKIES)
+    try:
+        featuredBooks = Book.objects.all()[:10]
+    except:
+        featuredBooks = Book.objects.all()
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
         wish_items = Wishlist.objects.filter(user=request.user)
@@ -68,7 +72,7 @@ def view_cart(request):
             cart_items = Book.objects.filter(id__in=cart_ids)
         print(cart_items)
     print(request.COOKIES.get('cart'))
-    return render(request, 'cart.html', context={'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable})
+    return render(request, 'cart.html', context={'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable})
 
 def paymentCost(cart_items):
     amountPayable = {}

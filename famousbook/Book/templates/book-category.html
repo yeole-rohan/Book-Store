@@ -5,44 +5,7 @@
         <div class="category-name weight-700 font-32 color-004872">{{category | capfirst}}</div>
 
         {% if books %}
-        {% comment %} <div class="categoy-filter mobile-filter">
-            <div class="sub-category-filter">
-                <div class="category-name weight-400 font-18 color-004872">{{category }}</div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" >
-                    <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked">
-                        Thriller/Suspense/Mystry
-                    </label>
-                </div>
-            </div>
-            <div class="book-binding-filter">
-                <div class="book-binding weight-400 font-18 color-004872">Binding</div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" >
-                    <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked">
-                        Thriller/Suspense/Mystry
-                    </label>
-                </div>
-            </div>
-            <div class="book-price-filter">
-                <div class="book-price weight-400 font-18 color-004872">Price</div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" >
-                    <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked">
-                        0-300
-                    </label>
-                </div>
-            </div>
-            <div class="book-discount-filter">
-                <div class="book-discount weight-400 font-18 color-004872">Discount</div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" >
-                    <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked">
-                        10%
-                    </label>
-                </div>
-            </div>
-        </div> {% endcomment %}
+        <div class="mobile-category-filter">Filter</div>
         <div class="category-wrap d-flex align-item-top">
             <div class="categoy-filter">
                 {% if secondryCategory %}

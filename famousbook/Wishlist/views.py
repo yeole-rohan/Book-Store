@@ -24,6 +24,10 @@ def addToWishList(request):
 @login_required
 def home(request):
     wishlist = Wishlist.objects.filter(user=request.user)
+    try:
+        featuredBooks = Book.objects.all()[:10]
+    except:
+        featuredBooks = Book.objects.all()
     history_books = []
     history = request.COOKIES.get('history')
     print(history, type(history))
@@ -32,7 +36,7 @@ def home(request):
         print(history, type(history))
         history_books = Book.objects.filter(id__in=history)
         print(history_books)
-    return render(request, template_name="wishlist.html", context={'wishlist' : wishlist, 'history_books' :history_books})
+    return render(request, template_name="wishlist.html", context={'wishlist' : wishlist, 'history_books' :history_books, 'featuredBooks' : featuredBooks})
 
 '''Remove Wishlist Book'''
 @login_required
