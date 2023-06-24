@@ -196,10 +196,14 @@ button,
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.06);
     border-radius: 20px;
     padding: 10px 0;
-    /* max-width: 350px; */
     margin: 10px 0px;
 }
-
+.history-book-slider .book-card{
+    margin: 10px 30px;
+}
+.history-book-slider .book-img-dis-percentage{
+    top: -25px;
+}
 .slick-arrow.slick-disabled {
     display: none !important;
 }
@@ -344,7 +348,9 @@ button,
     height: auto;
     margin-top: 25px;
 }
-
+.book-details .book-img{
+    width: 250px;
+}
 /* Book CSS End */
 /* Account CSS */
 .user-details-head {

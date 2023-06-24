@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 
 from django.contrib import messages
 from django.db.models import Q
-import requests, csv, io, pandas, time, random
+import requests, csv, io, pandas, time, random, json
 from datetime import datetime
 from django.http import JsonResponse
 from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode
@@ -25,6 +25,7 @@ isbns=[
 9781421539683]
 
 def home(request):
+    print(request.COOKIES.get('cart'))
     try:
         featuredBooks = Book.objects.all()[:10]
     except:
@@ -150,7 +151,18 @@ def bulkSheetUpload(request):
 
 def bookDetails(request, id):
     book = Book.objects.get(id=int(id))
-    return render(request, template_name="details.html", context={'book' : book})
+    book_items, history_books = [], []
+    book_cookie = request.COOKIES.get('history')
+
+    if book_cookie:
+        book_items = json.loads(book_cookie)
+    if not int(book.id) in book_items:
+        book_items.append(book.id)
+    history_books = Book.objects.filter(id__in=book_items)
+    similary_books = Book.objects.filter(Q(primaryCategory__icontains=book.primaryCategory)|Q( secondaryCategory__icontains=book.secondaryCategory))
+    response = render(request, template_name="details.html", context={'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
+    response.set_cookie('history', json.dumps(book_items))
+    return response
 
 """
 Given a request and a category, retrieve all books that have the category as either their primary or secondary category and order them by creation date. Then render the book-category.html template with the retrieved books.

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import json
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
@@ -23,7 +24,15 @@ def addToWishList(request):
 @login_required
 def home(request):
     wishlist = Wishlist.objects.filter(user=request.user)
-    return render(request, template_name="wishlist.html", context={'wishlist' : wishlist})
+    history_books = []
+    history = request.COOKIES.get('history')
+    print(history, type(history))
+    if history:
+        history = json.loads(history)
+        print(history, type(history))
+        history_books = Book.objects.filter(id__in=history)
+        print(history_books)
+    return render(request, template_name="wishlist.html", context={'wishlist' : wishlist, 'history_books' :history_books})
 
 '''Remove Wishlist Book'''
 @login_required
