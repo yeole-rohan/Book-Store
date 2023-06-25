@@ -154,7 +154,7 @@
                                 {% endif %}
                                 <a href="{% url 'book:bookDetails' book.id %}">
                                     <div class="book-img text-center position-relative">
-                                        <img class="book-image" src="{{ book.bookImage.url }}" alt="{{ book.title }}">
+                                        <img class="book-image" src="{% if book.bookImage %}{{ book.bookImage.url }} {% else %}{% static 'img/placeholder.png' %}{% endif %}" alt="{{ book.title }}">
                                         {% if book.discountPercentage %}
                                         
                                             <div class="book-img-dis-percentage position-absolute font-12 weight-500">
