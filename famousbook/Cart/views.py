@@ -4,9 +4,10 @@ from Book.models import Book
 import json
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from .models import Cart
+from .models import Cart, CouponCode
 from Wishlist.models import Wishlist
 from User.models import DeliveryAddress
+from .forms import PromoCodeForm, DeliveryAddressForm
 """
 This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
 @param request - the HTTP request object
@@ -57,6 +58,9 @@ def view_cart(request):
     cart_items = []
     wish_items = ''
     print(request.COOKIES)
+    promoCodeForm = PromoCodeForm()
+    print( request.method)
+    
     try:
         featuredBooks = Book.objects.all()[:10]
     except:
@@ -65,6 +69,15 @@ def view_cart(request):
         cart_items = Cart.objects.filter(user=request.user)
         wish_items = Wishlist.objects.filter(user=request.user)
         amountPayable = paymentCost(cart_items)
+        if request.method == "POST" and "coupon" in request.POST:
+            promoCodeForm = PromoCodeForm(request.POST or None)
+            if promoCodeForm.is_valid():
+                code = request.POST.get('promoCode')
+                if CouponCode.objects.filter(coupon_code__iexact=code).exists():
+                    coupon = CouponCode.objects.get(coupon_code__iexact=code)
+                    Cart.objects.filter(user=request.user).update(coupon_code=coupon)
+                    print(coupon, coupon.discount_percentage)
+                    amountPayable = paymentCost(cart_items)
     elif 'cart' in request.COOKIES:
         cart_cookie = request.COOKIES.get('cart')
         if cart_cookie:
@@ -72,29 +85,53 @@ def view_cart(request):
             cart_items = Book.objects.filter(id__in=cart_ids)
         print(cart_items)
     print(request.COOKIES.get('cart'))
-    return render(request, 'cart.html', context={'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable})
+    return render(request, 'cart.html', context={'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})
 
 def paymentCost(cart_items):
     amountPayable = {}
-    mrpTotal, discount = 0, 0
+    discount_percentage = list(cart_items.values_list("coupon_code__discount_percentage", flat=True))
+    mrpTotal, discount, totalPayable, withOutDiscount,couponDiscount = 0, 0, 0, 0, 0
     for item in cart_items:
         mrpTotal += item.book.price * item.qty
         if item.book.discountPrice:
             discount += item.book.discountPrice * item.qty
-    totalPayable = mrpTotal - discount
+        else:
+            print("price only")
+            withOutDiscount += mrpTotal
+    totalPayable = discount + withOutDiscount
+    print(discount_percentage)
+    if discount_percentage and not discount_percentage[0] == None:
+        couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
+        totalPayable -= couponDiscount
     amountPayable['mrpTotal'] = mrpTotal
-    amountPayable['discount'] = discount
+    amountPayable['totalDiscount'] = discount
+    amountPayable["couponDiscount"] = couponDiscount
     amountPayable['totalPayable'] = totalPayable
-    print(mrpTotal, discount, totalPayable, "bddddddddddddd")
+    print(mrpTotal, discount, totalPayable, "total", couponDiscount)
     return amountPayable
 
 def selectAddress(request):
     cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
     addressList = DeliveryAddress.objects.filter(user=request.user)
-    return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList})
+    deliveryAddressForm = DeliveryAddressForm()
+    if request.method=="POST":
+        deliveryAddressForm = DeliveryAddressForm(request.POST or None)
+        if deliveryAddressForm.is_valid():
+            deliveryType= request.POST.get("pickup")
+            if deliveryType == "self":
+                Cart.objects.filter(user=request.user).update(pickType=deliveryType)
+            else:
+                Cart.objects.filter(user=request.user).update(deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address")))
+            return redirect("cart:overview")
+        print(request.POST.get("address"))
+    return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList, 'deliveryAddressForm' :deliveryAddressForm})
 
-
+def overview(request):
+    cart_items = Cart.objects.filter(user=request.user)
+    amountPayable = paymentCost(cart_items)
+    deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
+    return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items})
 
 """
 This function removes an item from the cart. If the user is authenticated, it deletes the item from the database. If not, it removes the item from the cookie.

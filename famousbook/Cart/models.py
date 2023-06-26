@@ -1,13 +1,19 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from Book.models import Book
-from User.models import User
-from User.models import User
+from Book.models import Book, CouponCode
+from User.models import User, DeliveryAddress
 
 class Cart(models.Model):
+    PICKUPS = (
+        ("self", "I will pick from store"),
+        ("deliver", "Deliver to me")
+    )
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE, blank=True, null=True)
     book = models.ForeignKey(Book, verbose_name=_("Book"), on_delete=models.CASCADE)
     qty = models.PositiveIntegerField(_("Quantity"), default=1)
+    pickType = models.CharField(_("Pick up type"),choices=PICKUPS, max_length=50, default="deliver")
+    deliveryAddress = models.ForeignKey(DeliveryAddress, verbose_name=_("Delivery Address"), on_delete=models.CASCADE, blank=True, null=True)
+    coupon_code = models.ForeignKey(CouponCode, verbose_name=_("Coupon Code"), on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(_("Cart created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Cart last updated"), auto_now=True)
 

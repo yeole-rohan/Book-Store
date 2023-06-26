@@ -18,7 +18,7 @@ class DeliveryAddress(models.Model):
     user = models.ForeignKey("User", verbose_name=_("User"), on_delete=models.CASCADE)
     contactNumber = models.CharField(_("Contact Number"), max_length=12)
     name = models.CharField(_("Name"), max_length=50)
-    address = models.CharField(_("Adress"), max_length=300)
+    address = models.CharField(_("Address"), max_length=300)
     city = models.CharField(_("City"), max_length=50)
     state = models.CharField(_("State"), max_length=100)
     pinCode = models.CharField(_("Pin Code"), max_length=10)
