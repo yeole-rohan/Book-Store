@@ -2,12 +2,14 @@ from django.http import JsonResponse
 from django.contrib import messages
 from Book.models import Book
 import json
+from .paytm import generate_checksum, verify_checksum
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CouponCode
 from Wishlist.models import Wishlist
 from User.models import DeliveryAddress
-from .forms import PromoCodeForm, DeliveryAddressForm
+from .forms import PromoCodeForm, DeliveryAddressForm, ShippingChargesForm
 """
 This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
 @param request - the HTTP request object
@@ -90,9 +92,17 @@ def view_cart(request):
 def paymentCost(cart_items):
     amountPayable = {}
     discount_percentage = list(cart_items.values_list("coupon_code__discount_percentage", flat=True))
-    mrpTotal, discount, totalPayable, withOutDiscount,couponDiscount = 0, 0, 0, 0, 0
+    mrpTotal, discount, totalPayable, withOutDiscount,couponDiscount, mumbaiCharge, india, east = 0, 0, 0, 0, 0, 0, 0, 0
+    isFree = False
     for item in cart_items:
         mrpTotal += item.book.price * item.qty
+        if item.charges and not item.charges == "enquire":
+            if item.charges == "40":
+                mumbaiCharge += mumbaiCharge + 40
+            if item.charges == "50":
+                india += india + 50
+            if item.charges == "70":
+                east += east + 70
         if item.book.discountPrice:
             discount += item.book.discountPrice * item.qty
         else:
@@ -103,10 +113,29 @@ def paymentCost(cart_items):
     if discount_percentage and not discount_percentage[0] == None:
         couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
         totalPayable -= couponDiscount
+    if mrpTotal > 500:
+        isFree = True
+        shippingAmount = 0
+    else:
+        shippingAmount = mumbaiCharge
+    
+    if mrpTotal > 700:
+        isFree = True
+        shippingAmount = 0
+    else:
+        shippingAmount = india
+    
+    if mrpTotal > 1000:
+        isFree = True
+        shippingAmount = 0
+    else:
+        shippingAmount = east
     amountPayable['mrpTotal'] = mrpTotal
     amountPayable['totalDiscount'] = discount
     amountPayable["couponDiscount"] = couponDiscount
-    amountPayable['totalPayable'] = totalPayable
+    amountPayable['totalPayable'] = totalPayable + shippingAmount
+    amountPayable["shippingAmount"] = shippingAmount
+    amountPayable["isFree"] = isFree
     print(mrpTotal, discount, totalPayable, "total", couponDiscount)
     return amountPayable
 
@@ -130,9 +159,49 @@ def selectAddress(request):
 def overview(request):
     cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
+    pickUp = cart_items.first().pickType
     deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
-    return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items})
+    charge = cart_items.first().charges
+    print(charge)
+    if charge:
 
+        shippingChargesForm = ShippingChargesForm(initial={"charges" : "".join(charge)})
+    else:
+        shippingChargesForm = ShippingChargesForm()
+    if request.method=="POST":
+        shippingChargesForm = ShippingChargesForm(request.POST or None)
+        if shippingChargesForm.is_valid():
+           pass
+    
+    # order_id = paytm.__id_generator__()
+    merchant_key = settings.PAYTM_SECRET_KEY
+    bill_amount = "100"
+    data_dict = {
+        'MID': settings.PAYTM_MERCHANT_ID,
+        # 'INDUSTRY_TYPE_ID': settings.PAYTM_INDUSTRY_TYPE_ID,
+        'WEBSITE': settings.PAYTM_WEBSITE,
+        'CHANNEL_ID': settings.PAYTM_CHANNEL_ID,
+        'CALLBACK_URL':'http://127.0.0.1:8000/callback/',
+        'MOBILE_NO': '8928958148',
+        # 'EMAIL': 'test@gmail.com',
+        'CUST_ID': '123123',
+        'ORDER_ID':"hdfdfhdfhhcvbcbfd",
+        'TXN_AMOUNT': bill_amount,
+    } # This data should ideally come from database
+    data_dict['CHECKSUMHASH'] = generate_checksum(data_dict, merchant_key)
+    return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items, "shippingChargesForm" : shippingChargesForm, "pickUp" :pickUp})
+
+def update_charge(request):
+    if request.method=="POST":
+        ch = request.POST.get("ch")
+        cart_item = Cart.objects.filter(user=request.user).update(charges=ch)
+        if  cart_item:
+            return JsonResponse({'success': True, 'message': 'charges updated.'})
+        else:
+            return JsonResponse({'success': False, 'message': 'Something went wrong'})
+    
+# else:
+#     return JsonResponse({'success': False, 'message': 'Request is tempored'})
 """
 This function removes an item from the cart. If the user is authenticated, it deletes the item from the database. If not, it removes the item from the cookie.
 """

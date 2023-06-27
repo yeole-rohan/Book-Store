@@ -6,7 +6,6 @@ $(document).ready((function () {
     })
     $(document).on("click", ".mobile-category-filter", function(){
       $(".categoy-filter").toggle()
-      
   })
   })(jQuery)
 );

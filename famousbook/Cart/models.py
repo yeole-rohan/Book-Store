@@ -16,7 +16,7 @@ class Cart(models.Model):
     coupon_code = models.ForeignKey(CouponCode, verbose_name=_("Coupon Code"), on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(_("Cart created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Cart last updated"), auto_now=True)
-
+    charges = models.CharField(_("Charges"), default="", max_length=50)
     class Meta:
         verbose_name = _("Cart")
         verbose_name_plural = _("Carts")

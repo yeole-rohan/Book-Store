@@ -24,6 +24,8 @@ $(document).ready((function () {
               var aMessage = '<div class="alert alert-success alert-dismissible fade show" role="alert">'+
               res.message +'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
               $(".messages").append(aMessage);
+              window.location.reload(true)
+
             }else{
               var aMessage = '<div class="alert alert-danger alert-dismissible fade show" role="alert">'+
                 res.message +'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'

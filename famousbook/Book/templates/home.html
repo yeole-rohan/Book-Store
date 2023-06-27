@@ -7,24 +7,14 @@
 <section id="home-banner">
     <div class="container">
         <div class="home-banner-slider">
-            <div class="">
-                <img src="{% static 'img/banner.png' %}" class="img-fluid">
-            </div>
-            <div class="">
-                <img src="{% static 'img/banner.png' %}" class="img-fluid">
-            </div>
-            <div class="">
-                <img src="{% static 'img/banner.png' %}" class="img-fluid">
-            </div>
-            <div class="">
-                <img src="{% static 'img/banner.png' %}" class="img-fluid">
-            </div>
-            <div class="">
-                <img src="{% static 'img/banner.png' %}" class="img-fluid">
-            </div>
-            <div class="">
-                <img src="{% static 'img/banner.png' %}" class="img-fluid">
-            </div>
+            {% for banner in otherPromo %}
+                <div class="">
+                    <a href="{% url 'book:bundleDeals' banner.book_category.name %}">
+                        <img src="{{banner.desktop_banner.url}}" class="banner-promo-desktop">
+                        <img src="{{banner.mobile_bannner.url}}" class="banner-promo-mobile">
+                    </a>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -135,7 +125,8 @@
 </section>
 <section id="child-author">
     <div class="container">
-        <img src="{% static 'img/child-book.png' %}" class="img-fluid">
+        <img class="first-promo-desktop img-fluid" src="{{firstPromo.desktop_banner.url}}">
+        <img class="first-promo-mobile img-fluid" src="{{firstPromo.mobile_bannner.url}}">
     </div>
 </section>
 <section id="featured-books">
@@ -211,76 +202,25 @@
             <div class="featured-author-loop text-center">
                 {% for author in authors %}
                     <div class="featured-author-card">
-                        <div class="featured-author-card-img">
-                            <img src="{{author.profile.url}}" class="img-fluid">
-                        </div>
-                        <div class="featured-author-card-title weight-32 color-black">
-                            {{author.name}}
-                        </div>
+                        <a href="{% url 'book:authorBooks' author.name %}">
+                            <div class="featured-author-card-img">
+                                <img src="{{author.profile.url}}" class="img-fluid">
+                            </div>
+                            <div class="featured-author-card-title weight-32 color-black">
+                                {{author.name}}
+                            </div>
+                        </a>
                     </div>
                 {% endfor %}
-                {% comment %} <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div>
-                <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div>
-                <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div>
-                <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div>
-                <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div>
-                <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div>
-                <div class="featured-author-card">
-                    <div class="featured-author-card-img">
-                        <img src="{% static 'img/author.png' %}" class="img-fluid">
-                    </div>
-                    <div class="featured-author-card-title weight-32 color-black">
-                        Devid Miller
-                    </div>
-                </div> {% endcomment %}
             </div>
         </div>
     </div>
 </section>
 <section id="wp-link">
-    <img src="{% static 'img/wp.png' %}" class="img-fluid">
+    <a target="_blank" href="https://wa.me/+918976243328/?text=Hello, I would like to enquire regarding your books.">
+        <img class="first-promo-desktop img-fluid" src="{% static 'img/wp-desk.png' %}">
+        <img class="first-promo-mobile img-fluid w-100" src="{% static 'img/wp-mobile.png' %}">
+    </a>
 </section>
 <section id="testimonials">
     <div class="container">

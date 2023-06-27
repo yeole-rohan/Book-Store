@@ -11,4 +11,6 @@ urlpatterns = [
     path("update/quantity/", views.update_quantity, name="update_quantity"),
     path("to-wishlist/<int:itemId>/", views.toWishList, name="toWishList"),
     path("select-address/", views.selectAddress, name="selectAddress"),
+    path("overview/", views.overview, name="overview",),
+    path("update/ship-charge/", views.update_charge, name="update_charge")
 ]

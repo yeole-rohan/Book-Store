@@ -48,7 +48,8 @@ label {
 
 button,
 .book-details-cart-buy-btns a,
-.book-add-to-cart a, .procced a{
+.book-add-to-cart a,
+.procced a {
     background-color: #004872;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.12);
     border-radius: 12px;
@@ -59,13 +60,23 @@ button,
     font-weight: 500;
     border: 1px solid #004872;
 }
-.procced{
+
+.procced {
     margin-top: 40px;
     text-align: center;
 }
-.procced a{
+
+.procced a,
+.procced button {
     padding: 14px 95px;
 }
+
+.shipping-charge label {
+    margin-top: 10px;
+    font-size: 18px !important;
+    line-height: 28px;
+}
+
 /* general CSS */
 
 .custom-bg {
@@ -182,12 +193,15 @@ button,
     margin-bottom: 0 !important;
 
 }
-.categoy-filter{
+
+.categoy-filter {
     display: block;
 }
-.mobile-category-filter{
+
+.mobile-category-filter {
     display: none;
 }
+
 .categoy-filter input {
     padding: initial;
 }
@@ -214,7 +228,8 @@ button,
     margin: 10px 0px;
 }
 
-.history-book-slider .book-card, .featured-book-slider .book-card {
+.history-book-slider .book-card,
+.featured-book-slider .book-card {
     margin: 10px 20px;
 }
 
@@ -807,7 +822,7 @@ header {
 /* Header CSS End */
 
 /* Cart CSS */
-.cart-book-list  > div{
+.cart-book-list>div {
     margin-bottom: 40px;
 }
 
@@ -1109,38 +1124,44 @@ header {
 }
 
 /* End Book Creation */
-.coupon-code-btn{
+.coupon-code-btn {
     color: #FF4141 !important;
-font-size: 18px !important;
-line-height: 28px !important;
-padding: 0 !important;
-margin-left: 28px !important;
-background-color:  white !important;
-border: none !important;
-box-shadow: none !important;
+    font-size: 18px !important;
+    line-height: 28px !important;
+    padding: 0 !important;
+    margin-left: 28px !important;
+    background-color: white !important;
+    border: none !important;
+    box-shadow: none !important;
 }
-.promocode input{
+
+.promocode input {
     border-radius: 10px !important;
-background: #FFF !important;
-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.03) !important;
-color: #3D3D3D !important;
-font-size: 18px !important;
-line-height: 28px !important;
-padding: 15px 11px !important;
-margin-bottom: 0 !important;
+    background: #FFF !important;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.03) !important;
+    color: #3D3D3D !important;
+    font-size: 18px !important;
+    line-height: 28px !important;
+    padding: 15px 11px !important;
+    margin-bottom: 0 !important;
 }
-.promocode div{
+
+.promocode div {
     margin: 0 !important;
 }
-.promocode{
+
+.promocode {
     margin-bottom: 30px !important;
 }
-.promocode form{
+
+.promocode form {
     margin-top: 15px;
 }
-.amount-payable{
+
+.amount-payable {
     margin-top: 20px;
 }
+
 /* Element Hover */
 .not-found-btn a:hover {
     background-color: #fff;
@@ -1214,7 +1235,23 @@ button:hover,
 .add-address-img {
     margin-right: 40px;
 }
-
+.book-other-details{
+    margin-top: 50px;
+}
+.first-promo-desktop {
+    display: block;
+}
+.banner-promo-desktop{
+    display: block !important;
+    width: 100%;
+}
+.banner-promo-mobile{
+    display: none !important;
+    width: 100%;
+}
+.first-promo-mobile {
+    display: none;
+}
 /* Media Queries */
 @media screen and (max-width: 1210px) {
 
@@ -1234,6 +1271,11 @@ button:hover,
 @media screen and (max-width: 1190px) {
     .head-right-top-find-store {
         margin-left: 20px;
+    }
+
+    .book-details-details {
+        margin-left: 35px;
+        width: calc(100% - 435px);
     }
 
     .head-right-top-dropdown {
@@ -1256,7 +1298,22 @@ button:hover,
     .head-right {
         display: none;
     }
-
+    .book-details-img{
+        width: 200px;
+    }
+    .book-other-details-right{
+        margin-left: 150px;
+    }
+    .book-details-details{
+        margin-left: 15px;
+        width: calc(100% - 215px);
+    }
+    .book-details-cart-buy-btns a{
+        padding: 10px 40px;
+    }
+    .book-details-cart-buy-btns a:last-child{
+        margin-left: 40px;
+    }
     label {
         font-size: 18px !important;
         line-height: 28px !important;
@@ -1361,8 +1418,7 @@ button:hover,
 
     .footer-right-company,
     .footer-right-policy,
-    .footer-right-help,
-    .footer-right-misc {
+    .footer-right-help {
         margin-top: 15px;
     }
 
@@ -1390,12 +1446,26 @@ button:hover,
     .sign-wrapper-img {
         text-align: center;
     }
-
+    .book-details-img{
+        width: 150px;
+    }
+    .book-other-details-right{
+        margin-left: 50px;
+    }
+    .book-other-details{
+        margin-top: 25px;
+    }
+    .book-details-details{
+        margin-left: 15px;
+        width: calc(100% - 165px);
+    }
     .category-wrap {
         flex-direction: column;
         clear: both;
     }
-
+    .book-details-about-book{
+        margin-top: 30px;
+    }
     .categoy-filter {
         display: none;
         position: absolute;
@@ -1406,10 +1476,11 @@ button:hover,
         border: 1px solid black;
         border-radius: 5px;
     }
-    .mobile-category-filter{
+
+    .mobile-category-filter {
         display: block;
         text-align: right;
-        border:  1px solid black;
+        border: 1px solid black;
         border-radius: 5px;
         margin-bottom: 10px;
         display: inline-block;
@@ -1540,15 +1611,13 @@ button:hover,
         line-height: 28px;
     }
 
-    button,
-    .book-details-cart-buy-btns a {
+    button,.book-details-cart-buy-btns a{
         padding: 10px 45px;
     }
-
+  
     footer {
         margin-top: 15px;
     }
-
     .footer-margin,
     .about-us-text-head,
     .about-us-img {
@@ -1569,12 +1638,50 @@ button:hover,
     #logout .modal-body {
         padding: 20px;
     }
-
+    .first-promo-desktop{
+        display: none;
+    }
+    .first-promo-mobile{
+        display: block;
+    }
+    .banner-promo-desktop{
+        display: none !important;
+    }
+    .banner-promo-mobile{
+        display: block !important;
+    }
+    .book-other-details-right{
+        margin-left: 0px;
+    }
+    .book-other-details-wrapper{
+        flex-direction: column;
+    }
+    .book-details{
+        flex-direction: column;
+    }
     .cart-book-list-loop-wrap {
 
         display: block;
     }
-
+    .book-details-img{
+        margin: auto;
+    }
+    .book-details-details{
+        width: 100%;
+        margin-left: 0;
+    }
+    .book-details-author, .book-details-pulisher, .book-details-price, .book-details-mrp, .book-details-availability, .book-details-about-author, .book-other-details-wrapper, .book-details-related-categories{
+        margin-top: 5px;
+    }
+    .book-details-cart-buy-btns a{
+        padding: 7px 25px;
+    }
+    .book-details-cart-buy-btns a:last-child{
+        margin-left: 15px;
+    }
+    .book-details-cart-buy-btns{
+        margin-top: 25px;
+    }
     .cart-book-list-loop-img {
         margin: auto;
     }

@@ -62,7 +62,8 @@ class Book(models.Model):
     title = models.CharField(_("Book Title"), max_length=500, blank=False, null=False)
     price = models.FloatField(_("Price"),  default=0)
     bookImage = models.ImageField(_("Book Image"), upload_to="book-image/", default="", blank=True, null=True)
-    bookURL = models.URLField(_("Book URL"), max_length=1000, default="")
+    bookURL = models.URLField(_("Book URL"), max_length=1000, default="", blank=True, null=True)
+    isPublished = models.BooleanField(_("Published?"), default=False)
     discountPrice = models.FloatField(_("Discount Price"), default=0, blank=True, null=True)
     author = models.TextField(_("Author List"), blank=True, null=True)
     bookBinding = models.CharField(_("Book Binding"),default="paperback", choices=PRINT_BINDING, max_length=100)
@@ -78,9 +79,8 @@ class Book(models.Model):
     publishedDate = models.DateField(_("Book Published Date"), blank=True, null=True)
     bookPrintedIn = models.CharField(_("Book Printed In"),choices=PRINTED_IN, default="india", max_length=50)
     bookSize = models.CharField(_("Book Size W*B*H in cm"), max_length=200, default="", blank=True, null=True)
-    primaryCategory = models.TextField(verbose_name=_("Primary Category"), blank=True, null=True)
-    secondaryCategory = models.TextField(verbose_name=_("Secondary Category"), blank=True, null=True)
-    is_published = models.BooleanField(_("Published?"), default=False)
+    primaryCategory = models.ForeignKey("PrimaryCategory", verbose_name=_("Primary Category"), on_delete=models.CASCADE, default="1", blank=True, null=True)
+    secondaryCategory = models.ForeignKey("SecondaryCategory", verbose_name=_("Secondary Category"),default="1", on_delete=models.CASCADE, blank=True, null=True)
     book_position = models.CharField(_("book rack"), max_length=50, blank=True, null=True)
     quantity = models.PositiveIntegerField(_("Book Quantity"), default=1)
     book_type=models.CharField(_("Book Type"), choices=BOOK_TYPE, default="single", max_length=50)
@@ -155,20 +155,8 @@ class BundleBook(models.Model):
     def __str__(self):
         return str(self.id)
 
-class HomeBanner(models.Model):
-    desktop_banner = models.ImageField(_("Desktop Banner"), upload_to="banner/")
-    mobile_bannner = models.ImageField(_("Mobile Banner"), upload_to="banner/")
-    created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
-    last_updated = models.DateTimeField(_("Updated"), auto_now=True)
-
-    class Meta:
-        verbose_name = _("Banner")
-        verbose_name_plural = _("Banners")
-
-    def __str__(self):
-        return str(self.id)
-
 class PromoBanner(models.Model):
+    book_category = models.ForeignKey("PrimaryCategory", verbose_name=_("Book Category"), on_delete=models.CASCADE)
     desktop_banner = models.ImageField(_("Desktop Banner"), upload_to="banner/")
     mobile_bannner = models.ImageField(_("Mobile Banner"), upload_to="banner/")
     created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
@@ -176,8 +164,8 @@ class PromoBanner(models.Model):
     
 
     class Meta:
-        verbose_name = _("Whatsapp")
-        verbose_name_plural = _("Whatsapps")
+        verbose_name = _("Promo Banner")
+        verbose_name_plural = _("Promo Banners")
 
     def __str__(self):
         return str(self.id)

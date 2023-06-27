@@ -5,7 +5,7 @@ from django.db.models import Q
 import requests, csv, io, pandas, time, random, json
 from datetime import datetime
 from django.http import JsonResponse
-from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode
+from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode, PromoBanner
 from .utils import createBook
 from .forms import BookForm, SingleISBNForm, BulkSheetForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -34,8 +34,10 @@ def home(request):
     authors = BookAuthor.objects.all()
     bundleBook = BundleBook.objects.all()
     primaryCategory = PrimaryCategory.objects.all()
+    firstPromo = PromoBanner.objects.first()
+    otherPromo = PromoBanner.objects.all().exclude(id=firstPromo.id)
     print(testimonials, len(featuredBooks))
-    return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory})
+    return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory, 'otherPromo' : otherPromo, 'firstPromo' : firstPromo})
 
 def allBooks(request):
     books = Book.objects.all().order_by("-created")
@@ -158,12 +160,13 @@ def bookDetails(request, id):
     book_items, history_books = [], []
     book_cookie = request.COOKIES.get('history')
 
-    if book_cookie:
+    if book_cookie and not book_cookie ==None:
         book_items = json.loads(book_cookie)
     if not int(book.id) in book_items:
         book_items.append(book.id)
     history_books = Book.objects.filter(id__in=book_items)
-    similary_books = Book.objects.filter(Q(primaryCategory__icontains=book.primaryCategory)|Q( secondaryCategory__icontains=book.secondaryCategory))
+    print("book.primaryCategory", book.primaryCategory)
+    similary_books = Book.objects.filter(Q(primaryCategory=book.primaryCategory)|Q( secondaryCategory=book.secondaryCategory))
     response = render(request, template_name="details.html", context={'featuredBooks':featuredBooks,'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
     response.set_cookie('history', json.dumps(book_items))
     return response
@@ -267,3 +270,21 @@ def bookSuggestions(request):
 def offers(request):
     offers = CouponCode.objects.filter(expiry_time__gte=datetime.today())
     return render(request, template_name="offers.html", context={'offers':offers})
+
+def authorBooks(request, author):
+    print(request.session.session_key)
+    books = Book.objects.filter(author__icontains=author).order_by("-created")
+
+    # Get the page from get request
+    page = request.GET.get("page", 1)
+    # set default, how many posts to appear in in single page
+    paginator = Paginator(books, 60)
+
+    # try to find next page
+    try:
+        books = paginator.page(page)
+    except PageNotAnInteger:
+        books = paginator.page(1)
+    except EmptyPage:
+        books = paginator.page(paginator.num_pages)
+    return render(request, template_name="author-books.html", context={'books':books, 'author' : author})
