@@ -156,7 +156,7 @@ class BundleBook(models.Model):
         return str(self.id)
 
 class PromoBanner(models.Model):
-    book_category = models.ForeignKey("PrimaryCategory", verbose_name=_("Book Category"), on_delete=models.CASCADE)
+    book_category = models.ForeignKey("PrimaryCategory", verbose_name=_("Book Category"), on_delete=models.CASCADE, blank=True, null=True)
     desktop_banner = models.ImageField(_("Desktop Banner"), upload_to="banner/")
     mobile_bannner = models.ImageField(_("Mobile Banner"), upload_to="banner/")
     created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
