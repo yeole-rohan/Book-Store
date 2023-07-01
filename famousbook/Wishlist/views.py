@@ -9,7 +9,6 @@ from .models import Wishlist
 from Cart.models import Cart
 
 '''Add Wishlist Ajax View'''
-@login_required
 def addToWishList(request):
     if request.method == "POST":
         bookId = request.POST.get("bookId")
@@ -56,6 +55,7 @@ This function takes a request and an item ID as input. It then retrieves the Wis
 @param itemId - the ID of the Wishlist object to be converted to a Cart object
 @return a redirect to the wishlist home page
 """
+@login_required
 def toCart(request, itemId):
     getWish = Wishlist.objects.filter(id=int(itemId), user=request.user)
     if getWish:

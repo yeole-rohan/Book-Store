@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
@@ -15,6 +16,7 @@ This function handles the user account information page. It retrieves the user's
 @param request - the HTTP request object
 @return the rendered account-info.html template with the user's information and form.
 """
+@login_required
 def accountInfo(request):
     userForm =UserForm(instance=request.user)
     if request.method == "POST":
@@ -33,6 +35,7 @@ This function adds a delivery address to the user's account. It first initialize
 @param request - the HTTP request
 @return the delivery address page with the form
 """
+@login_required
 def deliveryAddressAdd(request):
     deliveryAddressForm =DeliveryAddressForm(initial={"name" : request.user.get_full_name, "contactNumber" : request.user.contactNumber})
     if request.method == "POST":
@@ -54,6 +57,7 @@ This function allows a user to edit a delivery address. It takes in a request an
 @param id - the id of the delivery address to be edited
 @return the rendered HTML template with the updated delivery address form.
 """
+@login_required
 def deliveryAddressEdit(request, id):
     editAddress = DeliveryAddress.objects.get(id=id)
     deliveryAddressForm =DeliveryAddressForm(instance=editAddress)
@@ -74,6 +78,7 @@ This function deletes a delivery address from the database and redirects the use
 @param id - the id of the delivery address to be deleted
 @returns a redirect to the delivery address page
 """
+@login_required
 def deliveryAddressDelete(request, id):
     try:
         editAddress = DeliveryAddress.objects.filter(id=id).delete()
@@ -87,6 +92,7 @@ Given a request, retrieve the delivery address for the user and render the deliv
 @param request - the request object
 @return the delivery address page with the user's address information.
 """
+@login_required
 def deliveryAddress(request):
     getAddress = DeliveryAddress.objects.filter(user=request.user)
     return render(request, template_name="delivery-address.html", context={'getAddress' : getAddress})
@@ -96,6 +102,7 @@ This function handles user contact requests. It renders a form for the user to f
 @param request - the HTTP request object
 @return the rendered user-contact.html template with the form as context.
 """
+@login_required
 def userContact(request):
     queryForm =QueryForm()
     if request.method == "POST":
@@ -111,6 +118,7 @@ def userContact(request):
             print(queryForm.errors)
     return render(request, template_name="user-contact.html", context={'form' : queryForm})
 
+@login_required
 def editPassword(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)

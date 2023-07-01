@@ -56,6 +56,7 @@ This function is used to display the contents of the cart. It first checks if th
 @param request - the HTTP request object
 @return the rendered cart.html template with the cart items as context.
 """
+
 def view_cart(request):
     cart_items = []
     wish_items = ''
@@ -139,6 +140,7 @@ def paymentCost(cart_items):
     print(mrpTotal, discount, totalPayable, "total", couponDiscount)
     return amountPayable
 
+@login_required
 def selectAddress(request):
     cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
@@ -156,6 +158,7 @@ def selectAddress(request):
         print(request.POST.get("address"))
     return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList, 'deliveryAddressForm' :deliveryAddressForm})
 
+@login_required
 def overview(request):
     cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
@@ -258,6 +261,7 @@ This function adds an item to the user's wishlist and removes it from their cart
 @param itemId - the ID of the item to add to the wishlist
 @return a redirect to the cart view page
 """
+@login_required
 def toWishList(request, itemId):
     getCart = Cart.objects.filter(id=int(itemId), user=request.user)
     if getCart:

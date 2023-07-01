@@ -29,7 +29,8 @@ $(document).ready((function () {
         }
       },
       error: function (res) {
-        console.error(res.status);
+        var aMessage = '<div class="alert alert-danger alert-dismissible fade show" role="alert">Something went wrong, while adding to cart.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
+        $(".messages").append(aMessage);
       },
     });
   });
@@ -62,7 +63,8 @@ $(document).ready((function () {
         }
       },
       error: function (res) {
-        console.error(res.status);
+        var aMessage = '<div class="alert alert-danger alert-dismissible fade show" role="alert">Make Sure you logged in.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
+        $(".messages").append(aMessage);
       },
     });
   });

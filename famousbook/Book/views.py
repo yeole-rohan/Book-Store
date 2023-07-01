@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 import requests, csv, io, pandas, time, random, json
 from datetime import datetime
@@ -58,9 +59,10 @@ def allBooks(request):
     return render(request, template_name="all-books.html", context={'books':books, 'bookLanguage' : bookLanguage, 'primaryCategory' :primaryCategory})
 
 def bundleDeals(request, category):
-    books = Book.objects.filter(primaryCategory__icontains=category, book_type="bundle").order_by("-created")
+    books = Book.objects.filter(primaryCategory__name__icontains=category, book_type="bundle").order_by("-created")
     return render(request, template_name="book-bundle.html", context={'books':books})
 
+@login_required
 def findBookSingleISBN(request):
     singleISBNForm = SingleISBNForm()
     
@@ -86,6 +88,7 @@ def findBookSingleISBN(request):
             print(singleISBNForm.errors)
     return render(request, template_name="single-isbn.html", context={'form' : singleISBNForm})
 
+@login_required
 def bulkISBNUpload(request):
     bulkSheetForm = BulkSheetForm()
     if request.method == "POST":
@@ -111,6 +114,7 @@ def bulkISBNUpload(request):
     return render(request, template_name="bulk-isbn-sheet-upload.html", context={'form' : bulkSheetForm})
     return render(request, template_name="bulk-isbn.html", context={})
 
+@login_required
 def manualBookCreate(request):
     bookForm = BookForm()
     
@@ -127,6 +131,7 @@ def manualBookCreate(request):
             print(bookForm.errors)
     return render(request, template_name="manual-book-create.html", context={'form' : bookForm})
 
+@login_required
 def bulkSheetUpload(request):
     bulkSheetForm = BulkSheetForm()
     if request.method == "POST":
@@ -178,8 +183,8 @@ Given a request and a category, retrieve all books that have the category as eit
 @return the rendered book-category.html template with the retrieved books
 """
 def bookCategory(request, category):
-    print(request.session.session_key)
-    books = Book.objects.filter(Q(primaryCategory__icontains=category)|Q( secondaryCategory__icontains=category)).order_by("-created")
+    print(request.session.session_key, category)
+    books = Book.objects.filter(Q(primaryCategory__name__icontains=category)|Q( secondaryCategory__name__icontains=category)).order_by("-created")
     secondryCategory = SecondaryCategory.objects.filter(primaryCategory__name__icontains=category)
     binding = set(list(books.values_list("bookBinding", flat=True)))
     bookLanguage = set(list(books.values_list("bookLanguage", flat=True)))
@@ -198,10 +203,12 @@ def bookCategory(request, category):
         books = paginator.page(paginator.num_pages)
     return render(request, template_name="book-category.html", context={'books':books, 'category' : category, "secondryCategory" : secondryCategory, "binding" : binding, 'bookLanguage' : bookLanguage})
 
+@login_required
 def inventory(request):
     books = Book.objects.all()
     return render(request, template_name="inventory.html", context={'books':books})
 
+@login_required
 def editBook(request, id):
     if Book.objects.filter(id=id).exists():
         book = Book.objects.get(id=id)
@@ -227,6 +234,7 @@ def editBook(request, id):
         return redirect("book:inventory")
     return render(request, template_name="edit-book.html", context={'book':book, 'form' : bookForm})
 
+@login_required
 def deleteSingleBook(request, id):
     if Book.objects.filter(id=id).exists():
         Book.objects.filter(id=id).delete()
