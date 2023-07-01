@@ -36,7 +36,10 @@ def home(request):
     bundleBook = BundleBook.objects.all()
     primaryCategory = PrimaryCategory.objects.all()
     firstPromo = PromoBanner.objects.first()
-    otherPromo = PromoBanner.objects.all().exclude(id=firstPromo.id)
+    if firstPromo:
+        otherPromo = PromoBanner.objects.all().exclude(id=firstPromo.id)
+    else:
+        otherPromo = ''
     print(testimonials, len(featuredBooks))
     return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory, 'otherPromo' : otherPromo, 'firstPromo' : firstPromo})
 
