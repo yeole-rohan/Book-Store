@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">About Us</li>
+{% endblock breadcrumbs %}
 {% block content %}
 
-    <!-- Arrow for select is pending -->
     
     <div class="container">
         <div class="about-us-head">

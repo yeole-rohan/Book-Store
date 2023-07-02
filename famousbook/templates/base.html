@@ -158,6 +158,13 @@
         </div>
         
     </header>
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% block breadcrumbs %}{% endblock breadcrumbs %}
+            </ol>
+        </nav>
+    </div>
     {% spaceless %}{% block content %}{% endblock content %}{% endspaceless %}
 
     <footer>

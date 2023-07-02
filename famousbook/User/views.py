@@ -8,8 +8,11 @@ from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from random import random
 from .models import User, VerificationCode, DeliveryAddress
-from .forms import UserForm, DeliveryAddressForm, QueryForm
+from .forms import MyPasswordResetForm, UserForm, DeliveryAddressForm, QueryForm
 from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 
 """
 This function handles the user account information page. It retrieves the user's information and displays it on the page. If the user submits a form with updated information, it updates the user's information and redirects them back to the account information page. If the form is not valid, it displays the errors on the page.
@@ -214,6 +217,9 @@ def signUp(request):
                 createuser = User.objects.create(email=email_or_mobile, username="user"+str(User.objects.last().id + 1 if User.objects.last() else 1))
                 createuser.set_password(password)
                 createuser.save()
+                subject = "Welcome."
+                body = "Hi {}, We welcome you to our platform, your username is {}. Happy Reading!".format(createuser.user.email, user.username)
+                send_mail(subject, body, EMAIL_USER, [email_or_mobile], fail_silently=True)
                 user = authenticate(request, username=createuser.username, password=password)
                 if user is not None:
                     login(request, user)
@@ -234,3 +240,23 @@ def signUp(request):
     if request.method == "POST" and "next-step" in request.POST and "isMobile" in request.POST:
         pass
     return render(request, template_name="signup.html", context={'email_or_mobile' : email_or_mobile, 'isMobile' : isMobile, 'isPassword' : isPassword, 'hideNext' : hideNext})
+
+"""
+This is a view for resetting a user's password. It inherits from Django's built-in `PasswordResetView` and adds some custom functionality.
+"""
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'password_reset.html'
+    email_template_name = 'password_reset_email.html'
+    subject_template_name = 'password_reset_subject.txt'
+    
+    form_class = MyPasswordResetForm
+
+    def form_valid(self, form):
+        email_or_username = form.cleaned_data['email']
+        if email_or_username:
+            if "@" in email_or_username:
+                self.success_message = "Email sent to {} double check if this is your email. you will receive email link to reset your login password.".format(email_or_username)
+            else:
+                self.success_message = "{} you will receive email link to reset your login password.".format(email_or_username)
+        return super().form_valid(form)
+    success_url = reverse_lazy('user:loginView')

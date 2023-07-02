@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">Contact Us</li>
+{% endblock breadcrumbs %}
 {% block content %}
 
     <!-- Arrow for select is pending -->
@@ -38,26 +42,26 @@
                             <div class="contact-information-number-call-icon ">
                                 <img src="{% static 'img/bxs_phone-call.svg' %}">
                             </div>
-                            <div class="contact-information-text font-20 weight-400">
+                            <a href="tel:+918012345678" class="contact-information-text font-20 weight-400 color-white">
                                 +91 8012 3456 78
-                            </div>
+                            </a>
                         </div>
-                        <div class="contact-information-number-whatsapp d-flex">
+                        <a href="mailto:famousbooksshop@gmail.com" class="color-white contact-information-number-whatsapp d-flex">
                             <div class="contact-information-number-whatsapp-icon">
                                 <img src="{% static 'img/mail.svg' %}">
                             </div>
                             <div class="contact-information-text font-20 weight-400">
-                                abc@gmail.com
+                                famousbooksshop@gmail.com
                             </div>
-                        </div>
-                        <div class="contact-information-address d-flex">
+                        </a>
+                        <a  href="https://goo.gl/maps/fiWP5SMsMAUZpNik7" target="_blank" class="color-white contact-information-address d-flex">
                             <div class="contact-information-address-icon">
                                 <img src="{% static 'img/carbon_location-filled.svg' %}">
                             </div>
                             <div class="contact-information-text mb-0 font-20 weight-400">
-                                132 Dartmouth Street Boston, Massachusetts 02156 United States
+                                Shop No. 06, Famous Building A wing, behind Sai Kiran Building, Mumbra, Thane, Maharashtra 400612
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>

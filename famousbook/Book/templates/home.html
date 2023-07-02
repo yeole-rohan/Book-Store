@@ -65,9 +65,9 @@
             <div class="featured-book-head color-004872 font-32 weight-600">
                 Bestseller Books
             </div>
-            <div class="featured-book-see-all color-red weight-500 font-28">
+            <a href="{% url 'book:allBooks' %}" class="featured-book-see-all color-red weight-500 font-28">
                 See All  
-            </div>
+            </a>
         </div>
         <div class="featured-book-slider">
             {% for book in featuredBooks %}
@@ -135,9 +135,9 @@
             <div class="featured-book-head color-004872 font-32 weight-600">
                 Featured Books
             </div>
-            <div class="featured-book-see-all color-red weight-500 font-28">
+            <a href="{% url 'book:allBooks' %}" class="featured-book-see-all color-red weight-500 font-28">
                 See All  
-            </div>
+            </a>
         </div>
         <div class="featured-book-slider">
             {% for book in featuredBooks %}

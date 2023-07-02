@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">upload Single ISBN</li>
+{% endblock breadcrumbs %}
 {% block content %}
 <div class="container">
     <div class="inventory-head-dropdown mb-3 text-end">

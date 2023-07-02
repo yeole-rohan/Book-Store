@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">My Wishlist</li>
+{% endblock breadcrumbs %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/slick.min.css' %}">
 {% endblock css %}
@@ -130,9 +134,9 @@
                     <div class="featured-book-head color-004872 font-28 weight-600">
                         Bestseller Books
                     </div>
-                    <div class="featured-book-see-all color-red weight-500 font-28">
+                    <a href="{% url 'book:allBooks' %}" class="featured-book-see-all color-red weight-500 font-28">
                         See All  
-                    </div>
+                    </a>
                 </div>
                 <div class="featured-book-slider">
                     {% for book in featuredBooks %}

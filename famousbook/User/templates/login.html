@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">Login</li>
+{% endblock breadcrumbs %}
 {% block content %}
 <div class="container">
     <div class="login-wrapper">
@@ -40,6 +44,7 @@
                     {% endif %} {% endcomment %}
                 </form>
                 <div class="weight-400 text-center">Don't have an account?<a href="{% url 'user:signUp' %}" class="color-004872 font-20 weight-700 px-2">Sign In</a></div>
+                <div class="weight-400 text-center"><a href="{% url 'user:password_reset' %}" class="color-004872 mt-2 font-20 weight-700 px-2">Forget Password</a></div>
             </div>
         </div>
         <div class="login-wrapper-terms-section text-center">
