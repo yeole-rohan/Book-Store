@@ -13,7 +13,7 @@
   </head>
   <body class="{% block bodyClass %}{% endblock bodyClass %} position-relative">
     <header>
-        <div class="container d-flex">
+        <div class="container d-flex justify-content-between align-items-center position-relative">
             <div class="head-left">
                 <a href="{% url 'book:home' %}" class="head-logo">
                     <img src="{% static '/img/logo.svg' %}" alt="Famous Book" srcset="">
@@ -124,23 +124,27 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="mobile-menu">
-                        <div class="mobile-search">
-                            <div class="search-mobile-icon">
-                                <img src="{% static 'img/search(1).png' %}" alt="" srcset="">
-                            </div>
-                        </div>
-                        <div class="mobile-bag">
-                            <a href="{% url 'cart:view_cart' %}">
-                                <img src="{% static 'img/shopping_bag.png' %}" alt="" srcset="">
-                            </a>
-                        </div>
-                        <div class="mobile-menu-cross">
-                            <div class="hamburger" id="hamburger">
-                                <div class="bar1 tran"></div>
-                                <div class="bar2"></div>
-                                <div class="bar3 tran"></div>
-                            </div>
+                </div>
+                <div class="mobile-menu">
+                    <div class="mobile-bag">
+                        <a href="{% url 'cart:view_cart' %}" class="position-relative me-3">
+                            <img src="{% static 'img/favorite.png' %}" alt="" srcset="">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{wishList | length}}
+                            </span>
+                        </a>
+                        <a href="{% url 'cart:view_cart' %}" class="position-relative me-2">
+                            <img src="{% static 'img/shopping_bag.png' %}" alt="" srcset="">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{userCart | length}}
+                            </span>
+                        </a>
+                    </div>
+                    <div class="mobile-menu-cross">
+                        <div class="hamburger" id="hamburger">
+                            <div class="bar1 tran"></div>
+                            <div class="bar2"></div>
+                            <div class="bar3 tran"></div>
                         </div>
                     </div>
                 </div>
@@ -156,7 +160,43 @@
             </form>
             <div class="mobile-search-suggestion"></div>
         </div>
-        
+        <div class="mobile-lists" style="display:none">
+            <div class="find-my-store">
+                <a target="_blank" href="https://goo.gl/maps/fiWP5SMsMAUZpNik7" class="color-004872 font-20 weight-500">
+                    <span>
+                        <img src="/static/img/location_on.png" alt="" srcset="" class="img-fluid">
+                    </span>
+                    Find Book Store
+                </a>
+            </div>
+            <div class="account-links">
+                <h5 class="font-24">Account</h5>
+                <ul class="d-flex flex-wrap">
+                    {% if request.user.is_authenticated %}
+                {% if request.user.is_superuser %}
+                    <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Create Single ISBN</a></li>
+                    <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Create Bulk ISBN</a></li>
+                    <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Create Import Sheet</a></li>
+                    {% comment %} <li><a class="dropdown-item" href="{% url 'book:inventory' %}">Inventory</a></li> {% endcomment %}
+                {% endif %}
+                <li><a class="dropdown-item" href="{% url 'book:offers' %}">Offers</a></li>
+                <li><a class="dropdown-item" href="{% url 'user:accountInfo' %}">Account</a></li>
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
+                {% else %}
+                    <li><a class="dropdown-item" href="{% url 'user:loginView' %}">Login</a></li>
+                    <li><a class="dropdown-item" href="{% url 'user:signUp' %}">Signup</a></li>
+                {% endif %}
+                </ul>
+            </div>
+            <div class="category-list">
+                <h5 class="font-24">Categories</h5>
+                <ul class="d-flex flex-wrap">
+                    {% for category in bookCategory %}
+                        <li><a class="dropdown-item" href="{% url 'book:bookCategory' category %}">{{category | capfirst}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
     </header>
     <div class="container">
         <nav aria-label="breadcrumb">

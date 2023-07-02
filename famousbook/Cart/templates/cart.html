@@ -9,12 +9,12 @@
 {% endblock css %}
 {% block content %}
     <div class="container">
-        <div class="container-cart d-flex justify-content-between">
-            <div class="cart-book-list">
-                <div class="cart-book-list-head weight-600 font-24 color-004872">
-                    Cart Products
-                </div>
-                {% if cart_items %}
+        {% if cart_items %}
+            <div class="container-cart d-flex justify-content-between">
+                <div class="cart-book-list">
+                    <div class="cart-book-list-head weight-600 font-24 color-004872">
+                        Cart Products
+                    </div>
                     {% if request.user.is_authenticated %}
                         {% for item in cart_items %}
                             <div class="cart-book-list-loop">
@@ -41,7 +41,7 @@
                                         <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
                                             Publisher: {{item.book.publisher}}
                                         </div>
-                                       
+                                    
                                         <div class="pt-1 cart-book-list-loop-sp-mrp weight-500 font-16 d-flex">
                                             <div class="cart-book-list-loop-mrp pe-2 {% if item.book.discountPrice %}line-through{% endif %}">
                                                 MRP ₹ {{item.book.price}}
@@ -131,74 +131,74 @@
                             </div>
                         {% endfor %}
                     {% endif %}
-                {% else %}
-                    No book in cart
-                {% endif %}
-            </div>
-            <div class="cart-books-total-promo">
-                {% if request.user.is_authenticated %}
-                    <div class="promocode color-004872 font-24 weight-500">
-                        Promocode
-                        <form method="POST" class="d-flex">
-                            {% csrf_token %}
-                            {{promoCodeForm | crispy}}
-                            <button class="coupon-code-btn" name="coupon" type="submit">Apply</button>
-                        </form>
-                    </div>
-                {% endif %}
-                <div class="color-004872 font-24 weight-500">
-                    Amount Payable
                 </div>
-                <div class="amount-payable">
-                    <div class="amount-payable-mrp d-flex justify-content-between">
-                        <div class="amount-payable-mrp-text">
-                            MRP Total
-                        </div>
-                        <div class="amount-payable-mrp-total">
-                            ₹ {{amountPayable.mrpTotal}}
-                        </div>
-                    </div>
-                    <div class="amount-payable-discount d-flex justify-content-between">
-                        <div class="amount-payable-discount-text">
-                            Additional Discount-   
-                        </div>
-                        <div class="amount-payable-discount-total">
-                            ₹ {{amountPayable.totalDiscount}}
-                        </div>
-                    </div>
-                    <div class="amount-payable-total-saving d-flex justify-content-between">
-                        <div class="amount-payable-total-saving-text weight-500 font-18 color-black">
-                            Total Savings
-                        </div>
-                        <div class="amount-payable-total-saving-total weight-500 font-18 color-black">
-                            ₹ {{amountPayable.totalDiscount}}
-                        </div>
-                    </div>
-                    {% if amountPayable.couponDiscount %}
-                    
-                        <div class="amount-payable-shiping d-flex justify-content-between">
-                            <div class="amount-payable-shiping-text">
-                               Coupon Discount
-                            </div>
-                            <div class="amount-payable-shiping-total">
-                                ₹ {{amountPayable.couponDiscount}}
-                            </div>
+                <div class="cart-books-total-promo">
+                    {% if request.user.is_authenticated %}
+                        <div class="promocode color-004872 font-24 weight-500">
+                            Promocode
+                            <form method="POST" class="d-flex">
+                                {% csrf_token %}
+                                {{promoCodeForm | crispy}}
+                                <button class="coupon-code-btn" name="coupon" type="submit">Apply</button>
+                            </form>
                         </div>
                     {% endif %}
-                    <div class="amount-payable-total d-flex justify-content-between">
-                        <div class="amount-payable-total-text weight-500 font-18 color-black">
-                            Total Payable
+                    <div class="color-004872 font-24 weight-500">
+                        Amount Payable
+                    </div>
+                    <div class="amount-payable">
+                        <div class="amount-payable-mrp d-flex justify-content-between">
+                            <div class="amount-payable-mrp-text">
+                                MRP Total
+                            </div>
+                            <div class="amount-payable-mrp-total">
+                                ₹ {{amountPayable.mrpTotal}}
+                            </div>
                         </div>
-                        <div class="amount-payable-total-total color-red weight-500 font-18">
-                            ₹ {{amountPayable.totalPayable}}
+                        <div class="amount-payable-discount d-flex justify-content-between">
+                            <div class="amount-payable-discount-text">
+                                Additional Discount-   
+                            </div>
+                            <div class="amount-payable-discount-total">
+                                ₹ {{amountPayable.totalDiscount}}
+                            </div>
+                        </div>
+                        <div class="amount-payable-total-saving d-flex justify-content-between">
+                            <div class="amount-payable-total-saving-text weight-500 font-18 color-black">
+                                Total Savings
+                            </div>
+                            <div class="amount-payable-total-saving-total weight-500 font-18 color-black">
+                                ₹ {{amountPayable.totalDiscount}}
+                            </div>
+                        </div>
+                        {% if amountPayable.couponDiscount %}
+                        
+                            <div class="amount-payable-shiping d-flex justify-content-between">
+                                <div class="amount-payable-shiping-text">
+                                Coupon Discount
+                                </div>
+                                <div class="amount-payable-shiping-total">
+                                    ₹ {{amountPayable.couponDiscount}}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="amount-payable-total d-flex justify-content-between">
+                            <div class="amount-payable-total-text weight-500 font-18 color-black">
+                                Total Payable
+                            </div>
+                            <div class="amount-payable-total-total color-red weight-500 font-18">
+                                ₹ {{amountPayable.totalPayable}}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="procced">
-                    <a href="{% url 'cart:selectAddress' %}">Procced</a>
+                    <div class="procced">
+                        <a href="{% url 'cart:selectAddress' %}">Procced</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% else %}
+            No book in cart
+        {% endif %}
         <div class="wish-head font-24 color-004872">
             My Wishlist
         </div>

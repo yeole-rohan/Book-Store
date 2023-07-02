@@ -1272,7 +1272,9 @@ button:hover,
     .head-right-top-find-store {
         margin-left: 20px;
     }
-
+    .head-right-bottom-main-list li{
+        padding: 0 45px;
+    }
     .book-details-details {
         margin-left: 35px;
         width: calc(100% - 435px);
@@ -1301,8 +1303,22 @@ button:hover,
     .book-details-img{
         width: 200px;
     }
+    .mobile-lists{
+        position: absolute;
+        top: 70px;
+        background-color: white;
+        width: 100%;
+        border: 1px solid;
+        padding: 10px;
+    }
     .book-other-details-right{
         margin-left: 150px;
+    }
+    .search-btn{
+        padding: 8px 10px;
+    }
+    .mobile-search-box .search-box{
+        padding: 5px 10px !important;
     }
     .book-details-details{
         margin-left: 15px;
@@ -1331,7 +1347,9 @@ button:hover,
         width: 100%;
         align-items: center;
     }
-
+   .mobile-search-box{
+        display: block;
+    }
     .mobile-bag {
         padding: 0 16px;
     }
@@ -1446,8 +1464,17 @@ button:hover,
     .sign-wrapper-img {
         text-align: center;
     }
+    .mobile-lists{
+        top: 45px;
+    }
     .book-details-img{
         width: 150px;
+    }
+    .container-cart {
+        flex-direction: column;
+    }
+    .cart-book-list, .cart-books-total-promo{
+        width: 100%;
     }
     .book-other-details-right{
         margin-left: 50px;

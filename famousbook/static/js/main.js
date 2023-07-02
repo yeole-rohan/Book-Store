@@ -146,12 +146,19 @@ $(document).ready((function () {
       },
     });
   });
-  $(document).on("click", ".search-mobile-icon", function (params) {
-    params.preventDefault()
-    $(".mobile-search-box").toggle()
-  })
   $(document).on("click", "#hamburger",  function(params){
     params.preventDefault()
+    $(".mobile-lists").toggle()
   })
+  var cachedWidth = $(window).width();
+    window.onresize = function () {
+      var newWidth = $(window).width();
+      if (newWidth != cachedWidth) {
+        if (window.innerWidth <= 1024) {
+          $(".mobile-lists").css("display", "none");
+        }
+        cachedWidth = newWidth;
+      }
+    };
 })(jQuery)
 );
