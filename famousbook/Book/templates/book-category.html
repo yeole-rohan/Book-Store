@@ -17,7 +17,7 @@
                         <div class="category-name weight-400 font-18 color-004872">{{category }}</div>
                         {% for secondary in secondryCategory %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="secondary{{forloop.counter}}" >
+                                <input name="secondary" class="form-check-input" type="checkbox" value="{{secondary}}" id="secondary{{forloop.counter}}" >
                                 <label class="form-check-label font-14 weight-400 color-black" for="secondary{{forloop.counter}}">
                                     {{secondary | capfirst}}
                                 </label>
@@ -29,7 +29,7 @@
                     <div class="book-binding weight-400 font-18 color-004872">Binding</div>
                     {% for bind in binding %}
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="bind{{forloop.counter}}" >
+                            <input class="form-check-input" type="checkbox" value="{{bind}}" id="bind{{forloop.counter}}" name="binding" >
                             <label class="form-check-label font-14 weight-400 color-black" for="bind{{forloop.counter}}">
                                 {{bind | capfirst}}
                             </label>
@@ -39,32 +39,32 @@
                 <div class="book-price-filter">
                     <div class="book-price weight-400 font-18 color-004872">Price</div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="0-500" id="p1" >
-                        <label class="form-check-label font-14 weight-400 color-black" for="p1">
+                        <input name="price" class="form-check-input" type="checkbox" value="0-500" id="price1" >
+                        <label class="form-check-label font-14 weight-400 color-black" for="price1">
                             Rs.0 - Rs.500
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="500-1000" id="p2" >
-                        <label class="form-check-label font-14 weight-400 color-black" for="p2">
+                        <input class="form-check-input" type="checkbox" value="500-1000" id="price2" name="price" >
+                        <label class="form-check-label font-14 weight-400 color-black" for="price2">
                             Rs.500 - Rs.1000
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="1000-1500" id="p3" >
-                        <label class="form-check-label font-14 weight-400 color-black" for="p3">
+                        <input class="form-check-input" type="checkbox" value="1000-1500" id="price3"  name="price">
+                        <label class="form-check-label font-14 weight-400 color-black" for="price3">
                             Rs.1000 - Rs.1500
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="1500-2000" id="p4" >
-                        <label class="form-check-label font-14 weight-400 color-black" for="p4">
+                        <input class="form-check-input" type="checkbox" value="1500-2000" id="price4"  name="price">
+                        <label class="form-check-label font-14 weight-400 color-black" for="price4">
                             Rs.1500 - Rs.2000
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="2000-20000" id="p5" >
-                        <label class="form-check-label font-14 weight-400 color-black" for="p5">
+                        <input class="form-check-input" type="checkbox" value="2000-20000" id="price5"  name="price">
+                        <label class="form-check-label font-14 weight-400 color-black" for="price5">
                             Rs.2000 Above
                         </label>
                     </div>
@@ -72,55 +72,55 @@
                 <div class="book-discount-filter">
                     <div class="book-discount weight-400 font-18 color-004872">Discount</div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="0-10" id="flexCheckChecked1" >
+                        <input name="flexCheckChecked" class="form-check-input" type="checkbox" value="0-10" id="flexCheckChecked1" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked1">
                             0% - 10%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="11-20" id="flexCheckChecked2" >
+                        <input  name="flexCheckChecked"  class="form-check-input" type="checkbox" value="11-20" id="flexCheckChecked2" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked2">
                             11% - 20%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="21-30" id="flexCheckChecked3" >
+                        <input  name="flexCheckChecked"  class="form-check-input" type="checkbox" value="21-30" id="flexCheckChecked3" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked3">
                             21% - 30%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="31-40" id="flexCheckChecked4" >
+                        <input  name="flexCheckChecked"  class="form-check-input" type="checkbox" value="31-40" id="flexCheckChecked4" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked4">
                             31% - 40%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="41-50" id="flexCheckChecked5" >
+                        <input  name="flexCheckChecked"  class="form-check-input" type="checkbox" value="41-50" id="flexCheckChecked5" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked5">
                             41% - 50%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="51-60" id="flexCheckChecked6" >
+                        <input name="flexCheckChecked"  class="form-check-input" type="checkbox" value="51-60" id="flexCheckChecked6" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked6">
                             51% - 60%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="61-70" id="flexCheckChecked7" >
+                        <input name="flexCheckChecked"  class="form-check-input" type="checkbox" value="61-70" id="flexCheckChecked7" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked7">
                             61% - 70%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="71-80" id="flexCheckChecked8" >
+                        <input name="flexCheckChecked"  class="form-check-input" type="checkbox" value="71-80" id="flexCheckChecked8" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked8">
                             71% - 80%
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="81-90" id="flexCheckChecked9" >
+                        <input name="flexCheckChecked"  class="form-check-input" type="checkbox" value="81-90" id="flexCheckChecked9" >
                         <label class="form-check-label font-14 weight-400 color-black" for="flexCheckChecked9">
                             81% - 90%
                         </label>
@@ -131,7 +131,7 @@
                         <div class="book-language weight-400 font-18 color-004872">Language</div>
                         {% for lang in bookLanguage %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="lang{{forloop.counter}}" >
+                                <input class="form-check-input" type="checkbox" value="{{lang}}" name="language" id="lang{{forloop.counter}}" >
                                 <label class="form-check-label font-14 weight-400 color-black" for="lang{{forloop.counter}}">
                                     {{lang | capfirst}}
                                 </label>
@@ -144,7 +144,7 @@
             <div class="book-data">
                 <div class="row">
                     {% for book in books %}
-                        <div class=" col-lg-4 col-md-6 col-sm-6">
+                        <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="book-card position-relative">
                                 {% if book.id in wishList %}
                                 <div class="add-to-wishlist-card-none">
@@ -225,6 +225,7 @@
             No book found
         {% endif %}
     </div>
+    <input type="hidden" id="category" value="{{category}}">
 {% endblock content %}
 {% block js %}
     <script src="{% static 'js/book-category.js' %}"></script>

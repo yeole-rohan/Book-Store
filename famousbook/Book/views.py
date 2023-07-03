@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 import requests, csv, io, pandas, time, random, json
 from datetime import datetime
+from django.core.serializers import serialize
 from django.http import JsonResponse
 from .models import Book, BookSelectedCategory, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode, PromoBanner
 from .utils import createBook
@@ -186,7 +187,7 @@ Given a request and a category, retrieve all books that have the category as eit
 @return the rendered book-category.html template with the retrieved books
 """
 def bookCategory(request, category):
-    print(request.session.session_key, category)
+    print(request.path.split("/book/category/"), category)
     books = Book.objects.filter(Q(primaryCategory__name__icontains=category)|Q( secondaryCategory__name__icontains=category)).order_by("-created")
     secondryCategory = SecondaryCategory.objects.filter(primaryCategory__name__icontains=category)
     binding = set(list(books.values_list("bookBinding", flat=True)))
@@ -299,3 +300,72 @@ def authorBooks(request, author):
     except EmptyPage:
         books = paginator.page(paginator.num_pages)
     return render(request, template_name="author-books.html", context={'books':books, 'author' : author})
+
+def advanceSearch(request):
+    print(request.POST, request)
+    result = []
+    if request.method == "POST":
+        categoryList = request.POST.get("categoryList[]") if request.POST.get("categoryList[]") else []
+        binding = request.POST.get("binding[]") if request.POST.get("binding[]") else []
+        language = request.POST.get("language[]") if request.POST.get("language[]") else []
+        price = request.POST.getlist("price[]") if request.POST.get("price[]") else []
+        discountPrice = request.POST.getlist("discountPrice[]") if request.POST.get("discountPrice[]") else []
+        print(categoryList, price, language, discountPrice,binding)
+        
+        # Create a list to store the Q objects for price filtering
+        price_query_list = []
+
+        # Iterate over the price ranges
+        for price_range in price:
+            print(price_range)
+            # Split the range into minimum and maximum values
+            min_price, max_price = price_range.split('-')
+            # Create a Q object to represent the range
+            price_query = Q(price__range=(min_price, max_price))
+            # Add the Q object to the list
+            price_query_list.append(price_query)
+
+        # Combine the Q objects for price filtering using OR operator
+        combined_price_query = Q()
+        for query in price_query_list:
+            combined_price_query |= query
+
+        # Create a list to store the Q objects for discount price filtering
+        discount_price_query_list = []
+
+        # Iterate over the discount price ranges
+        for discount_price_range in discountPrice:
+            # Split the range into minimum and maximum values
+            min_discount_price, max_discount_price = discount_price_range.split('-')
+            # Create a Q object to represent the range
+            discount_price_query = Q(discountPrice__range=(min_discount_price, max_discount_price))
+            # Add the Q object to the list
+            discount_price_query_list.append(discount_price_query)
+
+        # Combine the Q objects for discount price filtering using OR operator
+        combined_discount_price_query = Q()
+        for query in discount_price_query_list:
+            combined_discount_price_query |= query
+        print(combined_discount_price_query)
+        # Filter the products based on price and discount price ranges
+        bookList = Book.objects.filter(Q(primaryCategory__name__icontains=categoryList)|Q( secondaryCategory__name__icontains=categoryList)|Q(bookBinding__icontains=binding)|Q(bookLanguage__icontains=language))
+        # Remove duplicates from the query results
+        bookList = bookList.distinct()
+        print(bookList)
+        if bookList:
+            for book in bookList:
+                result.append({
+                    "id" : book.id,
+                    "title" : book.title,
+                    "author" : book.author,
+                    "discountPercentage" : book.discountPercentage,
+                    "description" : book.description,
+                    "price" : book.price,
+                    "bookURL" : book.bookURL,
+                    "bookImage" : book.bookImage.url,
+                    "discountPrice" :book.discountPrice
+                })
+            return JsonResponse({"success" : True, "bookList" : result, 'wishList' : [], 'userCart' : []})
+        else:
+            return JsonResponse({"success" : False, "message" : "No Result Found"})
+    return JsonResponse({"success" : False, "message" : "No Result Found"})
