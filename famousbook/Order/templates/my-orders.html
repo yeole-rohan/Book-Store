@@ -4,6 +4,7 @@
     <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
     <li class="breadcrumb-item color-004872 font-18" aria-current="page">My Order</li>
 {% endblock breadcrumbs %}
+{% block title %}My Order{% endblock title %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/slick.min.css' %}">
 {% endblock css %}
