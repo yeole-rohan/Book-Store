@@ -8,6 +8,10 @@ class Cart(models.Model):
         ("self", "I will pick from store"),
         ("deliver", "Deliver to me")
     )
+    PAYMENTTYPE = (
+        ("cod", "Cash on Delivery"),
+        ("online", "Online")
+    )
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE, blank=True, null=True)
     book = models.ForeignKey(Book, verbose_name=_("Book"), on_delete=models.CASCADE)
     qty = models.PositiveIntegerField(_("Quantity"), default=1)
@@ -17,6 +21,8 @@ class Cart(models.Model):
     created = models.DateTimeField(_("Cart created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Cart last updated"), auto_now=True)
     charges = models.CharField(_("Charges"), default="", max_length=50)
+    orderPlaced = models.BooleanField(_("Order Placed"), default=False)
+    paymentType = models.CharField(_("Payment Type"), choices=PAYMENTTYPE, default="cod", max_length=50)
     class Meta:
         verbose_name = _("Cart")
         verbose_name_plural = _("Carts")

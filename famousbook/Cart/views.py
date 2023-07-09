@@ -2,8 +2,6 @@ from django.http import JsonResponse
 from django.contrib import messages
 from Book.models import Book
 import json
-from .paytm import generate_checksum, verify_checksum
-from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CouponCode
@@ -69,7 +67,7 @@ def view_cart(request):
     except:
         featuredBooks = Book.objects.all()
     if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user)
+        cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
         wish_items = Wishlist.objects.filter(user=request.user)
         amountPayable = paymentCost(cart_items)
         if request.method == "POST" and "coupon" in request.POST:
@@ -78,7 +76,8 @@ def view_cart(request):
                 code = request.POST.get('promoCode')
                 if CouponCode.objects.filter(coupon_code__iexact=code).exists():
                     coupon = CouponCode.objects.get(coupon_code__iexact=code)
-                    Cart.objects.filter(user=request.user).update(coupon_code=coupon)
+                    Cart.objects.filter(user=request.user, orderPlaced=False).update(
+                        coupon_code=coupon)
                     print(coupon, coupon.discount_percentage)
                     amountPayable = paymentCost(cart_items)
     elif 'cart' in request.COOKIES:
@@ -93,57 +92,61 @@ def view_cart(request):
 def paymentCost(cart_items):
     amountPayable = {}
     discount_percentage = list(cart_items.values_list("coupon_code__discount_percentage", flat=True))
-    mrpTotal, discount, totalPayable, withOutDiscount,couponDiscount, mumbaiCharge, india, east = 0, 0, 0, 0, 0, 0, 0, 0
+    mrpTotal, discount, totalPayable, withOutDiscount, couponDiscount, mumbaiCharge, india, east, shippingAmount = 0, 0, 0, 0, 0, 0, 0, 0, 0
     isFree = False
     for item in cart_items:
         mrpTotal += item.book.price * item.qty
+        print("item.charges", item.charges)
         if item.charges and not item.charges == "enquire":
             if item.charges == "40":
-                mumbaiCharge += mumbaiCharge + 40
+                mumbaiCharge = mumbaiCharge + 40
             if item.charges == "50":
-                india += india + 50
+                india = india + 50
             if item.charges == "70":
-                east += east + 70
+                east = east + 70
         if item.book.discountPrice:
             discount += item.book.discountPrice * item.qty
         else:
             print("price only")
             withOutDiscount += mrpTotal
     totalPayable = discount + withOutDiscount
-    print(discount_percentage)
+    print(discount_percentage, mumbaiCharge, "mumbaiCharge")
     if discount_percentage and not discount_percentage[0] == None:
         couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
         totalPayable -= couponDiscount
-    if mrpTotal > 500:
+    if mrpTotal > 500 and cart_items.first().charges == "40":
         isFree = True
         shippingAmount = 0
-    else:
+    elif cart_items and cart_items.first().charges == "40":
         shippingAmount = mumbaiCharge
     
-    if mrpTotal > 700:
+    if mrpTotal > 700 and cart_items.first().charges == "50":
         isFree = True
         shippingAmount = 0
-    else:
+    elif cart_items and cart_items.first().charges == "50":
         shippingAmount = india
     
-    if mrpTotal > 1000:
+    if mrpTotal > 1000 and cart_items.first().charges == "70":
         isFree = True
         shippingAmount = 0
-    else:
+    elif cart_items and cart_items.first().charges == "70":
         shippingAmount = east
+    if cart_items and cart_items.first().charges == "enquire":
+        shippingAmount = 0
     amountPayable['mrpTotal'] = mrpTotal
     amountPayable['totalDiscount'] = discount
-    amountPayable['totalSaving'] = float( mrpTotal- discount)
+    amountPayable['totalSaving'] = float(mrpTotal - discount)
     amountPayable["couponDiscount"] = couponDiscount
     amountPayable['totalPayable'] = totalPayable + shippingAmount
     amountPayable["shippingAmount"] = shippingAmount
     amountPayable["isFree"] = isFree
-    print(mrpTotal, discount, totalPayable, "total", couponDiscount)
+    print(mrpTotal, discount, totalPayable,
+          "total", couponDiscount, shippingAmount)
     return amountPayable
 
 @login_required
 def selectAddress(request):
-    cart_items = Cart.objects.filter(user=request.user)
+    cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
     amountPayable = paymentCost(cart_items)
     addressList = DeliveryAddress.objects.filter(user=request.user)
     deliveryAddressForm = DeliveryAddressForm()
@@ -152,53 +155,37 @@ def selectAddress(request):
         if deliveryAddressForm.is_valid():
             deliveryType= request.POST.get("pickup")
             if deliveryType == "self":
-                Cart.objects.filter(user=request.user).update(pickType=deliveryType)
+                Cart.objects.filter(user=request.user, orderPlaced=False).update(
+                    pickType=deliveryType)
             else:
-                Cart.objects.filter(user=request.user).update(deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address")))
+                Cart.objects.filter(user=request.user, orderPlaced=False).update(
+                    deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address")))
             return redirect("cart:overview")
         print(request.POST.get("address"))
     return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList, 'deliveryAddressForm' :deliveryAddressForm})
 
 @login_required
 def overview(request):
-    cart_items = Cart.objects.filter(user=request.user)
+    cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
     amountPayable = paymentCost(cart_items)
     pickUp = cart_items.first().pickType
     deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
     charge = cart_items.first().charges
     print(charge)
     if charge:
-
         shippingChargesForm = ShippingChargesForm(initial={"charges" : "".join(charge)})
     else:
         shippingChargesForm = ShippingChargesForm()
     if request.method=="POST":
-        shippingChargesForm = ShippingChargesForm(request.POST or None)
-        if shippingChargesForm.is_valid():
-           pass
-    
-    # order_id = paytm.__id_generator__()
-    merchant_key = settings.PAYTM_SECRET_KEY
-    bill_amount = "100"
-    data_dict = {
-        'MID': settings.PAYTM_MERCHANT_ID,
-        # 'INDUSTRY_TYPE_ID': settings.PAYTM_INDUSTRY_TYPE_ID,
-        'WEBSITE': settings.PAYTM_WEBSITE,
-        'CHANNEL_ID': settings.PAYTM_CHANNEL_ID,
-        'CALLBACK_URL':'http://127.0.0.1:8000/callback/',
-        'MOBILE_NO': '8928958148',
-        # 'EMAIL': 'test@gmail.com',
-        'CUST_ID': '123123',
-        'ORDER_ID':"hdfdfhdfhhcvbcbfd",
-        'TXN_AMOUNT': bill_amount,
-    } # This data should ideally come from database
-    data_dict['CHECKSUMHASH'] = generate_checksum(data_dict, merchant_key)
+        cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
+
     return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items, "shippingChargesForm" : shippingChargesForm, "pickUp" :pickUp})
 
 def update_charge(request):
     if request.method=="POST":
         ch = request.POST.get("ch")
-        cart_item = Cart.objects.filter(user=request.user).update(charges=ch)
+        cart_item = Cart.objects.filter(
+            user=request.user, orderPlaced=False).update(charges=ch)
         if  cart_item:
             return JsonResponse({'success': True, 'message': 'charges updated.'})
         else:
