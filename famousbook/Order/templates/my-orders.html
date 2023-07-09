@@ -35,7 +35,9 @@
                                         <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
                                             Publisher: {{item.book.publisher}}
                                         </div>
-                                    
+                                        <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
+                                        Quantity: {{item.qty}}
+                                    </div>
                                         <div class="pt-1 cart-book-list-loop-sp-mrp weight-500 font-16 d-flex">
                                             <div class="cart-book-list-loop-mrp pe-2 {% if item.book.discountPrice %}line-through{% endif %}">
                                                 MRP ₹ {{item.book.price}}

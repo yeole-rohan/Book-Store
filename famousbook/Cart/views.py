@@ -257,10 +257,13 @@ This function updates the quantity of a book in the user's cart. It takes in a P
 def update_quantity(request):
     if request.method=="POST":
         cart_id = request.POST.get("cartId")
-        qty = request.POST.get("qty")
+        qty = int(request.POST.get("qty"))
         if request.user.is_authenticated:
-            cart_item = Cart.objects.filter(id=int(cart_id)).update(qty=qty)
-            if  cart_item:
+            cart_item = Cart.objects.get(id=int(cart_id))
+            if qty > cart_item.book.quantity:
+                return JsonResponse({'success': False, 'message': 'Quantity must be below {}'.format(cart_item.book.quantity)})
+            else:
+                Cart.objects.filter(id=int(cart_id)).update(qty=qty)
                 return JsonResponse({'success': True, 'message': 'Book qty updated.'})
         else:
             return JsonResponse({'success': False, 'message': 'Log in for qty update'})
