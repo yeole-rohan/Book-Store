@@ -1,0 +1,43 @@
+
+<div class="cart-book-list-loop">
+    {% for order in orderList %}
+    
+    <div>Order Id - {{order.id}}</div>
+    <div class="cart-book-list-loop-wrap">
+        <div class="cart-book-list-loop-img" style="width:150px">
+            <img style="width:100%" src="{{order.book.bookURL}}" title="{{order.book.title}}" class="img-fluid">
+        </div>
+        <div class="cart-book-list-loop-details">
+            <div class="cart-book-list-loop-title weight-700 font-24 color-004872">
+            {{order.book.title}}
+            </div>
+            <div class="pt-1 cart-book-list-loop-date-type weight-500 font-16 ">
+                ({{order.book.get_bookBinding_display}}) | Released: {{order.book.publishedDate | date}}
+            </div>
+            <div class="pt-1 cart-book-list-loop-author weight-500 font-16 ">
+                By: {{order.book.author}} 
+            </div>
+            <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
+                Publisher: {{order.book.publisher}}
+            </div>
+        
+            <div class="pt-1 cart-book-list-loop-sp-mrp weight-500 font-16 d-flex">
+                <div class="cart-book-list-loop-mrp pe-2 {% if order.book.discountPrice %}line-through{% endif %}">
+                    MRP ₹ {{order.book.price}}
+                </div>
+                {% if order.book.discountPrice %}
+                    <div class="cart-book-list-loop-sp weight-500 font-16 ">
+                        Best Price*
+                        <span class="color-red">
+                            ₹ {{order.book.discountPrice}}
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
+                Ordered on {{order.created}} <span class="color-red">Current Status - {{order.get_orderStatus_display}}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

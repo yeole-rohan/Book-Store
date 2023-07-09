@@ -4,22 +4,22 @@ $(document).ready((function () {
     var chargeDiv = document.querySelector(".charge")
     if (charge) {
         if (charge === "40") {
-            chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs40</div>"
+            chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs40</div><div>Delivery time 1-3 working days</div>"
         } else if (charge == "50") {
-            chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs50</div>"
+            chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs50</div><div>Delivery time 5-7 working days</div>"
         } else if (this.value == "70") {
-            chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs70</div>"
+            chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs70</div><div>Delivery time - 5 to 10 working days</div>"
         }else{
             chargeDiv.innerHTML = "<div>Please enquire about after payment</div>"
         }
         $(document).on("change", "#id_charges", function (params) {
             params.preventDefault()
             if (this.value == "40") {
-                chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs40</div>"
+                chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs40</div><div>Delivery time 1-3 working days</div>"
             } else if (this.value == "50") {
-                chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs50</div>"
+                chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs50</div><div>Delivery time 5-7 working days</div>"
             } else if (this.value == "70") {
-                chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs70</div>"
+                chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs70</div><div>Delivery time - 5 to 10 working days</div>"
             }else{
                 chargeDiv.innerHTML = "<div>Please enquire about after payment</div>"
             }

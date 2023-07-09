@@ -1,13 +1,19 @@
 from django.http import JsonResponse
 from django.contrib import messages
 from Book.models import Book
-import json
+import json, datetime
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CouponCode
+from Order.models import Order
 from Wishlist.models import Wishlist
 from User.models import DeliveryAddress
 from .forms import PromoCodeForm, DeliveryAddressForm, ShippingChargesForm
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
+from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
+
 """
 This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
 @param request - the HTTP request object
@@ -67,19 +73,21 @@ def view_cart(request):
     except:
         featuredBooks = Book.objects.all()
     if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
+        cart_items = Cart.objects.filter(user=request.user)
         wish_items = Wishlist.objects.filter(user=request.user)
         amountPayable = paymentCost(cart_items)
         if request.method == "POST" and "coupon" in request.POST:
             promoCodeForm = PromoCodeForm(request.POST or None)
             if promoCodeForm.is_valid():
                 code = request.POST.get('promoCode')
-                if CouponCode.objects.filter(coupon_code__iexact=code).exists():
-                    coupon = CouponCode.objects.get(coupon_code__iexact=code)
-                    Cart.objects.filter(user=request.user, orderPlaced=False).update(
+                if CouponCode.objects.filter(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now()).exists():
+                    coupon = CouponCode.objects.get(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now())
+                    Cart.objects.filter(user=request.user).update(
                         coupon_code=coupon)
                     print(coupon, coupon.discount_percentage)
                     amountPayable = paymentCost(cart_items)
+                else:
+                    messages.error(request, "Promocode is expired.")
     elif 'cart' in request.COOKIES:
         cart_cookie = request.COOKIES.get('cart')
         if cart_cookie:
@@ -97,6 +105,7 @@ def paymentCost(cart_items):
     for item in cart_items:
         mrpTotal += item.book.price * item.qty
         print("item.charges", item.charges)
+       
         if item.charges and not item.charges == "enquire":
             if item.charges == "40":
                 mumbaiCharge = mumbaiCharge + 40
@@ -114,25 +123,28 @@ def paymentCost(cart_items):
     if discount_percentage and not discount_percentage[0] == None:
         couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
         totalPayable -= couponDiscount
-    if mrpTotal > 500 and cart_items.first().charges == "40":
+    charge = cart_items.first().charges if cart_items else 0
+    
+    if mrpTotal > 500 and charge == "40":
         isFree = True
         shippingAmount = 0
-    elif cart_items and cart_items.first().charges == "40":
+    elif cart_items and charge == "40":
         shippingAmount = mumbaiCharge
     
-    if mrpTotal > 700 and cart_items.first().charges == "50":
+    if mrpTotal > 700 and charge == "50":
         isFree = True
         shippingAmount = 0
-    elif cart_items and cart_items.first().charges == "50":
+    elif cart_items and charge == "50":
         shippingAmount = india
     
-    if mrpTotal > 1000 and cart_items.first().charges == "70":
+    if mrpTotal > 1000 and charge == "70":
         isFree = True
         shippingAmount = 0
-    elif cart_items and cart_items.first().charges == "70":
+    elif cart_items and charge == "70":
         shippingAmount = east
-    if cart_items and cart_items.first().charges == "enquire":
+    if cart_items and charge == "enquire":
         shippingAmount = 0
+    cart_items.update(shippingCharge = int(shippingAmount))
     amountPayable['mrpTotal'] = mrpTotal
     amountPayable['totalDiscount'] = discount
     amountPayable['totalSaving'] = float(mrpTotal - discount)
@@ -146,7 +158,7 @@ def paymentCost(cart_items):
 
 @login_required
 def selectAddress(request):
-    cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
+    cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
     addressList = DeliveryAddress.objects.filter(user=request.user)
     deliveryAddressForm = DeliveryAddressForm()
@@ -155,10 +167,10 @@ def selectAddress(request):
         if deliveryAddressForm.is_valid():
             deliveryType= request.POST.get("pickup")
             if deliveryType == "self":
-                Cart.objects.filter(user=request.user, orderPlaced=False).update(
+                Cart.objects.filter(user=request.user).update(
                     pickType=deliveryType)
             else:
-                Cart.objects.filter(user=request.user, orderPlaced=False).update(
+                Cart.objects.filter(user=request.user).update(
                     deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address")))
             return redirect("cart:overview")
         print(request.POST.get("address"))
@@ -166,7 +178,7 @@ def selectAddress(request):
 
 @login_required
 def overview(request):
-    cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
+    cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
     pickUp = cart_items.first().pickType
     deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
@@ -177,15 +189,27 @@ def overview(request):
     else:
         shippingChargesForm = ShippingChargesForm()
     if request.method=="POST":
-        cart_items = Cart.objects.filter(user=request.user, orderPlaced=False)
+        idList = []
+        for cart in cart_items:
+            orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge)
+            idList.append(orderId.id)
+        messages.success(request, "Your order has been placed.")
+        subject = "Order Confirmation"
+        loginHTMLTemplate = render_to_string("email-template/order.html", context={"orderList" : Order.objects.filter(id__in=idList).order_by("-created") }, )
+        body = strip_tags(loginHTMLTemplate)
+        send_mail(subject, body, EMAIL_USER, [request.user.email], html_message=loginHTMLTemplate)
+        send_mail(subject, body, EMAIL_USER, [EMAIL_USER], html_message=loginHTMLTemplate)
+        cart_items.delete()
+        return redirect("order:myOrders")
 
     return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items, "shippingChargesForm" : shippingChargesForm, "pickUp" :pickUp})
 
 def update_charge(request):
     if request.method=="POST":
         ch = request.POST.get("ch")
+        print("ch", ch)
         cart_item = Cart.objects.filter(
-            user=request.user, orderPlaced=False).update(charges=ch)
+            user=request.user).update(charges=ch)
         if  cart_item:
             return JsonResponse({'success': True, 'message': 'charges updated.'})
         else:

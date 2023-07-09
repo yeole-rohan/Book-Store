@@ -105,19 +105,19 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="account">
                                             {% if request.user.is_authenticated %}
-                                        {% if request.user.is_superuser %}
-                                            <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Create Single ISBN</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Create Bulk ISBN</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Create Import Sheet</a></li>
-                                            {% comment %} <li><a class="dropdown-item" href="{% url 'book:inventory' %}">Inventory</a></li> {% endcomment %}
-                                        {% endif %}
-                                        <li><a class="dropdown-item" href="{% url 'book:offers' %}">Offers</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'user:accountInfo' %}">Account</a></li>
-                                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
-                                        {% else %}
-                                            <li><a class="dropdown-item" href="{% url 'user:loginView' %}">Login</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'user:signUp' %}">Signup</a></li>
-                                        {% endif %}
+                                                {% if request.user.is_superuser %}
+                                                    <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Create Single ISBN</a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Create Bulk ISBN</a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Create Import Sheet</a></li>
+                                                {% endif %}
+                                                <li><a class="dropdown-item" href="{% url 'book:offers' %}">Offers</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'order:myOrders' %}">My Orders</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'user:accountInfo' %}">Account</a></li>
+                                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
+                                            {% else %}
+                                                <li><a class="dropdown-item" href="{% url 'user:loginView' %}">Login</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'user:signUp' %}">Signup</a></li>
+                                            {% endif %}
                                         </ul>
                                     </div>
                                 </li>
@@ -173,19 +173,19 @@
                 <h5 class="font-24">Account</h5>
                 <ul class="d-flex flex-wrap">
                     {% if request.user.is_authenticated %}
-                {% if request.user.is_superuser %}
-                    <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Create Single ISBN</a></li>
-                    <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Create Bulk ISBN</a></li>
-                    <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Create Import Sheet</a></li>
-                    {% comment %} <li><a class="dropdown-item" href="{% url 'book:inventory' %}">Inventory</a></li> {% endcomment %}
-                {% endif %}
-                <li><a class="dropdown-item" href="{% url 'book:offers' %}">Offers</a></li>
-                <li><a class="dropdown-item" href="{% url 'user:accountInfo' %}">Account</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
-                {% else %}
-                    <li><a class="dropdown-item" href="{% url 'user:loginView' %}">Login</a></li>
-                    <li><a class="dropdown-item" href="{% url 'user:signUp' %}">Signup</a></li>
-                {% endif %}
+                        {% if request.user.is_superuser %}
+                            <li><a class="dropdown-item" href="{% url 'book:findBookSingleISBN' %}">Create Single ISBN</a></li>
+                            <li><a class="dropdown-item" href="{% url 'book:bulkISBNUpload' %}">Create Bulk ISBN</a></li>
+                            <li><a class="dropdown-item" href="{% url 'book:bulkSheetUpload' %}">Create Import Sheet</a></li>
+                        {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'book:offers' %}">Offers</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user:accountInfo' %}">Account</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logout">Logout</a></li>
+                            <li><a class="dropdown-item" href="{% url 'order:myOrders' %}">my Orders</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{% url 'user:loginView' %}">Login</a></li>
+                        <li><a class="dropdown-item" href="{% url 'user:signUp' %}">Signup</a></li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="category-list">

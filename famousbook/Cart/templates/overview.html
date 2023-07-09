@@ -121,7 +121,10 @@
                         </div>
                         <small>All Orders will be cash on delivery for now</small>
                         <div class="procced">
-                            <button type="submit">Place Order</button>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <button type="submit">Place Order</button>
+                            </form>
                         </div>
                     </div>
                 {% endif %}

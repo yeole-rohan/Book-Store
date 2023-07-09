@@ -29,6 +29,7 @@ urlpatterns = [
     path('account/', include(("User.urls", "user"), namespace="user")),
     path('cart/', include(("Cart.urls", "cart"), namespace="cart")),
     path('wishlist/', include(("Wishlist.urls", "wishlist"), namespace="wishlist")),
+    path('order/', include(("Order.urls", "order"), namespace="order")),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
