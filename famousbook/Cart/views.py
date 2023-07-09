@@ -133,6 +133,7 @@ def paymentCost(cart_items):
         shippingAmount = east
     amountPayable['mrpTotal'] = mrpTotal
     amountPayable['totalDiscount'] = discount
+    amountPayable['totalSaving'] = float( mrpTotal- discount)
     amountPayable["couponDiscount"] = couponDiscount
     amountPayable['totalPayable'] = totalPayable + shippingAmount
     amountPayable["shippingAmount"] = shippingAmount
