@@ -33,7 +33,7 @@ def home(request):
     if history:
         history = json.loads(history)
         print(history, type(history))
-        history_books = Book.objects.filter(id__in=history)
+        history_books = Book.objects.filter(isPublished=True, id__in=history)
         print(history_books)
     return render(request, template_name="wishlist.html", context={'wishlist' : wishlist, 'history_books' :history_books, 'featuredBooks' : featuredBooks})
 

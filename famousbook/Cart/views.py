@@ -92,7 +92,7 @@ def view_cart(request):
         cart_cookie = request.COOKIES.get('cart')
         if cart_cookie:
             cart_ids = json.loads(cart_cookie)
-            cart_items = Book.objects.filter(id__in=cart_ids)
+            cart_items = Book.objects.filter(isPublished=True, id__in=cart_ids)
         print(cart_items)
     print(request.COOKIES.get('cart'))
     return render(request, 'cart.html', context={'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})

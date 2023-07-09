@@ -63,7 +63,8 @@ def allBooks(request):
     return render(request, template_name="all-books.html", context={'books':books, 'bookLanguage' : bookLanguage, 'primaryCategory' :primaryCategory})
 
 def bundleDeals(request, category):
-    books = Book.objects.filter(primaryCategory__name__icontains=category, book_type="bundle").order_by("-created")
+    books = Book.objects.filter(
+        isPublished=True, primaryCategory__name__icontains=category, book_type="bundle").order_by("-created")
     return render(request, template_name="book-bundle.html", context={'books':books})
 
 @login_required
@@ -77,7 +78,7 @@ def findBookSingleISBN(request):
             # Fetch book from bookswagon
             data = requests.get('https://www.bookswagon.com/search-books/{}'.format(ISBN))
             # Function to validate, save book data
-            if not Book.objects.filter(isbn__iexact=ISBN).exists():
+            if not Book.objects.filter(isPublished=True, isbn__iexact=ISBN).exists():
                 status = createBook(data, ISBN)
 
                 if status:
@@ -109,7 +110,7 @@ def bulkISBNUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    if not Book.objects.filter(isbn__iexact=row['ISBN']).exists():
+                    if not Book.objects.filter(isPublished=True, isbn__iexact=row['ISBN']).exists():
                         data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
                         status = createBook(data, row['ISBN'])
                         time.sleep(int((random.random() *100) / 10))
@@ -151,7 +152,7 @@ def bulkSheetUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
+                    if not Book.objects.filter(isPublished=True, isbn__iexact=str(row['ISBN'])).exists():
                         book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=row['ISBN'], author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=row['Primary Category'], secondaryCategory=row['Secondary Category'], bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
                         book.save()
             
@@ -173,9 +174,9 @@ def bookDetails(request, id):
         book_items = json.loads(book_cookie)
     if not int(book.id) in book_items:
         book_items.append(book.id)
-    history_books = Book.objects.filter(id__in=book_items)
+    history_books = Book.objects.filter(isPublished=True, id__in=book_items)
     print("book.primaryCategory", book.primaryCategory)
-    similary_books = Book.objects.filter(Q(primaryCategory=book.primaryCategory)|Q( secondaryCategory=book.secondaryCategory))
+    similary_books = Book.objects.filter(Q(primaryCategory=book.primaryCategory) | Q(secondaryCategory=book.secondaryCategory), isPublished=True)
     response = render(request, template_name="details.html", context={'featuredBooks':featuredBooks,'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
     response.set_cookie('history', json.dumps(book_items))
     return response
@@ -188,7 +189,7 @@ Given a request and a category, retrieve all books that have the category as eit
 """
 def bookCategory(request, category):
     print(request.path.split("/book/category/"), category)
-    books = Book.objects.filter(Q(primaryCategory__name__icontains=category)|Q( secondaryCategory__name__icontains=category)).order_by("-created")
+    books = Book.objects.filter( Q(primaryCategory__name__icontains=category) | Q(secondaryCategory__name__icontains=category), isPublished=True).order_by("-created")
     secondryCategory = SecondaryCategory.objects.filter(primaryCategory__name__icontains=category)
     binding = set(list(books.values_list("bookBinding", flat=True)))
     bookLanguage = set(list(books.values_list("bookLanguage", flat=True)))
@@ -214,7 +215,7 @@ def inventory(request):
 
 @login_required
 def editBook(request, id):
-    if Book.objects.filter(id=id).exists():
+    if Book.objects.filter(isPublished=True, id=id).exists():
         book = Book.objects.get(id=id)
         bookForm = BookForm(instance=book)
     
@@ -240,8 +241,8 @@ def editBook(request, id):
 
 @login_required
 def deleteSingleBook(request, id):
-    if Book.objects.filter(id=id).exists():
-        Book.objects.filter(id=id).delete()
+    if Book.objects.filter(isPublished=True, id=id).exists():
+        Book.objects.filter(isPublished=True, id=id).delete()
         messages.success(request, "Book deleted")
         return redirect("book:inventory")
     else:
@@ -275,7 +276,7 @@ def bookSuggestions(request):
     if request.method == "POST":
         keyword = request.POST.get("keyword")
         print(keyword)
-        suggestions = list(Book.objects.filter(Q(title__icontains = keyword)|Q(author__icontains=keyword)| Q(publisher__icontains=keyword) | Q(isbn__icontains=keyword)).values_list("title", "id")) if keyword else ""
+        suggestions = list(Book.objects.filter( Q(title__icontains=keyword) | Q(author__icontains=keyword) | Q(publisher__icontains=keyword) | Q(isbn__icontains=keyword), isPublished=True).values_list("title", "id")) if keyword else ""
         print(suggestions)
         return JsonResponse({'status':'ok', 'suggestions': suggestions})
 
@@ -285,7 +286,8 @@ def offers(request):
 
 def authorBooks(request, author):
     print(request.session.session_key)
-    books = Book.objects.filter(author__icontains=author).order_by("-created")
+    books = Book.objects.filter(
+        isPublished=True, author__icontains=author).order_by("-created")
 
     # Get the page from get request
     page = request.GET.get("page", 1)
@@ -348,7 +350,7 @@ def advanceSearch(request):
             combined_discount_price_query |= query
         print(combined_discount_price_query)
         # Filter the products based on price and discount price ranges
-        bookList = Book.objects.filter(Q(primaryCategory__name__icontains=categoryList)|Q( secondaryCategory__name__icontains=categoryList)|Q(bookBinding__icontains=binding)|Q(bookLanguage__icontains=language))
+        bookList = Book.objects.filter( Q(primaryCategory__name__icontains=categoryList) | Q(secondaryCategory__name__icontains=categoryList) | Q(bookBinding__icontains=binding) | Q(bookLanguage__icontains=language), isPublished=True)
         # Remove duplicates from the query results
         bookList = bookList.distinct()
         print(bookList)
