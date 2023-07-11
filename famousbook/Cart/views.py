@@ -104,7 +104,6 @@ def paymentCost(cart_items):
     isFree = False
     for item in cart_items:
         mrpTotal += item.book.price * item.qty
-        print("item.charges", item.charges)
        
         if item.charges and not item.charges == "enquire":
             if item.charges == "40":
@@ -183,7 +182,6 @@ def overview(request):
     pickUp = cart_items.first().pickType
     deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
     charge = cart_items.first().charges
-    print(charge)
     if charge:
         shippingChargesForm = ShippingChargesForm(initial={"charges" : "".join(charge)})
     else:

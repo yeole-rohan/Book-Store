@@ -18,7 +18,7 @@
                     </div>
                 {% endif %}
                 <div class="book-img m-auto">
-                    <img src="{{book.bookURL}}" class="" title="{{book.title}}" alt="{{book.title}}">
+                    <img src="{% if book.bookImage %}{{book.bookImage.url}}{% else %}{% static 'img/placeholder.png' %}{% endif %}" class="" title="{{book.title}}" alt="{{book.title}}">
                 </div>
             </div>
             <div class="book-details-details">

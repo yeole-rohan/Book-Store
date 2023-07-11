@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 isbns=[
 9781421501246,
 9781591168751,
+
 9781421577791,
 9781421590158,
 9781787731721,
@@ -25,7 +26,6 @@ isbns=[
 9781974703654,
 9781974703661,
 9781421539683]
-
 def home(request):
     print(request.COOKIES.get('cart'))
     try:
@@ -69,26 +69,37 @@ def bundleDeals(request, category):
 
 @login_required
 def findBookSingleISBN(request):
+    # for isbn in isbns:
+    #     d = requests.get("https://openlibrary.org/isbn/{}.json".format(isbn))
+    #     if d:
+    #         data = d.json()
+    #         print(data["covers"])
+        # print(json.dumps(d.json()), '\n\n\n')
     singleISBNForm = SingleISBNForm()
     
     if request.method == "POST":
         singleISBNForm = SingleISBNForm(request.POST or None)
         if singleISBNForm.is_valid():
-            ISBN = request.POST.get("ISBN")
+            ISBN = request.POST.get("isbn")
             # Fetch book from bookswagon
-            data = requests.get('https://www.bookswagon.com/search-books/{}'.format(ISBN))
-            # Function to validate, save book data
-            if not Book.objects.filter(isPublished=True, isbn__iexact=ISBN).exists():
-                status = createBook(data, ISBN)
-
-                if status:
-                    messages.success(request, "Book Entry Added")
-                    return redirect("book:inventory")
+            data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
+            if data:
+                print(data.json())
+                # Function to validate, save book data
+                if not Book.objects.filter(isPublished=True, isbn__iexact=ISBN).exists():
+                    status = createBook(data.json(), ISBN)
+                    print(status)
+                    if status:
+                        messages.success(request, "Book Entry Added")
+                        return redirect("book:findBookSingleISBN")
+                    if not status:
+                        messages.error(request, "Book Entry Failed")
+                else:
+                    messages.error(request, "Book Exist")
+                return redirect("book:findBookSingleISBN")
             else:
-                messages.error(request, "Book Exist")
-            if not status:
-                messages.error(request, "Book Entry Failed")
-            return redirect("book:findBookSingleISBN")
+                messages.error("Data is not available in API")
+                return redirect("book:findBookSingleISBN")
         else:
             print(singleISBNForm.errors)
     return render(request, template_name="single-isbn.html", context={'form' : singleISBNForm})
@@ -106,18 +117,23 @@ def bulkISBNUpload(request):
             else:
                 # Fetch book from bookswagon
                 df = pandas.read_excel(data).fillna("")
-
+                rows, column = df.shape
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
+                    print("row['ISBN']", row['ISBN'])
                     if not Book.objects.filter(isPublished=True, isbn__iexact=row['ISBN']).exists():
-                        data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
-                        status = createBook(data, row['ISBN'])
-                        time.sleep(int((random.random() *100) / 10))
+                        # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
+                        data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(row['ISBN'].replace(",", ""))))
+                        
+                        if data:
+                            status = createBook(data.json(), row['ISBN'])
+                        # Sleep for 4 sec if rows are more than 100
+                        if rows >= 100:
+                            time.sleep(4)
         else:
             print(bulkSheetForm.errors)
     return render(request, template_name="bulk-isbn-sheet-upload.html", context={'form' : bulkSheetForm})
-    return render(request, template_name="bulk-isbn.html", context={})
 
 @login_required
 def manualBookCreate(request):

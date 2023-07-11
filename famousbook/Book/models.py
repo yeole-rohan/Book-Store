@@ -67,7 +67,7 @@ class Book(models.Model):
     discountPrice = models.FloatField(_("Discount Price"), default=0, blank=True, null=True)
     author = models.TextField(_("Author List"), blank=True, null=True)
     bookBinding = models.CharField(_("Book Binding"),default="paperback", choices=PRINT_BINDING, max_length=100)
-    bookCondition = models.CharField(_("Book Condition"), choices=PRINT_CONDITION,default="new", max_length=100)
+    bookCondition = models.CharField(_("Book Condition"), choices=PRINT_CONDITION, default="new", max_length=100)
     discountPercentage = models.PositiveIntegerField(_("Discount Percentage"), default=0, blank=True, null=True)
     description = models.TextField(_("Book Description"), default="", blank=True, null=True)
     isReturnable = models.BooleanField(_("Is Returnable"), default=False)
@@ -76,7 +76,7 @@ class Book(models.Model):
     readingAge = models.PositiveIntegerField(_("Reading Age"), default=0, blank=True, null=True)
     isbn = models.CharField(_("ISBN Number"), max_length=200, default="", blank=True, null=True)
     noOfPages = models.PositiveIntegerField(_("Number of Pages"), default=0, blank=True, null=True)
-    publishedDate = models.DateField(_("Book Published Date"), blank=True, null=True)
+    publishedDate = models.CharField(_("Book Published Date"),max_length=200, blank=True, null=True)
     bookPrintedIn = models.CharField(_("Book Printed In"),choices=PRINTED_IN, default="india", max_length=50)
     bookSize = models.CharField(_("Book Size W*B*H in cm"), max_length=200, default="", blank=True, null=True)
     primaryCategory = models.ForeignKey("PrimaryCategory", verbose_name=_("Primary Category"), on_delete=models.CASCADE,  blank=True, null=True)
@@ -104,10 +104,13 @@ class Book(models.Model):
 
         # Saves image from url
         if self.bookURL and not self.bookImage:
-            img_temp = NamedTemporaryFile(delete=True)
-            img_temp.write(urlopen(self.bookURL).read())
-            img_temp.flush()
-            self.bookImage.save(f"product_{self.pk}.png", File(img_temp))
+            try:
+                img_temp = NamedTemporaryFile(delete=True)
+                img_temp.write(urlopen(self.bookURL).read())
+                img_temp.flush()
+                self.bookImage.save(f"product_{self.pk}.png", File(img_temp))
+            except:
+                print("URL dont have image ---- {}".format(bookURL))
 
 
 class BookAuthor(models.Model):
