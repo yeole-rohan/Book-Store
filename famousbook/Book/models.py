@@ -84,8 +84,8 @@ class Book(models.Model):
     book_position = models.CharField(_("book rack"), max_length=50, blank=True, null=True)
     quantity = models.PositiveIntegerField(_("Book Quantity"), default=1)
     book_type=models.CharField(_("Book Type"), choices=BOOK_TYPE, default="single", max_length=50)
-    created = models.DateTimeField(_("Cart created date"),auto_now_add=True)
-    last_updated = models.DateTimeField(_("Cart last updated"), auto_now=True)
+    created = models.DateTimeField(_("Book created date"),auto_now_add=True)
+    last_updated = models.DateTimeField(_("Book last updated"), auto_now=True)
 
     class Meta:
         verbose_name = _("Book")
