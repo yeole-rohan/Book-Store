@@ -105,13 +105,13 @@ class Book(models.Model):
 
         # Saves image from url
         if self.bookURL and not self.bookImage:
-            try:
-                img_temp = NamedTemporaryFile(delete=True)
-                img_temp.write(urlopen(self.bookURL).read())
-                img_temp.flush()
-                self.bookImage.save(f"product_{self.pk}.png", File(img_temp))
-            except:
-                print("URL dont have image ---- {}".format(self.bookURL))
+            # try:
+            img_temp = NamedTemporaryFile(delete=True)
+            img_temp.write(urlopen(self.bookURL).read())
+            img_temp.flush()
+            self.bookImage.save(f"product_{self.pk}.png", File(img_temp))
+            # except:
+            #     print("URL dont have image ---- {}".format(self.bookURL))
 
 
 class BookAuthor(models.Model):
