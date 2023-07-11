@@ -127,7 +127,7 @@ def bulkISBNUpload(request):
                         data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(row['ISBN'].replace(",", ""))))
                         
                         if data:
-                            status = createBook(data.json(), row['ISBN'])
+                            status = createBook(data.json(), row['ISBN'].replace(",", ""))
                         # Sleep for 4 sec if rows are more than 100
                         if rows >= 100:
                             time.sleep(4)
