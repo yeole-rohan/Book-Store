@@ -5,5 +5,4 @@ class CartConfig(AppConfig):
     name = 'Cart'
 
     def ready(self):
-        print("in ready")
         from .signals import merge_cart_items

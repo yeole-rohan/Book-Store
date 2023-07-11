@@ -5,5 +5,4 @@ class BookConfig(AppConfig):
     name = 'Book'
 
     def ready(self):
-        print("delete Signal ready called")
-        from .signals import delete_image
+        from .signals import delete_book_author_image, delete_book_image, delete_testimonial_image, delete_bundle_image_image, delete_coupon_image_image, delete_promo_image_image

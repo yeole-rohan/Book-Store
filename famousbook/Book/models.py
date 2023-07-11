@@ -95,12 +95,13 @@ class Book(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        super(Book, self).save(*args, **kwargs)
         # Finds Book Percentage
-        print(self.discountPrice, self.price, "save method")
-        # if self.discountPrice:
-        #     self.discountPercentage = 
-        #     self.save()
+        print(self.discountPrice, self.discountPercentage, self.price, "save method")
+        if not self.discountPercentage and self.price and self.discountPrice:
+            print("inside")
+            self.discountPercentage = (float(self.price) - float(self.discountPrice)) / float(self.price)* 100
+            self.save()
 
         # Saves image from url
         if self.bookURL and not self.bookImage:
@@ -110,7 +111,7 @@ class Book(models.Model):
                 img_temp.flush()
                 self.bookImage.save(f"product_{self.pk}.png", File(img_temp))
             except:
-                print("URL dont have image ---- {}".format(bookURL))
+                print("URL dont have image ---- {}".format(self.bookURL))
 
 
 class BookAuthor(models.Model):

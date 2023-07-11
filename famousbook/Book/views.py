@@ -29,9 +29,9 @@ isbns=[
 def home(request):
     print(request.COOKIES.get('cart'))
     try:
-        featuredBooks = Book.objects.all()[:10]
+        featuredBooks = Book.objects.filter(isPublished=True)[:10]
     except:
-        featuredBooks = Book.objects.all()
+        featuredBooks = Book.objects.filter(isPublished=True)
     testimonials = Testimonials.objects.all()
     authors = BookAuthor.objects.all()
     bundleBook = BundleBook.objects.all()

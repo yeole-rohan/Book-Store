@@ -8,7 +8,6 @@ from .models import Cart
 
 @receiver(user_logged_in)
 def merge_cart_items(sender, user, request, **kwargs):
-    print("Signal Called")
     cart_items = ''
     cart_cookie = request.COOKIES.get('cart')
     if cart_cookie:
