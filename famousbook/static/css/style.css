@@ -1019,9 +1019,9 @@ header {
     padding: 14px 80px;
 }
 
-.book-details-cart-buy-btns a:last-child {
+/* .book-details-cart-buy-btns a:last-child {
     margin-left: 80px;
-}
+} */
 
 .book-details-shipping-charge,
 .book-details-shipment-details,
@@ -1257,6 +1257,9 @@ button:hover,
 .first-promo-mobile {
     display: none;
 }
+.delete-qty-icon{
+    text-align: right;
+}
 /* Media Queries */
 @media screen and (max-width: 1210px) {
 
@@ -1334,9 +1337,9 @@ button:hover,
     .book-details-cart-buy-btns a{
         padding: 10px 40px;
     }
-    .book-details-cart-buy-btns a:last-child{
+    /* .book-details-cart-buy-btns a:last-child{
         margin-left: 40px;
-    }
+    } */
     label {
         font-size: 18px !important;
         line-height: 28px !important;
@@ -1713,9 +1716,9 @@ button:hover,
     .book-details-cart-buy-btns a{
         padding: 7px 25px;
     }
-    .book-details-cart-buy-btns a:last-child{
+    /* .book-details-cart-buy-btns a:last-child{
         margin-left: 15px;
-    }
+    } */
     .book-details-cart-buy-btns{
         margin-top: 25px;
     }
