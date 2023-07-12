@@ -1474,6 +1474,9 @@ button:hover,
     .mobile-lists{
         top: 45px;
     }
+    .featured-author-card-img img{
+        text-align: center;
+    }
     .book-details-img{
         width: 150px;
     }

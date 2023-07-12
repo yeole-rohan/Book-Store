@@ -47,7 +47,7 @@ def home(request):
     return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory, 'otherPromo' : otherPromo, 'firstPromo' : firstPromo, "bestSeller" : bestSeller})
 
 def allBooks(request):
-    books = Book.objects.all().order_by("-created")
+    books = Book.objects.filter(isPublished=True).order_by("-created")
     bookLanguage = set(list(books.values_list("bookLanguage", flat=True)))
     primaryCategory = PrimaryCategory.objects.all()
     # Get the page from get request

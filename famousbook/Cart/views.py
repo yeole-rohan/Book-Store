@@ -91,9 +91,12 @@ def view_cart(request):
                     messages.error(request, "Promocode is expired.")
     elif 'cart' in request.COOKIES:
         cart_cookie = request.COOKIES.get('cart')
+        print(cart_cookie)
         if cart_cookie:
             cart_ids = json.loads(cart_cookie)
+            print("cart_ids", cart_ids)
             cart_items = Book.objects.filter(isPublished=True, id__in=cart_ids)
+            print(cart_items)
     return render(request, 'cart.html', context={'bestSeller':bestSeller, 'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})
 
 def paymentCost(cart_items):

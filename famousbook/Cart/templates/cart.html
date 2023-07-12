@@ -81,7 +81,6 @@
                             </div>
                         {% endfor %}
                     {% else %}
-                    
                         {% for item in cart_items %}
                             <div class="cart-book-list-loop">
                                 <div class="cart-book-list-loop-wrap">
@@ -143,7 +142,6 @@
                                 <button class="coupon-code-btn" name="coupon" type="submit">Apply</button>
                             </form>
                         </div>
-                    {% endif %}
                     <div class="color-004872 font-24 weight-500">
                         Amount Payable
                     </div>
@@ -196,6 +194,9 @@
                     <div class="procced">
                         <a href="{% url 'cart:selectAddress' %}">Procced</a>
                     </div>
+                    {% else %}
+                    Login to Procced ahead.
+                    {% endif %}
                 </div>
             </div>
         {% else %}

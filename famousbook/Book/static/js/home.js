@@ -65,6 +65,14 @@ $(document).ready(
              centerMode:false,
             },
           },
+          {
+            breakpoint: 599,
+            settings: {
+              slidesToShow: 2,
+             arrows:false,
+             centerMode:false,
+            },
+          },
         ],
       });
       $(".featured-book-slider").slick({
