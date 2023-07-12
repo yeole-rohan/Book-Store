@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.files import File
 from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
-
+from User.models import User
 
 class PrimaryCategory(models.Model):
     name = models.CharField(_("Primary Category"), max_length=100)
@@ -176,6 +176,7 @@ class PromoBanner(models.Model):
         return str(self.id)
 
 class CouponCode(models.Model):
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE, blank=True, null=True)
     coupon_image = models.ImageField(_("Coupon Code"), upload_to="coupen-image/", null=True)
     coupon_code = models.CharField(_("Coupon Code"), max_length=50)
     discount_percentage = models.PositiveIntegerField(_("Discount Percentage"), default=0)

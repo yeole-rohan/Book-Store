@@ -16,8 +16,12 @@ def myOrders(request):
         featuredBooks = Book.objects.all()[:10]
     except:
         featuredBooks = Book.objects.all()
+    try:
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
+    except:
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
     wish_items = Wishlist.objects.filter(user=request.user)
-    return render(request, template_name="my-orders.html", context={'myOrders' : myOrders, "featuredBooks" : featuredBooks, "wish_items" : wish_items})
+    return render(request, template_name="my-orders.html", context={'bestSeller':bestSeller,'myOrders' : myOrders, "featuredBooks" : featuredBooks, "wish_items" : wish_items})
 
 @login_required
 def cancelOrder(request, id):

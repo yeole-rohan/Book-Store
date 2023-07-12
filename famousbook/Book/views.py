@@ -27,15 +27,14 @@ isbns=[
 9781974703661,
 9781421539683]
 def home(request):
-    print(request.COOKIES.get('cart'))
     try:
         featuredBooks = Book.objects.filter(isPublished=True)[:10]
     except:
         featuredBooks = Book.objects.filter(isPublished=True)
     try:
-        bestSeller = Book.objects.filter(isPulished=True, isBestSell=True)[:10]
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
     except:
-        bestSeller = Book.objects.filter(isPulished=True, isBestSell=True)
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
     testimonials = Testimonials.objects.all()
     authors = BookAuthor.objects.all()
     bundleBook = BundleBook.objects.all()
@@ -45,7 +44,6 @@ def home(request):
         otherPromo = PromoBanner.objects.all().exclude(id=firstPromo.id)
     else:
         otherPromo = ''
-    print(testimonials, len(featuredBooks))
     return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory, 'otherPromo' : otherPromo, 'firstPromo' : firstPromo, "bestSeller" : bestSeller})
 
 def allBooks(request):
@@ -73,12 +71,6 @@ def bundleDeals(request, category):
 
 @login_required
 def findBookSingleISBN(request):
-    # for isbn in isbns:
-    #     d = requests.get("https://openlibrary.org/isbn/{}.json".format(isbn))
-    #     if d:
-    #         data = d.json()
-    #         print(data["covers"])
-        # print(json.dumps(d.json()), '\n\n\n')
     singleISBNForm = SingleISBNForm()
     
     if request.method == "POST":
@@ -88,11 +80,9 @@ def findBookSingleISBN(request):
             # Fetch book from bookswagon
             data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
             if data:
-                print(data.json())
                 # Function to validate, save book data
                 if not Book.objects.filter(isPublished=True, isbn__iexact=ISBN).exists():
                     status = createBook(data.json(), ISBN)
-                    print(status)
                     if status:
                         messages.success(request, "Book Entry Added")
                         return redirect("book:findBookSingleISBN")
@@ -125,7 +115,6 @@ def bulkISBNUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    print("row['ISBN']", row['ISBN'])
                     if not Book.objects.filter(isPublished=True, isbn__iexact=row['ISBN']).exists():
                         # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
                         data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(row['ISBN'].replace(",", ""))))
@@ -187,6 +176,10 @@ def bookDetails(request, id):
         featuredBooks = Book.objects.all()[:10]
     except:
         featuredBooks = Book.objects.all()
+    try:
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
+    except:
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
     book_items, history_books = [], []
     book_cookie = request.COOKIES.get('history')
 
@@ -195,9 +188,8 @@ def bookDetails(request, id):
     if not int(book.id) in book_items:
         book_items.append(book.id)
     history_books = Book.objects.filter(isPublished=True, id__in=book_items)
-    print("book.primaryCategory", book.primaryCategory)
     similary_books = Book.objects.filter(Q(primaryCategory=book.primaryCategory) | Q(secondaryCategory=book.secondaryCategory), isPublished=True)
-    response = render(request, template_name="details.html", context={'featuredBooks':featuredBooks,'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
+    response = render(request, template_name="details.html", context={'bestSeller':bestSeller,'featuredBooks':featuredBooks,'book' : book, 'history_books' : history_books, 'similary_books' : similary_books})
     response.set_cookie('history', json.dumps(book_items))
     return response
 
@@ -208,7 +200,6 @@ Given a request and a category, retrieve all books that have the category as eit
 @return the rendered book-category.html template with the retrieved books
 """
 def bookCategory(request, category):
-    print(request.path.split("/book/category/"), category)
     books = Book.objects.filter( Q(primaryCategory__name__icontains=category) | Q(secondaryCategory__name__icontains=category), isPublished=True).order_by("-created")
     secondryCategory = SecondaryCategory.objects.filter(primaryCategory__name__icontains=category)
     binding = set(list(books.values_list("bookBinding", flat=True)))
@@ -295,9 +286,8 @@ Given a request, return a list of book suggestions based on the keyword provided
 def bookSuggestions(request):
     if request.method == "POST":
         keyword = request.POST.get("keyword")
-        print(keyword)
         suggestions = list(Book.objects.filter( Q(title__icontains=keyword) | Q(author__icontains=keyword) | Q(publisher__icontains=keyword) | Q(isbn__icontains=keyword), isPublished=True).values_list("title", "id")) if keyword else ""
-        print(suggestions)
+
         return JsonResponse({'status':'ok', 'suggestions': suggestions})
 
 def offers(request):
@@ -305,7 +295,7 @@ def offers(request):
     return render(request, template_name="offers.html", context={'offers':offers})
 
 def authorBooks(request, author):
-    print(request.session.session_key)
+
     books = Book.objects.filter(
         isPublished=True, author__icontains=author).order_by("-created")
 
@@ -323,7 +313,6 @@ def authorBooks(request, author):
         books = paginator.page(paginator.num_pages)
     return render(request, template_name="author-books.html", context={'books':books, 'author' : author})
 def advanceSearch(request):
-    print(request.POST, request)
     result = []
     if request.method == "POST":
         categoryList = request.POST.get("categoryList[]") if request.POST.get("categoryList[]") else []
@@ -331,14 +320,13 @@ def advanceSearch(request):
         language = request.POST.get("language[]") if request.POST.get("language[]") else []
         price = request.POST.getlist("price[]") if request.POST.get("price[]") else []
         discountPrice = request.POST.getlist("discountPrice[]") if request.POST.get("discountPrice[]") else []
-        print(categoryList, price, language, discountPrice,binding)
+
         
         # Create a list to store the Q objects for price filtering
         price_query_list = []
 
         # Iterate over the price ranges
         for price_range in price:
-            print(price_range)
             # Split the range into minimum and maximum values
             min_price, max_price = price_range.split('-')
             # Create a Q object to represent the range
@@ -367,12 +355,10 @@ def advanceSearch(request):
         combined_discount_price_query = Q()
         for query in discount_price_query_list:
             combined_discount_price_query |= query
-        print(combined_discount_price_query)
         # Filter the products based on price and discount price ranges
         bookList = Book.objects.filter( Q(primaryCategory__name__icontains=categoryList) | Q(secondaryCategory__name__icontains=categoryList) | Q(bookBinding__icontains=binding) | Q(bookLanguage__icontains=language), isPublished=True)
         # Remove duplicates from the query results
         bookList = bookList.distinct()
-        print(bookList)
         if bookList:
             for book in bookList:
                 result.append({

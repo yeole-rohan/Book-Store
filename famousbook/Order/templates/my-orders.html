@@ -144,7 +144,7 @@
             {% endif %}
         {% endif %}
     </div>
-    {% if featuredBooks %}
+    {% if bestSeller %}
     
         <section id="featured-book" class="mt-5">
             <div class="container">
@@ -157,7 +157,7 @@
                     </a>
                 </div>
                 <div class="featured-book-slider">
-                    {% for book in featuredBooks %}
+                    {% for book in bestSeller %}
                         <div class="book-card position-relative">
                             {% if book.id in wishList %}
                                 <div class="add-to-wishlist-card-none">

@@ -21,10 +21,8 @@ This function adds a book to the user's cart. If the user is authenticated, the 
 @return a JSON response indicating whether the book was successfully added to the cart and any relevant messages
 """
 def add_to_cart(request):
-    print(request.method)
     if request.method=="POST":
         book_id = request.POST.get("book_id")
-        print(book_id)
         try:
             book = Book.objects.get(id=int(book_id))
         except Book.DoesNotExist:
@@ -42,7 +40,6 @@ def add_to_cart(request):
 
             if cart_cookie:
                 cart_items = json.loads(cart_cookie)
-            print(int(book_id) in cart_items)
             if not int(book_id) in cart_items:
                 cart_items.append(book.id)
             else:
@@ -50,7 +47,6 @@ def add_to_cart(request):
         
             response = JsonResponse({'success': True, 'message': 'Book added to cart.'})
             response.set_cookie('cart', json.dumps(cart_items))
-            print(response, cart_cookie)
             return response
     return JsonResponse({'success': False, 'message': 'Failed to add in your cart.'})
 
@@ -63,11 +59,13 @@ This function is used to display the contents of the cart. It first checks if th
 
 def view_cart(request):
     cart_items = []
+    amountPayable = {}
     wish_items = ''
-    print(request.COOKIES)
     promoCodeForm = PromoCodeForm()
-    print( request.method)
-    
+    try:
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
+    except:
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
     try:
         featuredBooks = Book.objects.all()[:10]
     except:
@@ -80,11 +78,14 @@ def view_cart(request):
             promoCodeForm = PromoCodeForm(request.POST or None)
             if promoCodeForm.is_valid():
                 code = request.POST.get('promoCode')
-                if CouponCode.objects.filter(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now()).exists():
+                # private Coupon Code
+                if CouponCode.objects.filter(user=request.user, coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now()).exists():
+                    coupon = CouponCode.objects.get(user=request.user, coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now())
+                    Cart.objects.filter(user=request.user).update(coupon_code=coupon)
+                    amountPayable = paymentCost(cart_items)
+                elif CouponCode.objects.filter(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now()).exists():
                     coupon = CouponCode.objects.get(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now())
-                    Cart.objects.filter(user=request.user).update(
-                        coupon_code=coupon)
-                    print(coupon, coupon.discount_percentage)
+                    Cart.objects.filter(user=request.user).update(coupon_code=coupon)
                     amountPayable = paymentCost(cart_items)
                 else:
                     messages.error(request, "Promocode is expired.")
@@ -93,9 +94,7 @@ def view_cart(request):
         if cart_cookie:
             cart_ids = json.loads(cart_cookie)
             cart_items = Book.objects.filter(isPublished=True, id__in=cart_ids)
-        print(cart_items)
-    print(request.COOKIES.get('cart'))
-    return render(request, 'cart.html', context={'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})
+    return render(request, 'cart.html', context={'bestSeller':bestSeller, 'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})
 
 def paymentCost(cart_items):
     amountPayable = {}
@@ -115,10 +114,8 @@ def paymentCost(cart_items):
         if item.book.discountPrice:
             discount += item.book.discountPrice * item.qty
         else:
-            print("price only")
             withOutDiscount += mrpTotal
     totalPayable = discount + withOutDiscount
-    print(discount_percentage, mumbaiCharge, "mumbaiCharge")
     if discount_percentage and not discount_percentage[0] == None:
         couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
         totalPayable -= couponDiscount
@@ -151,8 +148,6 @@ def paymentCost(cart_items):
     amountPayable['totalPayable'] = totalPayable + shippingAmount
     amountPayable["shippingAmount"] = shippingAmount
     amountPayable["isFree"] = isFree
-    print(mrpTotal, discount, totalPayable,
-          "total", couponDiscount, shippingAmount)
     return amountPayable
 
 @login_required
@@ -172,7 +167,6 @@ def selectAddress(request):
                 Cart.objects.filter(user=request.user).update(
                     deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address")))
             return redirect("cart:overview")
-        print(request.POST.get("address"))
     return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList, 'deliveryAddressForm' :deliveryAddressForm})
 
 @login_required
@@ -205,7 +199,6 @@ def overview(request):
 def update_charge(request):
     if request.method=="POST":
         ch = request.POST.get("ch")
-        print("ch", ch)
         cart_item = Cart.objects.filter(
             user=request.user).update(charges=ch)
         if  cart_item:

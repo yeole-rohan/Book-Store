@@ -24,7 +24,6 @@ def accountInfo(request):
     userForm =UserForm(instance=request.user)
     if request.method == "POST":
         userForm =UserForm(request.POST or None, instance=request.user)
-        print(userForm.is_valid())
         if userForm.is_valid():
             userForm.save()
             messages.success(request, "Profile Updated")
@@ -43,7 +42,6 @@ def deliveryAddressAdd(request):
     deliveryAddressForm =DeliveryAddressForm(initial={"name" : request.user.get_full_name, "contactNumber" : request.user.contactNumber})
     if request.method == "POST":
         deliveryAddressForm =DeliveryAddressForm(request.POST or None)
-        print(deliveryAddressForm.is_valid())
         if deliveryAddressForm.is_valid():
             deliveryAddressForm = deliveryAddressForm.save(commit=False)
             deliveryAddressForm.user = request.user
@@ -66,7 +64,6 @@ def deliveryAddressEdit(request, id):
     deliveryAddressForm =DeliveryAddressForm(instance=editAddress)
     if request.method == "POST":
         deliveryAddressForm =DeliveryAddressForm(request.POST or None, instance=editAddress)
-        print(deliveryAddressForm.is_valid())
         if deliveryAddressForm.is_valid():
             deliveryAddressForm.save()
             messages.success(request, "Address Updated")
@@ -110,7 +107,6 @@ def userContact(request):
     queryForm =QueryForm()
     if request.method == "POST":
         queryForm =QueryForm(request.POST or None)
-        print(queryForm.is_valid())
         if queryForm.is_valid():
             queryForm = queryForm.save(commit=False)
             queryForm.user = request.user
@@ -161,10 +157,6 @@ def loginView(request):
                 if user is not None:
                     login(request, user)
                     return redirect("book:home")
-            # else:
-            #     print("int")
-            #     isMobile =True
-            #     hideNext = True
         else:
             messages.error(request, "Enter Mobile or Email Id")
     return render(request, template_name="login.html", context={'email_or_mobile' : email_or_mobile, 'isMobile' : isMobile, 'isPassword' : isPassword, 'hideNext' : hideNext})
@@ -187,7 +179,6 @@ def signUp(request):
                     isPassword = True
                     hideNext = True
                     code = getOTP()
-                    print(code)
                     createCode = VerificationCode.objects.create(code=code, email=email_or_mobile, read=False)
                     messages.success(request, "OTP is sent on email")
                     if createCode:
@@ -209,9 +200,7 @@ def signUp(request):
         email_or_mobile = request.POST.get("email_or_mobile")
         otp = request.POST.get("otp")
         password = request.POST.get("password")
-        print(otp, password)
         if otp:
-            print(VerificationCode.objects.filter(code=otp, email=email_or_mobile, read=False).exists())
             if VerificationCode.objects.filter(code=otp, email=email_or_mobile, read=False).exists():
                 VerificationCode.objects.filter(code=otp, email=email_or_mobile, read=False).update(read=True)
                 createuser = User.objects.create(email=email_or_mobile, username="user"+str(User.objects.last().id + 1 if User.objects.last() else 1))

@@ -11,7 +11,6 @@ def createBook(data, ISBN):
     publish_date = data.get("publish_date") if data.get("publish_date") else ""
     # languages = data.get("languages")[0]["key"].split("/languages/").join("") if data.get("languages") else "eng"
 
-    print(title, description, publisher)
     if title and not Book.objects.filter(isbn__iexact=ISBN).exists():
         Book.objects.create(title=title,description=description, publisher=publisher, bookURL="https://covers.openlibrary.org/b/id/{}-M.jpg".format(cover), noOfPages=number_of_pages, isbn=ISBN, publishedDate=publish_date, bookLanguage="english")
         return True
