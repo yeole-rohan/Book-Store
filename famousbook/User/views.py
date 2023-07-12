@@ -218,7 +218,7 @@ def signUp(request):
                 createuser.set_password(password)
                 createuser.save()
                 subject = "Welcome."
-                body = "Hi {}, We welcome you to our platform, your username is {}. Happy Reading!".format(createuser.user.email, user.username)
+                body = "Hi {}, We welcome you to our platform, your username is {}. Happy Reading!".format(createuser.email, createuser.username)
                 send_mail(subject, body, EMAIL_USER, [email_or_mobile], fail_silently=True)
                 user = authenticate(request, username=createuser.username, password=password)
                 if user is not None:

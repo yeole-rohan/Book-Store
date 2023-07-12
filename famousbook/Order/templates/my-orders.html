@@ -55,6 +55,9 @@
                                         <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
                                             Ordered on {{item.created}} Current Status - <span class="color-red">{{item.get_orderStatus_display}}</span>
                                         </div>
+                                        <div>
+                                            Payment Mode  - <span class="color-red">Cash On Delivery</span>
+                                        </div>
                                         {% if not item.orderStatus == "cancel" %}
                                             {% if item.charges == "40" %}
                                                 <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">

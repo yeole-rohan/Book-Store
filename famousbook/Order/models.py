@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.mail import send_mail
+from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
 from Book.models import Book, CouponCode
 from User.models import User, DeliveryAddress
 
@@ -36,6 +38,7 @@ class Order(models.Model):
     orderPlaced = models.BooleanField(_("Order Placed"), default=False)
     orderStatus = models.CharField(_("Order Status"), choices=ORDERSTATUS, default="ordered", max_length=50)
     paymentType = models.CharField(_("Payment Type"), choices=PAYMENTTYPE, default="cod", max_length=50)
+    trackingNumber = models.CharField(_("Tracking Number"), max_length=200, default="")
     created = models.DateTimeField(_("Order created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Order last updated"), auto_now=True)
 
@@ -47,3 +50,8 @@ class Order(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def save(self, *args, **kwargs):
+        super(Order, self).save(*args, **kwargs)
+        if self.trackingNumber:
+            subject = "Order Tracking Number"
+            send_mail(subject, "Hi {}, order tracking for order {} is {}.".format(self.user.email, self.book.title, self.trackingNumber), EMAIL_USER, [self.user.email])

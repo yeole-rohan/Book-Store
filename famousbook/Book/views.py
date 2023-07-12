@@ -32,6 +32,10 @@ def home(request):
         featuredBooks = Book.objects.filter(isPublished=True)[:10]
     except:
         featuredBooks = Book.objects.filter(isPublished=True)
+    try:
+        bestSeller = Book.objects.filter(isPulished=True, isBestSell=True)[:10]
+    except:
+        bestSeller = Book.objects.filter(isPulished=True, isBestSell=True)
     testimonials = Testimonials.objects.all()
     authors = BookAuthor.objects.all()
     bundleBook = BundleBook.objects.all()
@@ -42,7 +46,7 @@ def home(request):
     else:
         otherPromo = ''
     print(testimonials, len(featuredBooks))
-    return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory, 'otherPromo' : otherPromo, 'firstPromo' : firstPromo})
+    return render(request, template_name="home.html", context={'featuredBooks':featuredBooks, 'testimonials' : testimonials, "authors" : authors, "bundleBook" :bundleBook, 'primaryCategory' :primaryCategory, 'otherPromo' : otherPromo, 'firstPromo' : firstPromo, "bestSeller" : bestSeller})
 
 def allBooks(request):
     books = Book.objects.all().order_by("-created")
@@ -318,7 +322,6 @@ def authorBooks(request, author):
     except EmptyPage:
         books = paginator.page(paginator.num_pages)
     return render(request, template_name="author-books.html", context={'books':books, 'author' : author})
-
 def advanceSearch(request):
     print(request.POST, request)
     result = []

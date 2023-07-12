@@ -8,8 +8,8 @@
 {% block content %}
     <div class="container">
         <div class="category-name weight-700 font-32 color-004872">{{category | capfirst}}</div>
-        <div class="mt-2 mb-2">Books by {{author}}
         {% if books %}
+            <div class="mt-2 mb-2">Books by {{author}}</div>
             <div class="mobile-category-filter">Filter</div>
             <div class="category-wrap d-flex align-item-top">
             <div class="book-data">

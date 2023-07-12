@@ -84,14 +84,6 @@
                                 ₹ {{amountPayable.totalDiscount}}
                             </div>
                         </div>
-                        <div class="amount-payable-total-saving d-flex justify-content-between">
-                            <div class="amount-payable-total-saving-text weight-500 font-18 color-black">
-                                Total Savings
-                            </div>
-                            <div class="amount-payable-total-saving-total weight-500 font-18 color-black">
-                                ₹ {{amountPayable.totalSaving}}
-                            </div>
-                        </div>
                         {% if amountPayable.couponDiscount %}
                         
                             <div class="amount-payable-shiping d-flex justify-content-between">
@@ -103,6 +95,15 @@
                                 </div>
                             </div>
                         {% endif %}
+                        <div class="amount-payable-total-saving d-flex justify-content-between">
+                            <div class="amount-payable-total-saving-text weight-500 font-18 color-black">
+                                Total Savings
+                            </div>
+                            <div class="amount-payable-total-saving-total weight-500 font-18 color-black">
+                                ₹ {{amountPayable.totalSaving}}
+                            </div>
+                        </div>
+                        
                         <div class="amount-payable-total d-flex justify-content-between">
                             <div class="amount-payable-total-text weight-500 font-18 color-black">
                                 Total Payable
@@ -112,9 +113,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="procced">
-                        <button type="submit">Procced</button>
-                    </div>
+                    {% if addressList %}
+                        <div class="procced">
+                            <button type="submit">Procced</button>
+                        </div>
+                    {% else %}
+                        Minimum 1 Address needed.
+                    {% endif %}
                 </div>
             </div>
         </form>

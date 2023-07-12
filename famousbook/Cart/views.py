@@ -146,7 +146,7 @@ def paymentCost(cart_items):
     cart_items.update(shippingCharge = int(shippingAmount))
     amountPayable['mrpTotal'] = mrpTotal
     amountPayable['totalDiscount'] = discount
-    amountPayable['totalSaving'] = float(mrpTotal - discount)
+    amountPayable['totalSaving'] = float(mrpTotal - discount) + couponDiscount
     amountPayable["couponDiscount"] = couponDiscount
     amountPayable['totalPayable'] = totalPayable + shippingAmount
     amountPayable["shippingAmount"] = shippingAmount

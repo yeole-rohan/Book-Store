@@ -82,14 +82,6 @@
                                     ₹ {{amountPayable.totalDiscount}}
                                 </div>
                             </div>
-                            <div class="amount-payable-total-saving d-flex justify-content-between">
-                                <div class="amount-payable-total-saving-text weight-500 font-18 color-black">
-                                    Total Savings
-                                </div>
-                                <div class="amount-payable-total-saving-total weight-500 font-18 color-black">
-                                    ₹ {{amountPayable.totalSaving}}
-                                </div>
-                            </div>
                             {% if amountPayable.couponDiscount %}
                             
                                 <div class="amount-payable-shiping d-flex justify-content-between">
@@ -101,6 +93,15 @@
                                     </div>
                                 </div>
                             {% endif %}
+                            <div class="amount-payable-total-saving d-flex justify-content-between">
+                                <div class="amount-payable-total-saving-text weight-500 font-18 color-black">
+                                    Total Savings
+                                </div>
+                                <div class="amount-payable-total-saving-total weight-500 font-18 color-black">
+                                    ₹ {{amountPayable.totalSaving}}
+                                </div>
+                            </div>
+                            
                             {% if not pickUp == "self" %}
                                 <div class="shipping-charge">
                                     {{shippingChargesForm | crispy}}
@@ -113,7 +114,7 @@
                             {% endif %}
                             <div class="amount-payable-total d-flex justify-content-between">
                                 <div class="amount-payable-total-text weight-500 font-18 color-black">
-                                    Total Payable
+                                    Total Payable (COD)
                                 </div>
                                 <div class="amount-payable-total-total color-red weight-500 font-18">
                                     ₹ {{amountPayable.totalPayable}}

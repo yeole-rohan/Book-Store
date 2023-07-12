@@ -787,6 +787,8 @@ header {
     width: 100%;
     z-index: 99;
     background-color: white;
+    max-height: 300px;
+    overflow-x: auto;
 }
 
 .search-box {
@@ -797,7 +799,10 @@ header {
 .mobile-search-suggestion {
     margin: 0 10px;
 }
-
+.mobile-search-suggestion{
+    max-height: 300px;
+    overflow-x: auto;
+}
 .head-right-bottom {
     margin: 25px 0 15px;
 }
