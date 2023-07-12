@@ -27,7 +27,7 @@ class QueryForm(forms.ModelForm):
         fields = ("purposeContact","message")
 
 class MyPasswordResetForm(PasswordResetForm):
-    email = forms.CharField(label="Email or Username", max_length=20, required=False, help_text="You can enter username or email id of your account. make sure its correct otherwise, you may not receive an reset email.")
+    email = forms.CharField(label="Email or Username", max_length=256, required=False, help_text="You can enter username or email id of your account. make sure its correct otherwise, you may not receive an reset email.")
 
     def get_username_or_email_users(self, username_or_email):
         return list(User.objects.filter(Q(contactNumber__iexact=username_or_email) | Q( email__iexact=username_or_email)))
