@@ -1311,10 +1311,12 @@ button:hover,
     .mobile-lists{
         position: absolute;
         top: 70px;
-        background-color: white;
+        background: white;
         width: 100%;
         border: 1px solid;
         padding: 10px;
+        z-index: 9999;
+
     }
     .book-other-details-right{
         margin-left: 150px;

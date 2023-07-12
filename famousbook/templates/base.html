@@ -85,7 +85,7 @@
                                 <li>
                                     <a href="{% url 'wishlist:home' %}" class="position-relative">
                                         <img src="{% static 'img/favorite.png' %}" alt="" srcset="">
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger wish-count">
                                             {{wishList | length}}
                                         </span>
                                     </a>
@@ -93,7 +93,7 @@
                                 <li class="cart-link">
                                     <a href="{% url 'cart:view_cart' %}" class="position-relative">
                                         <img src="{% static 'img/shopping_bag.png' %}" alt="" srcset="">
-                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
                                             {{userCart | length}}
                                         </span>
                                     </a>
@@ -129,13 +129,13 @@
                     <div class="mobile-bag">
                         <a href="{% url 'wishlist:home' %}" class="position-relative me-3">
                             <img src="{% static 'img/favorite.png' %}" alt="" srcset="">
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger wish-count">
                                 {{wishList | length}}
                             </span>
                         </a>
                         <a href="{% url 'cart:view_cart' %}" class="position-relative me-2">
                             <img src="{% static 'img/shopping_bag.png' %}" alt="" srcset="">
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count">
                                 {{userCart | length}}
                             </span>
                         </a>

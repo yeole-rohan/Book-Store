@@ -33,7 +33,7 @@ def add_to_cart(request):
             if not created:
                 return JsonResponse({'success': False, 'message': 'Book is already in your cart.'})
             
-            return JsonResponse({'success': True, 'message': 'Book added to cart.'})
+            return JsonResponse({'success': True, 'message': 'Book added to cart.', "cartCount" : Cart.objects.filter(user=request.user).count()})
         else:
             cart_items = []
             cart_cookie = request.COOKIES.get('cart')
@@ -45,7 +45,7 @@ def add_to_cart(request):
             else:
                 return JsonResponse({'success': False, 'message': 'Book is already in your cart.'})
         
-            response = JsonResponse({'success': True, 'message': 'Book added to cart.'})
+            response = JsonResponse({'success': True, 'message': 'Book added to cart.', "cartCount" : len(cart_items)})
             response.set_cookie('cart', json.dumps(cart_items))
             return response
     return JsonResponse({'success': False, 'message': 'Failed to add in your cart.'})

@@ -8,6 +8,7 @@ $(document).ready((function () {
   $(document).on("click", ".add-to-cart", function (params) {
     params.preventDefault();
     var currentElement = $(this)
+    var parent = this.parentElement
     $.ajax({
       url: currentElement.attr("href"),
       data: {
@@ -17,8 +18,9 @@ $(document).ready((function () {
       type: "POST",
       dataType: "json",
       success: function (res, status) {
-        console.log(res.success, res['success']);
         if (res.success) {
+          document.querySelector(".cart-count").textContent = res.cartCount
+          parent.innerHTML = '<a href="/cart/" class="d-inline-block weight-500 font-24" tabindex="-1">Go to Cart</a>'
           var aMessage = '<div class="alert alert-success alert-dismissible fade show" role="alert">'+
           res.message +'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
           $(".messages").append(aMessage);
@@ -43,6 +45,7 @@ $(document).ready((function () {
   $(document).on("click", ".add-to-wishlist-card", function (params) {
     params.preventDefault();
     var currentElement = $(this)
+    var parent = this.parentElement
     $.ajax({
       url: currentElement.attr("href"),
       data: {
@@ -53,6 +56,14 @@ $(document).ready((function () {
       dataType: "json",
       success: function (res, status) {
         if (res.success) {
+          currentElement.remove()
+          var div = document.createElement("div")
+          div.innerHTML = '<img src="/static/img/favorite.svg">'
+          div.className = "add-to-wishlist-card-none"
+          parent.prepend(div)
+          console.log( res.wishCount);
+          
+          document.querySelector(".wish-count").textContent = res.wishCount
           var aMessage = '<div class="alert alert-success alert-dismissible fade show" role="alert">'+
           res.message +'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'
           $(".messages").append(aMessage);
