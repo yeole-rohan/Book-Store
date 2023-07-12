@@ -81,13 +81,13 @@ def findBookSingleISBN(request):
             data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
             if data:
                 # Function to validate, save book data
-                if not Book.objects.filter(isPublished=True, isbn__iexact=ISBN).exists():
+                if not Book.objects.filter(isbn__iexact=ISBN).exists():
                     status = createBook(data.json(), ISBN)
                     if status:
                         messages.success(request, "Book Entry Added")
                         return redirect("book:findBookSingleISBN")
                     if not status:
-                        messages.error(request, "Book Entry Failed")
+                        messages.error(request, "Book Exist")
                 else:
                     messages.error(request, "Book Exist")
                 return redirect("book:findBookSingleISBN")
@@ -101,6 +101,8 @@ def findBookSingleISBN(request):
 @login_required
 def bulkISBNUpload(request):
     bulkSheetForm = BulkSheetForm()
+    failedISBN = []
+    passedISBN = []
     if request.method == "POST":
         bulkSheetForm = BulkSheetForm(request.POST or None, request.FILES or None)
         if bulkSheetForm.is_valid():
@@ -115,18 +117,27 @@ def bulkISBNUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    if not Book.objects.filter(isPublished=True, isbn__iexact=row['ISBN']).exists():
+                    isbn = row['ISBN'].replace(",", "")
+                    if not Book.objects.filter(isbn__iexact=isbn).exists():
                         # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
-                        data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(row['ISBN'].replace(",", ""))))
+                        data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
                         
                         if data:
-                            status = createBook(data.json(), row['ISBN'].replace(",", ""))
+                            status = createBook(data.json(), isbn)
+                            if not status:
+                                failedISBN.append(isbn)
+                            else:
+                                passedISBN.append(isbn)
+                        else:
+                            failedISBN.append(isbn)
                         # Sleep for 4 sec if rows are more than 100
                         if rows >= 100:
                             time.sleep(4)
+                    else:
+                        failedISBN.append(isbn)
         else:
             print(bulkSheetForm.errors)
-    return render(request, template_name="bulk-isbn-sheet-upload.html", context={'form' : bulkSheetForm})
+    return render(request, template_name="bulk-isbn-sheet-upload.html", context={'passedISBN':passedISBN, 'failedISBN':failedISBN, 'form' : bulkSheetForm})
 
 @login_required
 def manualBookCreate(request):

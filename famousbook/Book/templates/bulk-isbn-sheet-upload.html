@@ -27,5 +27,24 @@
                 <button class="btn btn-success" type="submit">Save</button>
             </div>
         </form>
+        {% if failedISBN %}
+            <div>Passed ISBN</div>
+            <div>
+                {% for isbn in passedISBN %}
+                    <span>{{isbn}}, </span>
+                {% endfor %}
+            </div>
+        
+            <hr>
+        {% endif %}
+        {% if failedISBN %}
+            <div>Failed ISBN</div>
+            <div>
+                {% for isbn in failedISBN %}
+                    <span>{{isbn}}, </span>
+                {% endfor %}
+            </div>
+        
+        {% endif %}
     </div>
 {% endblock content %}

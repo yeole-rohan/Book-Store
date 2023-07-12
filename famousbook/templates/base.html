@@ -127,7 +127,7 @@
                 </div>
                 <div class="mobile-menu">
                     <div class="mobile-bag">
-                        <a href="{% url 'cart:view_cart' %}" class="position-relative me-3">
+                        <a href="{% url 'wishlist:home' %}" class="position-relative me-3">
                             <img src="{% static 'img/favorite.png' %}" alt="" srcset="">
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{wishList | length}}
