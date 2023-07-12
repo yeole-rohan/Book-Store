@@ -42,7 +42,7 @@ class MyPasswordResetForm(PasswordResetForm):
         use_https = kwargs.get("use_https")
         site_name = current_site.name
         domain = current_site.domain
-        
+        print(domain, site_name, use_https)
         if users_emails:
             for user in users_emails:
 
