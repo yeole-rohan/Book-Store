@@ -10,15 +10,17 @@ from Cart.models import Cart
 
 '''Add Wishlist Ajax View'''
 def addToWishList(request):
-    if request.method == "POST":
-        bookId = request.POST.get("bookId")
-        createWishlist, created = Wishlist.objects.get_or_create(book=get_object_or_404(Book, id=bookId), user=request.user)
-        if not created:
-            return JsonResponse({'success': False, 'message': 'Book is already in your wishlist.'})
-        return JsonResponse({"success": True, "message" : "Added to wishlist", "wishCount": Wishlist.objects.filter(user=request.user).count()})
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            bookId = request.POST.get("bookId")
+            createWishlist, created = Wishlist.objects.get_or_create(book=get_object_or_404(Book, id=bookId), user=request.user)
+            if not created:
+                return JsonResponse({'success': False, 'message': 'Book is already in your wishlist.'})
+            return JsonResponse({"success": True, "message" : "Added to wishlist", "wishCount": Wishlist.objects.filter(user=request.user).count()})
+        else:
+            return JsonResponse({"success": False, "message" : "Error while saving"})
     else:
-        return JsonResponse({"success": False, "message" : "Error while saving"})
-
+       return JsonResponse({"success": False, "message" : "Login to add wishlist"}) 
 '''User Wishlist View'''
 @login_required
 def home(request):
