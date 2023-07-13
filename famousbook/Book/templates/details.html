@@ -153,7 +153,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="book-title weight-700 font-20 color-004872">
-                                    {{ book.title }}
+                                    {{ book.title | truncatechars:"30"}}
                                 </div>
                                 <div class="book-author weight-400 font-16 color-gray">
                                     {{ book.author}}
@@ -216,7 +216,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="book-title weight-700 font-20 color-004872">
-                                    {{ book.title }}
+                                    {{ book.title| truncatechars:"30" }}
                                 </div>
                                 <div class="book-author weight-400 font-16 color-gray">
                                     {{ book.author}}
@@ -283,7 +283,7 @@
                                 {% endif %}
                             </div>
                             <div class="book-title weight-700 font-20 color-004872">
-                                {{ book.title }}
+                                {{ book.title| truncatechars:"30" }}
                             </div>
                             <div class="book-author weight-400 font-16 color-gray">
                                 {{ book.author}}

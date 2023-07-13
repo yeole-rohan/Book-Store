@@ -10,10 +10,12 @@ def duplicate_event(modeladmin, request, queryset):
         object.save()
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('id','title','isPublished','price','bookImage','bookURL','discountPrice','author',
+    list_display = ('id','title', 'quantity','isPublished','price','bookImage','bookURL','discountPrice','author', 'book_position','isBestSell', 'book_type',
     'bookBinding','bookCondition','discountPercentage','description','isReturnable','bookLanguage','publisher','readingAge','isbn','noOfPages','publishedDate', 'bookPrintedIn', 'bookSize', 'primaryCategory', 'secondaryCategory', 'created', 'last_updated')
+    search_fields = ["book_position", 'title', 'primaryCategory__name', 'isbn', 'author']
+    list_filter = ['isBestSell','isReturnable', 'isPublished']
     actions = [duplicate_event]
-
+    
 
 
 

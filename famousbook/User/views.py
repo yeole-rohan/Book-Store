@@ -154,6 +154,7 @@ def loginView(request):
             if type(email_or_mobile) == str and "@" in email_or_mobile:
                 user = User.objects.get(email=email_or_mobile)
                 user = authenticate(request, username=user.username, password=password)
+                print("user", user)
                 if user is not None:
                     login(request, user)
                     return redirect("book:home")

@@ -18,9 +18,28 @@
                 Please fill up the form below to send us a message. We will contact you very soon.
             </div>
         </div>
+        {% if contactUsForm.errors %}
+        <div class="creation-error-block">
+            {% for field in contactUsForm %}
+                {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible fade show {% if message.tags %} {{ message.tags }} {% endif %}" role="alert">
+                    {{error|escape}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in contactUsForm.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show {% if message.tags %} {{ message.tags }} {% endif %}" role="alert">
+                {{error|escape}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
         <div class="row">
             <div class="col-lg-6 col-md-12">
                 <form method="POST" id="contactUsForm">
+                    {% csrf_token %}
                     {{contactUsForm.as_p}}
                     <div class="contact-btn-wrap text-center">
                         <button class="color-white" type="submit">Send Massage</button>

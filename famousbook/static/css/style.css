@@ -782,7 +782,7 @@ header {
     padding: 5px 10px;
 }
 
-.search-suggestion {
+.search-suggestion, .mobile-search-suggestion {
     position: absolute;
     width: 100%;
     z-index: 99;
@@ -1186,7 +1186,9 @@ button:hover,
     color: #004872;
     background-color: #fff;
 }
-
+.search-btn:hover{
+    background-color: black;
+}
 .logout-cancel-btn:hover {
     border-color: white;
     background-color: #004872;
@@ -1260,6 +1262,9 @@ button:hover,
 .delete-qty-icon{
     text-align: right;
 }
+.book-title, .book-author{
+    word-break: break-word
+}
 /* Media Queries */
 @media screen and (max-width: 1210px) {
 
@@ -1310,6 +1315,13 @@ button:hover,
     }
     .book-details-img{
         width: 200px;
+    }
+    #child-author{
+        margin: 50px auto;
+    }
+    .featured-book-see-all{
+        font-size: 18px;
+        line-height: 28px;
     }
     .mobile-lists{
         position: absolute;

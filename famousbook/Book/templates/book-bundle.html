@@ -30,7 +30,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="book-title weight-700 font-24 color-004872">
-                                    {{ book.title }}
+                                    {{ book.title| truncatechars:"30" }}
                                 </div>
                                 <div class="book-author weight-400 font-18 color-gray">
                                     {{ book.author}}
