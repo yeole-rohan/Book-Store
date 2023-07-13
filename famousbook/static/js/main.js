@@ -1,5 +1,13 @@
 var $ = jQuery.noConflict();
 $(document).ready((function () {
+  
+  setInterval(function() {
+    var alertDiv = document.querySelector(".alert");
+    if (alertDiv) {
+      alertDiv.remove();
+    }
+}, 5000); // Remove the alert after 5 seconds (5000 milliseconds)
+
   /**
    * Attaches a click event listener to the ".add-to-cart" element. When clicked, an AJAX request is sent to the server to add the book to the cart.
    * @param {object} params - The event object.

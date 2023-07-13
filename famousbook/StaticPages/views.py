@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
 from .forms import ContactUsForm
+from django.contrib import messages
 
 def contactUs(request):
     contactUsForm = ContactUsForm()
@@ -20,6 +21,7 @@ def contactUs(request):
             contactUsForm.save()
             subject = "Contact Us"
             send_mail(subject, "{} is contacting with {}, {}, {} for {} with {}".format(fullName,mobileNumer,emailId,address,description, purposeOfContact.replace("-", " ")), EMAIL_USER, [EMAIL_USER],)
+            messages.success(request, "Thanks for contacting.")
             return redirect("staticPages:contactUs")
         else:
             print(contactUsForm.errors)
