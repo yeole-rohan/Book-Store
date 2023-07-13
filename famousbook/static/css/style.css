@@ -1313,6 +1313,12 @@ button:hover,
     .head-right {
         display: none;
     }
+    .cart-book-list, .cart-books-total-promo{
+        width: 100%;
+    }
+    .container-cart {
+        flex-direction: column;
+    }
     .book-details-img{
         width: 200px;
     }
@@ -1495,12 +1501,7 @@ button:hover,
     .book-details-img{
         width: 150px;
     }
-    .container-cart {
-        flex-direction: column;
-    }
-    .cart-book-list, .cart-books-total-promo{
-        width: 100%;
-    }
+    
     .book-other-details-right{
         margin-left: 50px;
     }
