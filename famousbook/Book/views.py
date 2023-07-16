@@ -92,7 +92,7 @@ def findBookSingleISBN(request):
                     messages.error(request, "Book Exist")
                 return redirect("book:findBookSingleISBN")
             else:
-                messages.error("Data is not available in API")
+                messages.error(request, "Data is not available in API")
                 return redirect("book:findBookSingleISBN")
         else:
             print(singleISBNForm.errors)
@@ -257,7 +257,7 @@ def editBook(request, id):
                 print(bookForm.errors)
     else:
         book = ''
-        messages.error("Book not found")
+        messages.error(request, "Book not found")
         return redirect("book:inventory")
     return render(request, template_name="edit-book.html", context={'book':book, 'form' : bookForm})
 
@@ -268,7 +268,7 @@ def deleteSingleBook(request, id):
         messages.success(request, "Book deleted")
         return redirect("book:inventory")
     else:
-        messages.error("Book not found")
+        messages.error(request, "Book not found")
         return redirect("book:inventory")
 
 def getBookPrimaryCategory(request, id):
