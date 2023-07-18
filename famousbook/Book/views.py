@@ -117,24 +117,30 @@ def bulkISBNUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    isbn = row['ISBN'].replace(",", "")
-                    if not Book.objects.filter(isbn__iexact=isbn).exists():
-                        # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
-                        data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
-                        
-                        if data:
-                            status = createBook(data.json(), isbn)
-                            if not status:
-                                failedISBN.append(isbn)
+                    # isbn = row.get('ISBN').replace(",", "")
+                    print(row, "row")
+                    if row.get('ISBN'):
+                        isbn = row.get('ISBN').replace(",", "")
+                        print(isbn, "isbn")
+                        if not Book.objects.filter(isbn__iexact=isbn).exists():
+                            # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
+                            data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
+                            
+                            if data:
+                                status = createBook(data.json(), isbn)
+                                if not status:
+                                    failedISBN.append(isbn)
+                                else:
+                                    passedISBN.append(isbn)
                             else:
-                                passedISBN.append(isbn)
+                                failedISBN.append(isbn)
+                            # Sleep for 4 sec if rows are more than 100
+                            if rows >= 100:
+                                time.sleep(4)
                         else:
                             failedISBN.append(isbn)
-                        # Sleep for 4 sec if rows are more than 100
-                        if rows >= 100:
-                            time.sleep(4)
                     else:
-                        failedISBN.append(isbn)
+                        messages.error(request, "Make sure ISBN is added as header to column.")
         else:
             print(bulkSheetForm.errors)
     return render(request, template_name="bulk-isbn-sheet-upload.html", context={'passedISBN':passedISBN, 'failedISBN':failedISBN, 'form' : bulkSheetForm})
@@ -172,8 +178,16 @@ def bulkSheetUpload(request):
                 bindingList = ['paperback', 'hardcore']
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
+                    if PrimaryCategory.objects.filter(name=row.get('Primary Category')).exists():
+                        primary = PrimaryCategory.objects.get(name=row.get('Primary Category'))
+                        if SecondaryCategory.objects.filter(name=row.get('Secondary Category')).exists():
+                            secondary = SecondaryCategory.objects.get(name=row.get('Secondary Category'))
+                        else:
+                            secondary = SecondaryCategory.objects.get(name="dc")
+                    else:
+                        primary = PrimaryCategory.objects.get(name="comic")
                     if not Book.objects.filter(isPublished=True, isbn__iexact=str(row['ISBN'])).exists():
-                        book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=row['ISBN'], author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=row['Primary Category'], secondaryCategory=row['Secondary Category'], bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
+                        book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=row['ISBN'], author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=primary, secondaryCategory=secondary, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
                         book.save()
             
         else:

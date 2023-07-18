@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags static %}
 {% block title %}Upload Bulk Data Sheet{% endblock title %}
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
-    <li class="breadcrumb-item color-004872 font-18" aria-current="page">Spload Sheet</li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">Upload Sheet</li>
 {% endblock breadcrumbs %}
 {% block content %}
     <div class="container">
         <div class="inventory-head-dropdown mb-3 text-end">
+            <div class="demo-file">
+                <a href="{% static 'files/all-bulk-book-data.xlsx' %}" download>Refrence File format</a>
+            </div>
             <div class="dropdown">
                 <a href="http://" class="dropdown-toggle account" data-bs-toggle="dropdown" aria-expanded="false">
                     Create

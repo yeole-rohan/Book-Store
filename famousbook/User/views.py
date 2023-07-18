@@ -152,12 +152,15 @@ def loginView(request):
         password= request.POST.get("password")
         if email_or_mobile:
             if type(email_or_mobile) == str and "@" in email_or_mobile:
-                user = User.objects.get(email=email_or_mobile)
-                user = authenticate(request, username=user.username, password=password)
-                print("user", user)
-                if user is not None:
-                    login(request, user)
-                    return redirect("book:home")
+                try:
+                    user = User.objects.get(email=email_or_mobile)
+                    user = authenticate(request, username=user.username, password=password)
+                    print("user", user)
+                    if user is not None:
+                        login(request, user)
+                        return redirect("book:home")
+                except:
+                    messages.error(request, "User not found.")
         else:
             messages.error(request, "Enter Mobile or Email Id")
     return render(request, template_name="login.html", context={'email_or_mobile' : email_or_mobile, 'isMobile' : isMobile, 'isPassword' : isPassword, 'hideNext' : hideNext})
