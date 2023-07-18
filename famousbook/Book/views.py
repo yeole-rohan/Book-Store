@@ -122,22 +122,25 @@ def bulkISBNUpload(request):
                     if row.get('ISBN'):
                         isbn = row.get('ISBN').replace(",", "")
                         print(isbn, "isbn")
-                        if not Book.objects.filter(isbn__iexact=isbn).exists():
-                            # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
-                            data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
-                            
-                            if data:
-                                status = createBook(data.json(), isbn)
-                                if not status:
-                                    failedISBN.append(isbn)
+                        try:
+                            if not Book.objects.filter(isbn__iexact=isbn).exists():
+                                # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
+                                data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
+                                
+                                if data:
+                                    status = createBook(data.json(), isbn)
+                                    if not status:
+                                        failedISBN.append(isbn)
+                                    else:
+                                        passedISBN.append(isbn)
                                 else:
-                                    passedISBN.append(isbn)
+                                    failedISBN.append(isbn)
+                                # Sleep for 4 sec if rows are more than 100
+                                if rows >= 100:
+                                    time.sleep(4)
                             else:
                                 failedISBN.append(isbn)
-                            # Sleep for 4 sec if rows are more than 100
-                            if rows >= 100:
-                                time.sleep(4)
-                        else:
+                        except:
                             failedISBN.append(isbn)
                     else:
                         messages.error(request, "Make sure ISBN is added as header to column.")
