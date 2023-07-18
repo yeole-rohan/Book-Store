@@ -35,7 +35,7 @@ class Book(models.Model):
     PRINT_CONDITION = (
         ('new', 'New'),
         ('like-new', 'Like New'),
-        ('used-ver-good', 'used very Good'),
+        ('used-very-good', 'used very Good'),
         ('used-good', 'Used Good'),
         ('used-acceptable', 'Used Acceptable')
     )
