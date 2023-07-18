@@ -44,9 +44,9 @@ class Book(models.Model):
         ('hardcore', 'Hardcore')
     )
     LANGUAGE = (
-        ('english', 'English'),
-        ('hindi', 'Hindi'),
-        ('marathi', 'Marathi')
+        ('en', 'English'),
+        ('hi', 'Hindi'),
+        ('mr', 'Marathi')
     )
     PRINTED_IN = (
         ('india', 'India'),

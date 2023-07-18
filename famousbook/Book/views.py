@@ -71,18 +71,20 @@ def bundleDeals(request, category):
 
 @login_required
 def findBookSingleISBN(request):
-    singleISBNForm = SingleISBNForm()
-    
+
     if request.method == "POST":
         singleISBNForm = SingleISBNForm(request.POST or None)
         if singleISBNForm.is_valid():
             ISBN = request.POST.get("isbn")
             # Fetch book from bookswagon
-            data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
-            if data:
+            # data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
+            # Google Books API
+            data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCqwC1lzmh9nV1fe3Rv11lAP5OiEyG4hP8".format(int(ISBN)))
+            data = data.json()
+            if data['totalItems'] > 0:
                 # Function to validate, save book data
                 if not Book.objects.filter(isbn__iexact=ISBN).exists():
-                    status = createBook(data.json(), ISBN)
+                    status = createBook(data['items'][0], ISBN)
                     if status:
                         messages.success(request, "Book Entry Added")
                         return redirect("book:findBookSingleISBN")
@@ -118,30 +120,31 @@ def bulkISBNUpload(request):
                 # bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
                     # isbn = row.get('ISBN').replace(",", "")
-                    print(row, "row")
                     if row.get('ISBN'):
-                        isbn = row.get('ISBN').replace(",", "")
-                        print(isbn, "isbn")
-                        try:
-                            if not Book.objects.filter(isbn__iexact=isbn).exists():
-                                # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
-                                data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
-                                
-                                if data:
-                                    status = createBook(data.json(), isbn)
-                                    if not status:
-                                        failedISBN.append(isbn)
-                                    else:
-                                        passedISBN.append(isbn)
-                                else:
+                        isbn = row.get('ISBN').replace(",", "").strip()
+                        # try:
+                        if not Book.objects.filter(isbn__iexact=isbn).exists():
+                            # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
+                            # data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
+                            
+                            # Google Books API
+                            data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCqwC1lzmh9nV1fe3Rv11lAP5OiEyG4hP8&maxResults=1".format(int(isbn)))
+                            data = data.json()
+                            if data['totalItems'] > 0:
+                                status = createBook(data['items'][0], isbn)
+                                if not status:
                                     failedISBN.append(isbn)
-                                # Sleep for 4 sec if rows are more than 100
-                                if rows >= 100:
-                                    time.sleep(4)
+                                else:
+                                    passedISBN.append(isbn)
                             else:
                                 failedISBN.append(isbn)
-                        except:
+                            # Sleep for 4 sec if rows are more than 100
+                            # if rows >= 100:
+                            #     time.sleep(4)
+                        else:
                             failedISBN.append(isbn)
+                        # except:
+                        #     failedISBN.append(isbn)
                     else:
                         messages.error(request, "Make sure ISBN is added as header to column.")
         else:
@@ -189,9 +192,9 @@ def bulkSheetUpload(request):
                         if SecondaryCategory.objects.filter(name=row.get('Secondary Category')).exists():
                             secondary = SecondaryCategory.objects.get(name=row.get('Secondary Category'))
                         else:
-                            secondary = SecondaryCategory.objects.get(name="DC")
+                            secondary = None
                     else:
-                        primary = PrimaryCategory.objects.get(name="Comic")
+                        primary = None
                     try:
                         if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
                             book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=primary, secondaryCategory=secondary, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )

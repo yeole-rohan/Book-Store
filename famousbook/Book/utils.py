@@ -1,19 +1,30 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
-from .models import Book
+from .models import Book, PrimaryCategory
 
 def createBook(data, ISBN):
-    title = data.get("title") if data.get("title") else ""
-    description = data.get("description") if data.get("description") else ""
-    publisher = ",".join(data.get("publishers")) if data.get("publishers") else ""
-    cover = data.get("covers")[0] if data.get("covers") else ''
-    number_of_pages = data.get("number_of_pages") if data.get("number_of_pages") else 0
-    publish_date = data.get("publish_date") if data.get("publish_date") else ""
-    # languages = data.get("languages")[0]["key"].split("/languages/").join("") if data.get("languages") else "eng"
-
-    if title and not Book.objects.filter(isbn__iexact=ISBN).exists():
-        Book.objects.create(title=title,description=description, publisher=publisher, bookURL="https://covers.openlibrary.org/b/id/{}-M.jpg".format(cover), noOfPages=number_of_pages, isbn=ISBN, publishedDate=publish_date, bookLanguage="english")
-        return True
+    volumeInfo = data.get('volumeInfo')
+    if volumeInfo:
+        title = volumeInfo.get("title") if volumeInfo.get("title") else ""
+        description = volumeInfo.get("description") if volumeInfo.get("description") else ""
+        publisher = volumeInfo.get("publishers") if volumeInfo.get("publishers") else ""
+        cover = volumeInfo.get("imageLinks")['thumbnail'] if volumeInfo.get("imageLinks") else ''
+        number_of_pages = volumeInfo.get("pageCount") if volumeInfo.get("pageCount") else 0
+        publish_date = volumeInfo.get("publishedDate") if volumeInfo.get("publishedDate") else ""
+        language = data.get("language") if data.get("language") else "en"
+        authors = ",".join(volumeInfo.get("authors")) if volumeInfo.get("authors") else ""
+        publisher = volumeInfo.get("publisher") if volumeInfo.get("publisher") else ""
+        category = volumeInfo.get("category")[0] if volumeInfo.get("category") else ""
+        if PrimaryCategory.objects.filter(name=category).exists():
+            primary = PrimaryCategory.objects.get(name=category)
+        else:
+            primary = None
+        defaultLang = ['en','hi','mr']
+        if title and not Book.objects.filter(isbn__iexact=ISBN).exists():
+            Book.objects.create(title=title,description=description, publisher=publisher, bookURL=cover, noOfPages=number_of_pages, isbn=ISBN, bookLanguage=language if language in defaultLang else 'en', publishedDate=publish_date,author=authors, primaryCategory=primary)
+            return True
+        else:
+            return False
     else:
         return False
  
