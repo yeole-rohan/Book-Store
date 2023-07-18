@@ -183,9 +183,9 @@ def bulkSheetUpload(request):
                         if SecondaryCategory.objects.filter(name=row.get('Secondary Category')).exists():
                             secondary = SecondaryCategory.objects.get(name=row.get('Secondary Category'))
                         else:
-                            secondary = SecondaryCategory.objects.get(name="dc")
+                            secondary = SecondaryCategory.objects.get(name="DC")
                     else:
-                        primary = PrimaryCategory.objects.get(name="comic")
+                        primary = PrimaryCategory.objects.get(name="Comic")
                     if not Book.objects.filter(isPublished=True, isbn__iexact=str(row['ISBN'])).exists():
                         book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=row['ISBN'], author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=primary, secondaryCategory=secondary, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
                         book.save()
