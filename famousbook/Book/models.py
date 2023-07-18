@@ -69,7 +69,7 @@ class Book(models.Model):
     discountPrice = models.FloatField(_("Discount Price"), default=0, blank=True, null=True)
     author = models.TextField(_("Author List"), blank=True, null=True)
     bookBinding = models.CharField(_("Book Binding"),default="paperback", choices=PRINT_BINDING, max_length=100)
-    bookCondition = models.CharField(_("Book Condition"), choices=PRINT_CONDITION, default="new", max_length=100)
+    bookCondition = models.CharField(_("Book Condition"), default="New", max_length=100)
     discountPercentage = models.PositiveIntegerField(_("Discount Percentage"), default=0, blank=True, null=True)
     description = models.TextField(_("Book Description"), default="", blank=True, null=True)
     bookLanguage = models.CharField(_("book Language"), choices=LANGUAGE, default="english", max_length=50)
