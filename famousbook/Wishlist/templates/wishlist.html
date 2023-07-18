@@ -111,7 +111,7 @@
                                     </span>
                                 </div>
                                 <div class="book-status color-red weight-400 font-16">
-                                    {{ book.bookCondition }}
+                                    {{ book.bookCondition | capfirst }}
                                 </div>
                             </a>
                             <div class="book-add-to-cart">
@@ -178,7 +178,7 @@
                                 </span>
                             </div>
                             <div class="book-status color-red weight-400 font-16">
-                                {{ book.bookCondition }}
+                                {{ book.bookCondition | capfirst }}
                             </div>
                         </a>
                         <div class="book-add-to-cart">
