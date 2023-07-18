@@ -98,7 +98,6 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         super(Book, self).save(*args, **kwargs)
         # Finds Book Percentage
-        print(self.discountPrice, self.discountPercentage, self.price, "save method")
         if not self.discountPercentage and self.price and self.discountPrice:
             print("inside")
             self.discountPercentage = (float(self.price) - float(self.discountPrice)) / float(self.price)* 100

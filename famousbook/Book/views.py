@@ -164,6 +164,8 @@ def manualBookCreate(request):
 
 @login_required
 def bulkSheetUpload(request):
+    failedISBN = []
+    passedISBN = []
     bulkSheetForm = BulkSheetForm()
     if request.method == "POST":
         bulkSheetForm = BulkSheetForm(request.POST or None, request.FILES or None)
@@ -186,13 +188,15 @@ def bulkSheetUpload(request):
                             secondary = SecondaryCategory.objects.get(name="DC")
                     else:
                         primary = PrimaryCategory.objects.get(name="Comic")
-                    if not Book.objects.filter(isPublished=True, isbn__iexact=str(row['ISBN'])).exists():
+                    if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
                         book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=row['ISBN'], author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=primary, secondaryCategory=secondary, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
                         book.save()
-            
+                        passedISBN.append(book.isbn)
+                    else:
+                        failedISBN.append(row['ISBN'])
         else:
             print(bulkSheetForm.errors)
-    return render(request, template_name="bulk-sheet-upload.html", context={'form' : bulkSheetForm})
+    return render(request, template_name="bulk-sheet-upload.html", context={'form' : bulkSheetForm, 'failedISBN' : failedISBN, 'passedISBN' : passedISBN})
 
 
 def bookDetails(request, id):
