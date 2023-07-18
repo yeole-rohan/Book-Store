@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from Book.models import Book
 import json, datetime
+from django.db.models import F
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CouponCode
@@ -63,13 +64,13 @@ def view_cart(request):
     wish_items = ''
     promoCodeForm = PromoCodeForm()
     try:
-        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True, quantity__gt=0)[:10]
     except:
-        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True, quantity__gt=0)
     try:
-        featuredBooks = Book.objects.all()[:10]
+        featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)[:10]
     except:
-        featuredBooks = Book.objects.all()
+        featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
         wish_items = Wishlist.objects.filter(user=request.user)
@@ -95,7 +96,7 @@ def view_cart(request):
         if cart_cookie:
             cart_ids = json.loads(cart_cookie)
             print("cart_ids", cart_ids)
-            cart_items = Book.objects.filter(isPublished=True, id__in=cart_ids)
+            cart_items = Book.objects.filter(isPublished=True, id__in=cart_ids,quantity__gt=0)
             print(cart_items)
     return render(request, 'cart.html', context={'bestSeller':bestSeller, 'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})
 
@@ -176,6 +177,7 @@ def selectAddress(request):
 def overview(request):
     cart_items = Cart.objects.filter(user=request.user)
     amountPayable = paymentCost(cart_items)
+    failedCheckout = []
     pickUp = cart_items.first().pickType
     deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
     charge = cart_items.first().charges
@@ -186,9 +188,16 @@ def overview(request):
     if request.method=="POST":
         idList = []
         for cart in cart_items:
-            orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge)
-            idList.append(orderId.id)
-        messages.success(request, "Your order has been placed.")
+            if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty):
+                Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge)
+                idList.append(orderId.id)
+            else:
+                failedCheckout.append(cart.book.title)
+        if failedCheckout:
+            messages.warning(request, "Some order failed to place")
+        else:
+            messages.success(request, "Your order has been placed.")
         subject = "Order Confirmation"
         loginHTMLTemplate = render_to_string("email-template/order.html", context={"orderList" : Order.objects.filter(id__in=idList).order_by("-created") }, )
         body = strip_tags(loginHTMLTemplate)

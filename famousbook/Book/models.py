@@ -83,7 +83,7 @@ class Book(models.Model):
     primaryCategory = models.ForeignKey("PrimaryCategory", verbose_name=_("Primary Category"), on_delete=models.CASCADE,  blank=True, null=True)
     secondaryCategory = models.ForeignKey("SecondaryCategory", verbose_name=_("Secondary Category"), on_delete=models.CASCADE, blank=True, null=True)
     book_position = models.CharField(_("book rack"), max_length=50, blank=True, null=True)
-    quantity = models.PositiveIntegerField(_("Book Quantity"), default=1)
+    quantity = models.PositiveIntegerField(_("Book Quantity"), default=0)
     book_type=models.CharField(_("Book Type"), choices=BOOK_TYPE, default="single", max_length=50)
     created = models.DateTimeField(_("Book created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Book last updated"), auto_now=True)

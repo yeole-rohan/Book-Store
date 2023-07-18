@@ -26,18 +26,18 @@ def addToWishList(request):
 def home(request):
     wishlist = Wishlist.objects.filter(user=request.user)
     try:
-        featuredBooks = Book.objects.all()[:10]
+        featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)[:10]
     except:
-        featuredBooks = Book.objects.all()
+        featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)
     try:
-        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True, quantity__gt=0)[:10]
     except:
-        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True, quantity__gt=0)
     history_books = []
     history = request.COOKIES.get('history')
     if history:
         history = json.loads(history)
-        history_books = Book.objects.filter(isPublished=True, id__in=history)
+        history_books = Book.objects.filter(isPublished=True, id__in=history, quantity__gt=0)
     return render(request, template_name="wishlist.html", context={'bestSeller':bestSeller, 'wishlist' : wishlist, 'history_books' :history_books, 'featuredBooks' : featuredBooks})
 
 '''Remove Wishlist Book'''

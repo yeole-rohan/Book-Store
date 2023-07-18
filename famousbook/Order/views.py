@@ -13,13 +13,13 @@ from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
 def myOrders(request):
     myOrders = Order.objects.filter(user=request.user).order_by("-created")
     try:
-        featuredBooks = Book.objects.all()[:10]
+        featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)[:10]
     except:
-        featuredBooks = Book.objects.all()
+        featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)
     try:
-        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)[:10]
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True, quantity__gt=0)[:10]
     except:
-        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True)
+        bestSeller = Book.objects.filter(isPublished=True, isBestSell=True, quantity__gt=0)
     wish_items = Wishlist.objects.filter(user=request.user)
     return render(request, template_name="my-orders.html", context={'bestSeller':bestSeller,'myOrders' : myOrders, "featuredBooks" : featuredBooks, "wish_items" : wish_items})
 
