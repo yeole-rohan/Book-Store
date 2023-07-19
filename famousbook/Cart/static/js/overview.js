@@ -9,8 +9,6 @@ $(document).ready((function () {
             chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs50</div><div>Delivery time 5-7 working days</div>"
         } else if (this.value == "70") {
             chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs70</div><div>Delivery time - 5 to 10 working days</div>"
-        }else{
-            chargeDiv.innerHTML = "<div>Please enquire about after payment</div>"
         }
         $(document).on("change", "#id_charges", function (params) {
             params.preventDefault()
@@ -20,8 +18,6 @@ $(document).ready((function () {
                 chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs50</div><div>Delivery time 5-7 working days</div>"
             } else if (this.value == "70") {
                 chargeDiv.innerHTML = "<div>Shipping Charges will be added Rs70</div><div>Delivery time - 5 to 10 working days</div>"
-            }else{
-                chargeDiv.innerHTML = "<div>Please enquire about after payment</div>"
             }
             
             $.ajax({

@@ -108,9 +108,11 @@
                                 </div>
                                 <div class="charge"></div>
                             {% endif %}
-                            <div class="color-red">Final Shipping Amount {{amountPayable.shippingAmount}}</div>
-                            {% if not amountPayable.shippingAmount %}
-                                <div class="color-red">Free Shipping Available</div>
+                            {% if not shippingChargesForm.charges.value == "enquire" %}
+                                <div class="color-red">Final Shipping Amount {{amountPayable.shippingAmount}}</div>
+                                {% if not amountPayable.shippingAmount %}
+                                    <div class="color-red">Free Shipping Available</div>
+                                {% endif %}
                             {% endif %}
                             <div class="amount-payable-total d-flex justify-content-between">
                                 <div class="amount-payable-total-text weight-500 font-18 color-black">
@@ -120,14 +122,20 @@
                                     ₹ {{amountPayable.totalPayable}}
                                 </div>
                             </div>
+                                
+                            
                         </div>
-                        <small>All Orders will be cash on delivery for now</small>
-                        <div class="procced">
-                            <form method="POST">
-                                {% csrf_token %}
-                                <button type="submit">Place Order</button>
-                            </form>
-                        </div>
+                        {% if shippingChargesForm.charges.value == "enquire" %}
+                                For International Shiiping please contact us via contact us form.
+                        {% else %}
+                            <small>All Orders will be cash on delivery for now</small>
+                            <div class="procced">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit">Place Order</button>
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
             {% else %}
