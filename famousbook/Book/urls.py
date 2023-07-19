@@ -17,5 +17,6 @@ urlpatterns = [
     path("bundle-deals/<str:category>/", views.bundleDeals, name="bundleDeals"),
     path("offers/", views.offers, name="offers"),
     path("author/<str:author>/", views.authorBooks, name="authorBooks"),
-    path("search/advance/", views.advanceSearch, name="advanceSearch")
+    path("search/advance/", views.advanceSearch, name="advanceSearch"),
+    path('getSubcategory/', views.get_subcategory, name="get_subcategory") 
 ]

@@ -159,6 +159,8 @@ def loginView(request):
                     if user is not None:
                         login(request, user)
                         return redirect("book:home")
+                    else:
+                        messages.error(request, "Entered wrong credentials.")
                 except:
                     messages.error(request, "User not found.")
         else:

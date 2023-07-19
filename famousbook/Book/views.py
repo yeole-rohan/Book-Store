@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-
+from django.http import HttpResponse
+import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -71,7 +72,7 @@ def bundleDeals(request, category):
 
 @login_required
 def findBookSingleISBN(request):
-
+    singleISBNForm = SingleISBNForm()
     if request.method == "POST":
         singleISBNForm = SingleISBNForm(request.POST or None)
         if singleISBNForm.is_valid():
@@ -184,20 +185,26 @@ def bulkSheetUpload(request):
                 df = pandas.read_excel(data).fillna("")
 
                 bindingList = ['paperback', 'hardcore']
-                # bookLanguageList = ['english', 'hindi', 'marathi']
+                bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
-                    print("row", str(row['ISBN']).replace(".0", ""))
-                    if PrimaryCategory.objects.filter(name=row.get('Primary Category')).exists():
-                        primary = PrimaryCategory.objects.get(name=row.get('Primary Category'))
-                        if SecondaryCategory.objects.filter(name=row.get('Secondary Category')).exists():
-                            secondary = SecondaryCategory.objects.get(name=row.get('Secondary Category'))
-                        else:
-                            secondary = None
+                    print("row",str(row['ISBN']))
+                    if PrimaryCategory.objects.filter(name=row.get('Genres')).exists():
+                        primary = PrimaryCategory.objects.get(name=row.get('Genres'))
                     else:
                         primary = None
                     try:
+                        if "eng" in row['Language'].lower():
+                            language = "en"
+                        elif "hindi" in row['Language'].lower():
+                            language = "hi"
+                        elif "marathi" in row['Language'].lower():
+                            language = "mr"
+                        else:
+                            language ="en"
+
+                        print(Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists())
                         if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
-                            book = Book.objects.create(title= row['Title'], bookURL=row['Image'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Description'] if row['Description'] else '', bookCondition =row['Condition'], price= int(row['MRP']) if row['MRP'] else 0, discountPrice=int(row['SP']) if row['SP'] else '', discountPercentage = (float(row['MRP']) - float(row['SP'])) / float(row['MRP']) * 100  if row['SP'] else '', quantity=int(row['Quantity']) if row['Quantity'] else 1, primaryCategory=primary, secondaryCategory=secondary, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage='english',  noOfPages=int(row['Pages']), bookSize=row['Size'], )
+                            book = Book.objects.create(title= row['Title'], bookURL=row['Image Url'],publisher=row['Publisher'],publishedDate=row['Published Date'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Summary'] if row['Summary'] else '', primaryCategory=primary, secondaryCategory=None, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage=language,  noOfPages=int(row['Pages']) )
                             book.save()
                             passedISBN.append(str(row['ISBN']).replace(".0", ""))
                         else:
@@ -415,3 +422,9 @@ def advanceSearch(request):
         else:
             return JsonResponse({"success" : False, "message" : "No Result Found"})
     return JsonResponse({"success" : False, "message" : "No Result Found"})
+
+@login_required
+def get_subcategory(request): 
+    id = request.GET.get('id','')
+    result = list(SecondaryCategory.objects.filter(primaryCategory=int(id)).values('id', 'name')) 
+    return HttpResponse(json.dumps(result), content_type="application/json")

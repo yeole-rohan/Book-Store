@@ -26,7 +26,7 @@
                     {{book.title}}
                 </div>
                 <div class="book-details-date-and-back-type font-18 weight-500">
-                    ({{book.get_bookBinding_display}}) | Released: {{book.publishedDate | date}}
+                    ({{book.get_bookBinding_display}}) | Released: {{book.publishedDate}}
                 </div>
                 <div class="book-details-author font-18 weight-500">
                     By: {{book.author}} 
@@ -94,29 +94,50 @@
             </div>
             <div class="book-other-details-wrapper d-flex ">
                 <div class="book-other-details-left">
+                    {% if book.isbn %}
+                    
                     <div class="book-other-details-span">
                         <span class="weight-500 font-20 color-black">ISBN:</span><span>{{book.isbn}}</span>
                     </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Publisher: </span><span>{{book.publisher}}</span>
-                    </div>
+                    
+                    {% endif %}
+                    {% if book.publisher %}
+                        <div class="book-other-details-span">
+                            <span class="weight-500 font-20 color-black">Publisher: </span><span>{{book.publisher}}</span>
+                        </div>
+                    
+                    {% endif %}
+                    {% if book.bookBinding %}
+                    
                     <div class="book-other-details-span">
                         <span class="weight-500 font-20 color-black">Binding:</span><span>{{book.get_bookBinding_display}}</span>
                     </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">No of Pages:</span><span> {{book.noOfPages}}</span>
-                    </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Size:</span><span> {{book.bookSize}}</span>
-                    </div>
+                    {% endif %}
+                    {% if book.noOfPages %}
+                    
+                        <div class="book-other-details-span">
+                            <span class="weight-500 font-20 color-black">No of Pages:</span><span> {{book.noOfPages}}</span>
+                        </div>
+                    
+                    {% endif %}
+                    {% if book.bookSize %}
+                        <div class="book-other-details-span">
+                            <span class="weight-500 font-20 color-black">Size:</span><span> {{book.bookSize}}</span>
+                        </div>
+                    
+                    {% endif %}
                 </div>
                 <div class="book-other-details-right">
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Publisher Date:</span><span>{{book.publishedDate | date}}</span>
-                    </div>
-                    <div class="book-other-details-span">
-                        <span class="weight-500 font-20 color-black">Returnable:</span><span> {% if book.isReturnable %}Yes{% else %}No{% endif %}</span>
-                    </div>
+                    {% if book.publishedDate %}
+                        <div class="book-other-details-span">
+                            <span class="weight-500 font-20 color-black">Publisher Date:</span><span>{{book.publishedDate}}</span>
+                        </div>
+                    {% endif %}
+                    {% if book.isReturnable %}
+                        <div class="book-other-details-span">
+                            <span class="weight-500 font-20 color-black">Returnable:</span><span> {% if book.isReturnable %}Yes{% else %}No{% endif %}</span>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -156,7 +177,7 @@
                                     {{ book.title | truncatechars:"30"}}
                                 </div>
                                 <div class="book-author weight-400 font-16 color-gray">
-                                    {{ book.author}}
+                                    {{book.author | truncatechars:"30"}}
                                 </div>
                                 <div class="book-price weight-400 font-16 color-gray">
                                     MRP Rs. {{ book.price }}
@@ -219,7 +240,7 @@
                                     {{ book.title| truncatechars:"30" }}
                                 </div>
                                 <div class="book-author weight-400 font-16 color-gray">
-                                    {{ book.author}}
+                                    {{book.author | truncatechars:"30"}}
                                 </div>
                                 <div class="book-price weight-400 font-16 color-gray">
                                     MRP Rs. {{ book.price }}
@@ -286,7 +307,7 @@
                                 {{ book.title| truncatechars:"30" }}
                             </div>
                             <div class="book-author weight-400 font-16 color-gray">
-                                {{ book.author}}
+                                {{book.author | truncatechars:"30"}}
                             </div>
                             <div class="book-price weight-400 font-16 color-gray">
                                 MRP Rs. {{ book.price }}

@@ -31,10 +31,10 @@
                                         
                                         </div>
                                         <div class="pt-1 cart-book-list-loop-date-type weight-500 font-16 ">
-                                            ({{item.book.get_bookBinding_display}}) | Released: {{item.book.publishedDate | date}}
+                                            ({{item.book.get_bookBinding_display}}) | Released: {{item.book.publishedDate}}
                                         </div>
                                         <div class="pt-1 cart-book-list-loop-author weight-500 font-16 ">
-                                            By: {{item.book.author}} 
+                                            By: {{item.book.author | truncatechars:"30"}}
                                         </div>
                                         <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
                                             Publisher: {{item.book.publisher}}

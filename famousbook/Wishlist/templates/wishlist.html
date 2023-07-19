@@ -27,10 +27,10 @@
                                    {{item.book.title}}
                                     </div>
                                     <div class="pt-1 cart-book-list-loop-date-type weight-500 font-16 ">
-                                        ({{item.book.get_bookBinding_display}}) | Released: {{item.book.publishedDate | date}}
+                                        ({{item.book.get_bookBinding_display}}) | Released: {{item.book.publishedDate}}
                                     </div>
                                     <div class="pt-1 cart-book-list-loop-author weight-500 font-16 ">
-                                        By: {{item.book.author}} 
+                                        By: {{item.book.author | truncatechars:"30"}}
                                     </div>
                                     <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
                                         Publisher: {{item.book.publisher}}
@@ -99,7 +99,7 @@
                                     {{ book.title| truncatechars:"30" }}
                                 </div>
                                 <div class="book-author weight-400 font-16 color-gray">
-                                    {{ book.author}}
+                                    {{book.author | truncatechars:"30"}}
                                 </div>
                                 <div class="book-price weight-400 font-16 color-gray">
                                     MRP Rs. {{ book.price }}
@@ -166,7 +166,7 @@
                                 {{ book.title| truncatechars:"30" }}
                             </div>
                             <div class="book-author weight-400 font-16 color-gray">
-                                {{ book.author}}
+                                {{book.author | truncatechars:"30"}}
                             </div>
                             <div class="book-price weight-400 font-16 color-gray">
                                 MRP Rs. {{ book.price }}

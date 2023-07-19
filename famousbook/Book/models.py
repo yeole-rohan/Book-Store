@@ -60,17 +60,17 @@ class Book(models.Model):
         ("bundle", "Bundle")
     )
     title = models.CharField(_("Book Title"), max_length=500, blank=False, null=False)
-    price = models.FloatField(_("Price"),  default=0)
+    price = models.FloatField(_("MRP"),  default=0)
     bookImage = models.ImageField(_("Book Image"), upload_to="book-image/", default="", blank=True, null=True)
     bookURL = models.URLField(_("Book URL"), max_length=1000, default="", blank=True, null=True)
     isPublished = models.BooleanField(_("Published?"), default=False)
     isReturnable = models.BooleanField(_("Is Returnable"), default=False)
     isBestSell = models.BooleanField(_("Is Best Seller"), default=False)
-    discountPrice = models.FloatField(_("Discount Price"), default=0, blank=True, null=True)
+    discountPrice = models.FloatField(_("Selling Price"), default=0, blank=True, null=True)
     author = models.TextField(_("Author List"), blank=True, null=True)
     bookBinding = models.CharField(_("Book Binding"),default="paperback", choices=PRINT_BINDING, max_length=100)
     bookCondition = models.CharField(_("Book Condition"), default="New", max_length=100)
-    discountPercentage = models.PositiveIntegerField(_("Discount Percentage"), default=0, blank=True, null=True)
+    discountPercentage = models.PositiveIntegerField(_("Selling Percentage"), default=0, blank=True, null=True)
     description = models.TextField(_("Book Description"), default="", blank=True, null=True)
     bookLanguage = models.CharField(_("book Language"), choices=LANGUAGE, default="english", max_length=50)
     publisher = models.CharField(_("Book Pubisher"), max_length=500, default="", blank=True, null=True)
@@ -92,15 +92,48 @@ class Book(models.Model):
         verbose_name = _("Book")
         verbose_name_plural = _("Books")
 
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        
+        # save original values, when model is loaded from database,
+        # in a separate attribute on the model
+        instance._loaded_values = dict(zip(field_names, values))
+        
+        return instance
+    
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
+
+        '''If price has change then update necessity fields'''
+        if self.id is not None:
+            if not self._state.adding:
+                try:
+                    print(self._loaded_values["price"], self.price, "self._loaded_values")
+                    isPriceOrDiscountChanged = bool(self._loaded_values["price"] != self.price or self._loaded_values["discountPrice"] != self.discountPrice and self.discountPrice < self._loaded_values["price"])
+                    print(isPriceOrDiscountChanged, "isPriceOrDiscountChanged")
+                    if isPriceOrDiscountChanged and self.discountPrice:
+                        self.discountPercentage = (float(self.price) - float(self.discountPrice)) / float(self.price)* 100
+                except:
+                    pass
+                try:
+                    isDiscountPercentageChanged = bool(self._loaded_values['discountPercentage'] != self.discountPercentage and self.discountPercentage < 100)
+                    if isDiscountPercentageChanged and self.price:
+                        self.discountPrice = float(self.price - (self.price*(self.discountPercentage/100)))
+                except:
+                    pass
+              
         super(Book, self).save(*args, **kwargs)
-        # Finds Book Percentage
+        # calculate discount percentage at initial
         if not self.discountPercentage and self.price and self.discountPrice:
-            print("inside")
             self.discountPercentage = (float(self.price) - float(self.discountPrice)) / float(self.price)* 100
+            self.save()
+
+        # Calculate discount price by discount percentage and price
+        if not self.discountPrice and self.discountPercentage and self.price:
+            self.discountPrice = int(self.price - (self.price*(self.discountPercentage/100)))
             self.save()
 
         # Saves image from url
