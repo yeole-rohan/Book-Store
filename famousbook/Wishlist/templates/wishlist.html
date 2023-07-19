@@ -20,7 +20,7 @@
                         <div class="cart-book-list-loop">
                             <div class="cart-book-list-loop-wrap">
                                 <div class="cart-book-list-loop-img">
-                                    <img src="{{item.book.bookURL}}" title="{{item.book.title}}" class="img-fluid">
+                                    <img src="{% if item.book.bookImage %}{{ item.book.bookImage.url }} {% else %}{% static 'img/placeholder.png' %}" title="{{item.book.title}}" class="img-fluid">
                                 </div>
                                 <div class="cart-book-list-loop-details">
                                     <div class="cart-book-list-loop-title weight-700 font-24 color-004872 d-flex justify-content-between">
