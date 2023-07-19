@@ -80,7 +80,8 @@ def findBookSingleISBN(request):
             # Fetch book from bookswagon
             # data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
             # Google Books API
-            data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCqwC1lzmh9nV1fe3Rv11lAP5OiEyG4hP8".format(int(ISBN)))
+            data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCiepAxfF7vxiH3D5Yne5utJ8fdDAUiMrc".format(int(ISBN)))
+            print(data)
             data = data.json()
             if data['totalItems'] > 0:
                 # Function to validate, save book data
@@ -129,7 +130,7 @@ def bulkISBNUpload(request):
                             # data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(isbn)))
                             
                             # Google Books API
-                            data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCqwC1lzmh9nV1fe3Rv11lAP5OiEyG4hP8&maxResults=1".format(int(isbn)))
+                            data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCiepAxfF7vxiH3D5Yne5utJ8fdDAUiMrc&maxResults=1".format(int(isbn)))
                             data = data.json()
                             if data['totalItems'] > 0:
                                 status = createBook(data['items'][0], isbn)
