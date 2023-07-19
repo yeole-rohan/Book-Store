@@ -79,7 +79,7 @@ def findBookSingleISBN(request):
             ISBN = request.POST.get("isbn")
             # Fetch book from bookswagon
             # data = requests.get('https://openlibrary.org/isbn/{}.json'.format(int(ISBN)))
-            # Google Books API
+            # Google Books API, Make Sure Key is not restricted
             data = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:{}&key=AIzaSyCiepAxfF7vxiH3D5Yne5utJ8fdDAUiMrc".format(int(ISBN)))
             print(data)
             data = data.json()
@@ -123,7 +123,7 @@ def bulkISBNUpload(request):
                 for index, row in df.iterrows():
                     # isbn = row.get('ISBN').replace(",", "")
                     if row.get('ISBN'):
-                        isbn = row.get('ISBN').replace(",", "").strip()
+                        isbn = str(row.get('ISBN')).replace(",", "").strip()
                         # try:
                         if not Book.objects.filter(isbn__iexact=isbn).exists():
                             # data = requests.get('https://www.bookswagon.com/search-books/{}'.format(row['ISBN']))
