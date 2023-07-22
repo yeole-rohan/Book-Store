@@ -28,6 +28,16 @@ isbns=[
 9781974703661,
 9781421539683]
 def home(request):
+    # order_id = 4586010019994
+    # url = f'https://track.delhivery.com/api/v1/packages/json/?waybill={order_id}'
+    # headers = {
+    #     'Authorization': 'Token c724adf975113702c971cb923a7a0f4f85b36ecc'  # Replace YOUR_API_KEY_HERE with your actual API key
+    # }
+
+    # res = requests.get(url, headers=headers)
+    # if res.status_code == 200:
+    #     data = res.json()
+    #     print(data)
     try:
         featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)[:10]
     except:

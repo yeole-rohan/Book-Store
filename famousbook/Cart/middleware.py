@@ -6,6 +6,7 @@ class ClearCartCookieMiddleware:
         response = self.get_response(request)
 
         if request.user.is_authenticated:
+            print(response)
             response.delete_cookie('cart')
 
         return response

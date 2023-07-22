@@ -875,7 +875,9 @@ header {
 .account-info-right-details #id_address {
     height: auto !important;
 }
-
+.track-head div,.track-row div{
+width: 20%;
+}
 .account-info-right-details {
     margin-left: 60px;
     width: 100%;
@@ -1492,6 +1494,12 @@ button:hover,
     .sign-wrapper-img {
         text-align: center;
     }
+    .track-head,.track-row{
+        flex-direction: column;
+    }
+    .track-head div,.track-row div{
+        width: 100%;
+        }
     .mobile-lists{
         top: 45px;
     }

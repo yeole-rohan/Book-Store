@@ -13,7 +13,7 @@ from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
-
+import requests
 """
 This function handles the user account information page. It retrieves the user's information and displays it on the page. If the user submits a form with updated information, it updates the user's information and redirects them back to the account information page. If the form is not valid, it displays the errors on the page.
 @param request - the HTTP request object
@@ -45,8 +45,26 @@ def deliveryAddressAdd(request):
         if deliveryAddressForm.is_valid():
             deliveryAddressForm = deliveryAddressForm.save(commit=False)
             deliveryAddressForm.user = request.user
-            deliveryAddressForm.save()
-            messages.success(request, "Address Added")
+            pinCode = request.POST.get("pinCode")
+            # Replace pin code with the desired pin code
+            url = f'https://api.delhivery.com/c/api/pin-codes/json/?filter_codes={pinCode}'
+            headers = {
+                'Authorization': 'Token c724adf975113702c971cb923a7a0f4f85b36ecc'  # Replace YOUR_API_KEY_HERE with your actual API key
+            }
+
+            response = requests.get(url, headers=headers)
+
+            if response.status_code == 200:
+                data = response.json()
+                if len(data['delivery_codes']) > 0:
+                    deliveryAddressForm.save()
+                    messages.success(request, "Address is serviable")
+                    return redirect("user:deliveryAddress")
+                else:
+                    messages.error(request, "Address is not serviable, try diffrent")
+                    return redirect("user:deliveryAddressEdit", id)
+            else:
+                messages.error(request, "Error while fetching pin code availability service")
             return redirect("user:deliveryAddress")
         else:
             print(deliveryAddressForm.errors)
@@ -65,9 +83,28 @@ def deliveryAddressEdit(request, id):
     if request.method == "POST":
         deliveryAddressForm =DeliveryAddressForm(request.POST or None, instance=editAddress)
         if deliveryAddressForm.is_valid():
-            deliveryAddressForm.save()
-            messages.success(request, "Address Updated")
-            return redirect("user:deliveryAddress")
+            deliveryAddressForm = deliveryAddressForm.save(commit=False)
+            pinCode = request.POST.get("pinCode")
+            # Replace pin code with the desired pin code
+            url = f'https://api.delhivery.com/c/api/pin-codes/json/?filter_codes={pinCode}'
+            headers = {
+                'Authorization': 'Token c724adf975113702c971cb923a7a0f4f85b36ecc'  # Replace YOUR_API_KEY_HERE with your actual API key
+            }
+
+            response = requests.get(url, headers=headers)
+
+            if response.status_code == 200:
+                data = response.json()
+                if len(data['delivery_codes']) > 0:
+                    deliveryAddressForm.save()
+                    messages.success(request, "Address is serviable")
+                    return redirect("user:deliveryAddress")
+                else:
+                    messages.error(request, "Address is not serviable, try diffrent")
+                    return redirect("user:deliveryAddressEdit", id)
+            else:
+                messages.error(request, "Error while fetching pin code availability service")
+            return redirect("user:deliveryAddressEdit", id)
         else:
             print(deliveryAddressForm.errors)
     return render(request, template_name="delivery-address-add.html", context={'form' : deliveryAddressForm})

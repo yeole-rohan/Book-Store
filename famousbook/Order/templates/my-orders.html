@@ -75,6 +75,11 @@
                                                 </div>
                                             {% endif %}
                                         {% endif %}
+                                        {% if item.trackingNumber %}
+                                            <a href="{% url 'order:trackOrder' item.trackingNumber %}" class="btn btn-primary me-3">Track Order</a>
+                                        {% else %}
+                                            <div class="font-18"> You can track order once tracking id is shared to you over your registr=ered email-id</div>
+                                        {% endif %}
                                         {% if item.orderStatus == "ordered" or item.orderStatus == "packed" %}
                                         <a href="{% url 'order:cancelOrder' item.id %}" class="btn btn-primary">Cancel order</a>
                                         <div>Order can be cancelled before get in transit.</div>

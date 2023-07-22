@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load date_filter %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">Track Order</li>
+{% endblock breadcrumbs %}
+{% block title %}Track Order{% endblock title %}
+{% block content %}
+<div class="container">
+{% for shipment_data in orderStatus.ShipmentData %}
+    <h2>Order Details</h2>
+    <p>Order ID: {{ tId }}</p>
+    <p>Current Status: {{ shipment_data.Shipment.Status.Status }} & Location - {{shipment_data.Shipment.Status.StatusLocation}}</p>
+    <p>Sender Name: {{ shipment_data.Shipment.SenderName }}</p>
+    <p>Consignee Name: {{ shipment_data.Shipment.Consignee.Name }}</p>
+    <p>Destination: {{ shipment_data.Shipment.Destination }}</p>
+    <p>Expected Delivery Date: {{ shipment_data.Shipment.ExpectedDeliveryDate | date_format }}</p>
+    <h2>Tracking History</h2>
+    <div class="d-flex justify-content-between track-head mb-4">
+        <div>Date/Time</div>
+        <div>Status</div>
+        <div>Location</div>
+        <div>Instructions</div>
+    </div>
+    {% for scan in shipment_data.Shipment.Scans %}
+    <div class="d-flex justify-content-between track-row">
+            <div>{{ scan.ScanDetail.StatusDateTime | date_format }}</div>
+            <div>{{ scan.ScanDetail.Scan }}</div>
+            <div>{{ scan.ScanDetail.ScannedLocation }}</div>
+            <div>{{ scan.ScanDetail.Instructions }}</div>
+        </div>
+        <hr>
+        {% endfor %}
+{% endfor %}
+</div>
+{% endblock content %}
