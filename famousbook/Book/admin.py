@@ -18,16 +18,20 @@ class BookAdmin(admin.ModelAdmin):
     
     # Create Short Descrption in admin column
     def shortDescription(self, obj):
-        return obj.description[:10] + '...' if len(obj.description) > 10 else obj.description
+        if obj.description:
+            return obj.description[:10] + '...' if len(obj.description) > 10 else obj.description
     
     def shortBookURL(self, obj):
-        return obj.bookURL[:10] +'...' if len(obj.bookURL) > 10 else obj.bookURL
+        if obj.bookURL:
+            return obj.bookURL[:10] +'...' if len(obj.bookURL) > 10 else obj.bookURL
     
     def shortTitle(self, obj):
-        return obj.title[:20] +'...' if len(obj.title) > 20 else obj.title
+        if obj.title:
+            return obj.title[:20] +'...' if len(obj.title) > 20 else obj.title
     
     def shortAuthor(self, obj):
-        return obj.author[:20] +'...' if len(obj.author) > 20 else obj.author
+        if obj.author:
+            return obj.author[:20] +'...' if len(obj.author) > 20 else obj.author
     # Sets user friendly name to admin column
     shortDescription.short_description = 'description'
     shortBookURL.short_description = 'book url'
