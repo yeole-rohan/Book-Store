@@ -10,14 +10,28 @@ def duplicate_event(modeladmin, request, queryset):
         object.save()
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('id','title', 'quantity','isPublished','price','bookImage','bookURL','discountPrice','author', 'book_position','isBestSell', 'book_type',
-    'bookBinding','bookCondition','discountPercentage','description','isReturnable','bookLanguage','publisher','readingAge','isbn','noOfPages','publishedDate', 'bookPrintedIn', 'bookSize', 'primaryCategory', 'secondaryCategory', 'created', 'last_updated')
+    list_display = ('id','shortTitle', 'quantity','isPublished','price','bookImage','shortBookURL','discountPrice','shortAuthor', 'book_position','isBestSell', 'book_type',
+    'bookBinding','bookCondition','discountPercentage','shortDescription','isReturnable','bookLanguage','publisher','readingAge','isbn','noOfPages','publishedDate', 'bookPrintedIn', 'bookSize', 'primaryCategory', 'secondaryCategory', 'created', 'last_updated')
     search_fields = ["book_position", 'title', 'primaryCategory__name', 'isbn', 'author']
     list_filter = ['isBestSell','isReturnable', 'isPublished']
     actions = [duplicate_event]
     
-
-
+    # Create Short Descrption in admin column
+    def shortDescription(self, obj):
+        return obj.description[:10] + '...' if len(obj.description) > 10 else obj.description
+    
+    def shortBookURL(self, obj):
+        return obj.bookURL[:10] +'...' if len(obj.bookURL) > 10 else obj.bookURL
+    
+    def shortTitle(self, obj):
+        return obj.title[:20] +'...' if len(obj.title) > 20 else obj.title
+    
+    def shortAuthor(self, obj):
+        return obj.author[:20] +'...' if len(obj.author) > 20 else obj.author
+    # Sets user friendly name to admin column
+    shortDescription.short_description = 'description'
+    shortBookURL.short_description = 'book url'
+    shortTitle.short_description = 'title'
 
 @admin.register(PrimaryCategory)
 class PrimaryCategoryAdmin(admin.ModelAdmin):
