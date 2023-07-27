@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import Order
-import requests
+import requests, base64
+from django.http import JsonResponse
 from Book.models import Book
+from django.db.models import F
+from Cart.models import Cart
 from Wishlist.models import Wishlist
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,6 +12,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def myOrders(request):
@@ -48,3 +52,36 @@ def cancelOrder(request, id):
     send_mail(subject, body, EMAIL_USER, [EMAIL_USER], html_message=loginHTMLTemplate)
     messages.success(request, "Order has been cancelled")
     return redirect("order:myOrders")
+
+
+@login_required
+@csrf_exempt
+def orderDetailsFromUPI(request):
+    print("order details view\n\n\n")
+    if request.method == 'POST':
+        # Handle the incoming S2S Callback here
+        callback_data = request.POST
+        print("initial", callback_data)
+        callback_data = base64.b64decode(callback_data)
+        print(callback_data, "callback data")
+        return JsonResponse({'message': 'Callback received successfully'})
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)
+    
+@csrf_exempt
+def successful(request):
+    print("into successfull view\n\n\n", request.POST)
+    if request.method == 'POST':
+        status = request.POST.get("code")
+        if status == 'PAYMENT_SUCCESS':
+            # cart_items = Cart.objects.filter(user=request.user)
+            # for cart in cart_items:
+            #     if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty):
+            #         Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
+            #         orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge,merchantTransactionId=request.POST['data']["merchantTransactionId"])
+            messages.success(request, "Your Payment is successful.")
+        elif status == 'PAYMENT_ERROR':
+            messages.error(request, "Your Payment is successful.")
+    return render(request, template_name="payment-successful.html", context={'message' : request.POST.get('message', '')})
+    
+    

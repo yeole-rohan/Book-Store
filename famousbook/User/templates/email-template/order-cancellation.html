@@ -3,7 +3,7 @@
     <div>Order Id - {{order.id}}</div>
     <div class="cart-book-list-loop-wrap">
         <div class="cart-book-list-loop-img" style="width:150px">
-            <img style="width:100%" src="{% if order.book.bookImage %}{{ order.book.bookImage.url }} {% else %}{% static 'img/placeholder.png' %}{% endif %}" title="{{order.book.title}}" class="img-fluid">
+            <img style="width:100%" src="{% if order.book.bookImage %}{{ order.book.bookImage.url }}{% endif %}" title="{{order.book.title}}" class="img-fluid">
         </div>
         <div class="cart-book-list-loop-details">
             <div class="cart-book-list-loop-title weight-700 font-24 color-004872">

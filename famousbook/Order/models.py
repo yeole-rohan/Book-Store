@@ -39,6 +39,11 @@ class Order(models.Model):
     orderStatus = models.CharField(_("Order Status"), choices=ORDERSTATUS, default="ordered", max_length=50)
     paymentType = models.CharField(_("Payment Type"), choices=PAYMENTTYPE, default="cod", max_length=50)
     trackingNumber = models.CharField(_("Tracking Number"), max_length=200, default="")
+    merchantTransactionId = models.TextField(_("Merchant Id"),default='', blank=True, null=True)
+    transactionId = models.TextField(_("Transaction Id"), default='', blank=True, null=True)
+    totalAmount = models.PositiveIntegerField(_("Total Amount"), default=0)
+    state = models.TextField(_("Payment State"), default='', blank=True, null=True)
+    payType = models.TextField(_("Pay Type"), default="PAY_PAGE")
     created = models.DateTimeField(_("Order created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Order last updated"), auto_now=True)
 

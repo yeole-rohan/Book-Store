@@ -132,7 +132,12 @@
                             <div class="procced">
                                 <form method="POST">
                                     {% csrf_token %}
-                                    <button type="submit">Place Order</button>
+                                    <button name="COD" type="submit">Place Order</button>
+                                </form>
+                                <div class="font-20 mt-2 mb-2">OR</div>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <button name="UPI" type="submit">Pay with UPI</button>
                                 </form>
                             </div>
                         {% endif %}

@@ -28,16 +28,49 @@ isbns=[
 9781974703661,
 9781421539683]
 def home(request):
-    # order_id = 4586010019994
-    # url = f'https://track.delhivery.com/api/v1/packages/json/?waybill={order_id}'
+    # url = "https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay"
+
     # headers = {
-    #     'Authorization': 'Token c724adf975113702c971cb923a7a0f4f85b36ecc'  # Replace YOUR_API_KEY_HERE with your actual API key
+    #     "accept": "application/json",
+    #     "Content-Type": "application/json",
+    #     "X-VERIFY": "6f77b8fc5b94d9c3fabb68f2d38c919fb455d00074bd2e05336b36585ff3d65b###1"
+    #     #   "83593fcd31199b651cfe0a69fc5a377f7431b4e511afcc772bf2758043afec4c###1",
     # }
 
-    # res = requests.get(url, headers=headers)
-    # if res.status_code == 200:
-    #     data = res.json()
-    #     print(data)
+    # {
+    #     "merchantId": "PGTESTPAYUAT91",
+    #     "merchantTransactionId": "MT7850590068188114",
+    #     "merchantUserId": "MUID123",
+    #     "amount": 10000,
+    #     "redirectUrl": "https://webhook.site/redirect-url",
+    #     "redirectMode": "POST",
+    #     "callbackUrl": "https://webhook.site/callback-url",
+    #     "mobileNumber": "9999999999",
+    #     "paymentInstrument": {
+    #         "type": "PAY_PAGE"
+    #     }
+    # }
+    # payload = {
+    #     'request' : 'eyJtZXJjaGFudElkIjogIlBHVEVTVFBBWVVBVDkxIiwgIm1lcmNoYW50VHJhbnNhY3Rpb25JZCI6ICJNVDc4NTA1OTAwNjgxODgxMTQiLCAibWVyY2hhbnRVc2VySWQiOiAiTVVJRDEyMyIsICJhbW91bnQiOiAxNTcsICJyZWRpcmVjdFVybCI6ICJodHRwczovL3d3dy5mYW1vdXNib29rc2hvcC5pbi9vcmRlci8iLCAicmVkaXJlY3RNb2RlIjogIlBPU1QiLCAiY2FsbGJhY2tVcmwiOiAiaHR0cHM6Ly93d3cuZmFtb3VzYm9va3Nob3AuaW4vb3JkZXItZGV0YWlscy8iLCAibW9iaWxlTnVtYmVyIjogIjk5OTk5OTk5OTkiLCAicGF5bWVudEluc3RydW1lbnQiOiB7InR5cGUiOiAiUEFZX1BBR0UifX0='
+    #     # 'ewogICAgICAgICJtZXJjaGFudElkIjogIlBHVEVTVFBBWVVBVDkxIiwKICAgICAgICAibWVyY2hhbnRUcmFuc2FjdGlvbklkIjogIk1UNzg1MDU5MDA2ODE4ODExNCIsCiAgICAgICAgIm1lcmNoYW50VXNlcklkIjogIk1VSUQxMjMiLAogICAgICAgICJhbW91bnQiOiAxMDAwMCwKICAgICAgICAicmVkaXJlY3RVcmwiOiAiaHR0cHM6Ly93ZWJob29rLnNpdGUvcmVkaXJlY3QtdXJsIiwKICAgICAgICAicmVkaXJlY3RNb2RlIjogIlBPU1QiLAogICAgICAgICJjYWxsYmFja1VybCI6ICJodHRwczovL3dlYmhvb2suc2l0ZS9jYWxsYmFjay11cmwiLAogICAgICAgICJtb2JpbGVOdW1iZXIiOiAiOTk5OTk5OTk5OSIsCiAgICAgICAgInBheW1lbnRJbnN0cnVtZW50IjogewogICAgICAgICAgICAidHlwZSI6ICJQQVlfUEFHRSIKICAgICAgICB9CiAgICB9'
+    # }
+    # response = requests.post(url, json=payload, headers=headers)
+
+    # if response.status_code == 200:
+    #         print("Payment request successful.")
+    #         print("Response:")
+    #         print(response.json())
+    #         res = response.json()
+    #         if res['success']:
+    #             resdata = res['data']
+    #             redirectURL = res['data']['instrumentResponse']['redirectInfo']
+    #             print(redirectURL, "redirectURL")
+    #             return redirect(redirectURL['url'])
+    # else:
+    #     print("Payment request failed.")
+    #     print(f"Status code: {response.status_code}")
+    #     print("Response:")
+    #     print(response.text)
     try:
         featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)[:10]
     except:

@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import messages
 from Book.models import Book
-import json, datetime
+import json, datetime, requests, base64, hashlib
 from django.db.models import F
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
@@ -185,7 +185,7 @@ def overview(request):
         shippingChargesForm = ShippingChargesForm(initial={"charges" : "".join(charge)})
     else:
         shippingChargesForm = ShippingChargesForm()
-    if request.method=="POST":
+    if request.method=="POST" and "COD" in request.POST:
         idList = []
         for cart in cart_items:
             if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty):
@@ -195,7 +195,7 @@ def overview(request):
             else:
                 failedCheckout.append(cart.book.title)
         if failedCheckout:
-            messages.warning(request, "Some order failed to place")
+            messages.warning(request, "Some order failed to place due order quantity.")
         else:
             messages.success(request, "Your order has been placed.")
         subject = "Order Confirmation"
@@ -205,7 +205,73 @@ def overview(request):
         send_mail(subject, body, EMAIL_USER, [EMAIL_USER], html_message=loginHTMLTemplate)
         cart_items.delete()
         return redirect("order:myOrders")
+    print(request.POST)
+    # if request.method == 'POST':
+    #     # Handle the incoming S2S Callback here
+    #     callback_data = request.POST
+    #     callback_data = base64.b64decode(callback_data)
+    #     print(callback_data, "callback data")
+        
+    if request.method=="POST" and "UPI" in request.POST:
+        url = "https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay"
 
+
+        data = {
+            "merchantId": "PGTESTPAYUAT91",
+            "merchantTransactionId": "MT7850590068188114",
+            "merchantUserId": "MUID123",
+            "amount": int(amountPayable['totalPayable']),
+            "redirectUrl": "https://www.famousbookshop.in/order/successful/",
+            "redirectMode": "POST",
+            "callbackUrl": "https://www.famousbookshop.in/order/order-details/",
+            "mobileNumber": "8928958148",
+            "paymentInstrument": {
+                "type": "PAY_PAGE"
+            }
+        }
+        # Convert the payload dictionary to a JSON string
+        json_string = json.dumps(data)
+
+        # # Convert the dictionary to a JSON string
+        # json_string = json.dumps(data)
+        # print(base64data)
+        # verifyHash = hashlib.sha256(base64data+'/pg/v1/pay05992a0b-5254-4f37-86fb-e23bb79ea7e7').hexdigest()
+        # base64data = base64.b64encode(json_string.encode('utf-8')).decode('utf-8')
+        # Encode the JSON string to Base64
+        encoded_data_bytes = base64.b64encode(json_string.encode('utf-8'))
+
+        # Convert the bytes to a UTF-8 string
+        encoded_data_str = encoded_data_bytes.decode('utf-8')
+        print("encoded_data_str", encoded_data_str)
+        # Generate the X-VERIFY token
+        hash_string = encoded_data_str + "/pg/v1/pay" + "05992a0b-5254-4f37-86fb-e23bb79ea7e7"
+        hashed_token = hashlib.sha256(hash_string.encode('utf-8')).hexdigest()
+        payload = {
+            "request" : encoded_data_str
+        }
+        print("verifyHash", hashed_token)
+        headers = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+            "X-VERIFY": "{}###1".format(hashed_token),
+        }
+        print(headers, "headers")
+        response = requests.post(url, json=payload, headers=headers)
+
+        if response.status_code == 200:
+            print("Payment request successful.")
+            print("Response:")
+            print(response.json())
+            res = response.json()
+            if res['success']:
+                resdata = res['data']
+                redirectURL = res['data']['instrumentResponse']['redirectInfo']
+                return redirect(redirectURL['url'])
+        else:
+            print("Payment request failed.")
+            print(f"Status code: {response.status_code}")
+            print("Response:")
+            print(response.text)
     return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items, "shippingChargesForm" : shippingChargesForm, "pickUp" :pickUp})
 
 def update_charge(request):

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load date_filter %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item "><a class="color-black" href="{% url 'book:home' %}">Home</a></li>
+    <li class="breadcrumb-item color-004872 font-18" aria-current="page">Payment Status</li>
+{% endblock breadcrumbs %}
+{% block title %}Payment {{message}}{% endblock title %}
+{% block content %}
+<div class="container">
+    Your Payment is {{message}}
+</div>
+{% endblock content %}
