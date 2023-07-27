@@ -54,7 +54,6 @@ def cancelOrder(request, id):
     return redirect("order:myOrders")
 
 
-@login_required
 @csrf_exempt
 def orderDetailsFromUPI(request):
     print("order details view\n\n\n")
