@@ -62,7 +62,7 @@ def deliveryAddressAdd(request):
                     return redirect("user:deliveryAddress")
                 else:
                     messages.error(request, "Address is not serviable, try diffrent")
-                    return redirect("user:deliveryAddressEdit", id)
+                    return redirect("user:deliveryAddressAdd")
             else:
                 messages.error(request, "Error while fetching pin code availability service")
             return redirect("user:deliveryAddress")

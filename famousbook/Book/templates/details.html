@@ -44,6 +44,14 @@
                         </span>
                     </div>
                 {% endif %}
+                <div class="book-status color-red weight-400 font-16">
+                    {{ book.bookCondition | capfirst }}
+                </div>
+                {% if book.isReturnable %}
+                    <div class="book-status color-red weight-400 font-16">
+                        Can Return
+                    </div>
+                {% endif %}
                 <div class="book-details-mrp font-18 weight-500 color-dark-gray">
                     MRP <span class="{% if book.discountPrice %}book-details-mrp-value {% else %}color-red font-24 weight-500{% endif %}">
                         ₹ {{book.price}}
@@ -191,6 +199,11 @@
                                 <div class="book-status color-red weight-400 font-16">
                                     {{ book.bookCondition | capfirst }}
                                 </div>
+                                {% if book.isReturnable %}
+                                    <div class="book-status color-red weight-400 font-16">
+                                        Can Return
+                                    </div>
+                                {% endif %}
                             </a>
                             <div class="book-add-to-cart">
                                 {% if book.id in userCart %}
@@ -254,6 +267,11 @@
                                 <div class="book-status color-red weight-400 font-16">
                                     {{ book.bookCondition | capfirst }}
                                 </div>
+                                {% if book.isReturnable %}
+                                    <div class="book-status color-red weight-400 font-16">
+                                        Can Return
+                                    </div>
+                                {% endif %}
                             </a>
                             <div class="book-add-to-cart">
                                 {% if book.id in userCart %}
@@ -318,9 +336,15 @@
                                     Rs {{ book.discountPrice }}
                                 </span>
                             </div>
+
                             <div class="book-status color-red weight-400 font-16">
                                 {{ book.bookCondition | capfirst }}
                             </div>
+                            {% if book.isReturnable %}
+                                <div class="book-status color-red weight-400 font-16">
+                                    Can Return
+                                </div>
+                            {% endif %}
                         </a>
                         <div class="book-add-to-cart">
                             {% if book.id in userCart %}

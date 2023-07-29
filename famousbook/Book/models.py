@@ -222,3 +222,61 @@ class CouponCode(models.Model):
 
     def __str__(self):
         return self.coupon_code
+    
+
+class PinCodeStateCharges(models.Model):
+    # Define the state code and full name as tuples
+    STATE = (
+        ("AN", "Andaman and Nicobar Islands"),
+        ("AP", "Andhra Pradesh"),
+        ("AR", "Arunachal Pradesh"),
+        ("AS", "Assam"),
+        ("BR", "Bihar"),
+        ("CH", "Chandigarh"),
+        ("CG", "Chhattisgarh"),
+        ("DN", "Dadra and Nagar Haveli"),
+        ("DD", "Daman and Diu"),
+        ("DL", "Delhi"),
+        ("GA", "Goa"),
+        ("GJ", "Gujarat"),
+        ("HR", "Haryana"),
+        ("HP", "Himachal Pradesh"),
+        ("JK", "Jammu and Kashmir"),
+        ("JH", "Jharkhand"),
+        ("KA", "Karnataka"),
+        ("KL", "Kerala"),
+        ("LA", "Ladakh"),
+        ("MP", "Madhya Pradesh"),
+        ("MH", "Maharashtra"),
+        ("MN", "Manipur"),
+        ("ML", "Meghalaya"),
+        ("MZ", "Mizoram"),
+        ("NL", "Nagaland"),
+        ("OR", "Odisha"),
+        ("PY", "Puducherry"),
+        ("PB", "Punjab"),
+        ("RJ", "Rajasthan"),
+        ("SK", "Sikkim"),
+        ("TN", "Tamil Nadu"),
+        ("TS", "Telangana"),
+        ("TR", "Tripura"),
+        ("UP", "Uttar Pradesh"),
+        ("UK", "Uttarakhand"),
+        ("WB", "West Bengal"),
+    )
+    state = models.CharField(_("State"), choices=STATE,default="AN", max_length=100)
+    initialCharge = models.PositiveIntegerField(_("Initial Charge"), default=100)
+    threeBookCharge = models.PositiveIntegerField(_("After 3 Books Charge"), default=30)
+    sixBookCharge = models.PositiveIntegerField(_("After 6 Books Charge"), default=20)
+    freeShippingOn = models.PositiveIntegerField(_("Free Shiping on Order"), default=600)
+    dispatchTime = models.PositiveIntegerField(_("Dispatch Time"), default=2)
+    deliveryEstimate = models.PositiveIntegerField(_("Delivery Time in Days"), default=5)
+    created_date = models.DateTimeField(_("Created Time"), auto_now_add=True)
+    last_updated = models.DateTimeField(_("Updated"), auto_now=True)
+
+    class Meta:
+        verbose_name = _("Pin Code State Charges")
+        verbose_name_plural = _("Pin Code State Charges")
+
+    def __str__(self):
+        return self.state

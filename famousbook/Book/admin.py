@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Book, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode, PromoBanner
+from .models import Book, PrimaryCategory, SecondaryCategory, Testimonials, BookAuthor, BundleBook, CouponCode, PromoBanner, PinCodeStateCharges
 
 
 
@@ -64,3 +64,10 @@ class CouponCodeAdmin(admin.ModelAdmin):
 @admin.register(PromoBanner)
 class PromoBannerAdmin(admin.ModelAdmin):
     list_display = ("id", "book_category", "desktop_banner", "mobile_bannner", "created_date", "last_updated")
+
+@admin.register(PinCodeStateCharges) 
+class PinCodeStateChargesAdmin(admin.ModelAdmin):
+    list_display = ('state', 'initialCharge', 'threeBookCharge', 'sixBookCharge', 'freeShippingOn', 'dispatchTime', 'deliveryEstimate', 'created_date', 'last_updated')
+    list_filter = ('dispatchTime', 'deliveryEstimate')
+    search_fields = ('state',)
+    ordering = ('state',)

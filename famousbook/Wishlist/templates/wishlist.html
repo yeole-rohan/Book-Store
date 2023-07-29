@@ -45,6 +45,11 @@
                                                 ₹ {{item.book.discountPrice}}
                                             </span>
                                         </div>
+                                        {% if item.book.isReturnable %}
+                                        <div class="book-status color-red weight-400 font-16">
+                                            Can Return
+                                        </div>
+                                    {% endif %}
                                     </div>
                                     <div class="cart-book-list-loop-wishlist weight-500 font-20 color-004872">
                                         <a href="{% url 'wishlist:toCart' item.id %}" class="wish-to-cart">Add to Cart</a>
@@ -113,6 +118,11 @@
                                 <div class="book-status color-red weight-400 font-16">
                                     {{ book.bookCondition | capfirst }}
                                 </div>
+                                {% if book.isReturnable %}
+                                <div class="book-status color-red weight-400 font-16">
+                                    Can Return
+                                </div>
+                            {% endif %}
                             </a>
                             <div class="book-add-to-cart">
                                 {% if book.id in userCart %}
@@ -180,6 +190,11 @@
                             <div class="book-status color-red weight-400 font-16">
                                 {{ book.bookCondition | capfirst }}
                             </div>
+                            {% if book.isReturnable %}
+                            <div class="book-status color-red weight-400 font-16">
+                                Can Return
+                            </div>
+                        {% endif %}
                         </a>
                         <div class="book-add-to-cart">
                             {% if book.id in userCart %}

@@ -31,6 +31,11 @@
                         </span>
                     </div>
                 {% endif %}
+                {% if order.book.isReturnable %}
+                    <div class="book-status color-red weight-400 font-16">
+                        Can Return
+                    </div>
+            {% endif %}
             </div>
             <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
                 Ordered on {{order.created}} <span class="color-red">Current Status - {{order.get_orderStatus_display}}</span>

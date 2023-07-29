@@ -9,7 +9,7 @@
         </div>
         <div class="cart-book-list-loop-details">
             <div class="cart-book-list-loop-title weight-700 font-24 color-004872">
-            {{order.book.title}}
+            {{order.book.title}} {% if isFailed %}<span style="color:red">Failed Order</span>{% endif %}
             </div>
             <div class="pt-1 cart-book-list-loop-date-type weight-500 font-16 ">
                 ({{order.book.get_bookBinding_display}}) | Released: {{order.book.publishedDate}}
@@ -34,8 +34,22 @@
                     </div>
                 {% endif %}
             </div>
+            {% if order.book.isReturnable %}
+                <div class="book-status color-red weight-400 font-16">
+                    Can Return
+                </div>
+            {% endif %}
             <div>
-                Payment Mode  - <span class="color-red">Cash On Delivery</span>
+                Payment Mode - <span class="color-red">{{order.get_paymentType_display}}</span>
+            </div>
+            <div>
+                Payment Details  -
+                {% if order.transactionId %}
+                    <div>Transacation Id - {{order.transactionId}}</div>
+                {% endif %}
+                {% if order.state %}
+                    <div>Payment State - {{order.state}}</div>
+                {% endif %}
             </div>
             <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
                 Ordered on {{order.created}} <span>Current Status - {{order.get_orderStatus_display}}</span>

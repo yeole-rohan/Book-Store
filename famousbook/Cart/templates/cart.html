@@ -57,6 +57,11 @@
                                                 </div>
                                             {% endif %}
                                         </div>
+                                        {% if item.book.isReturnable %}
+                                            <div class="book-status color-red weight-400 font-16">
+                                                Can Return
+                                            </div>
+                                        {% endif %}
                                         <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
                                             Delivery between APRIL 11-APRIL 12
                                         </div>
@@ -111,6 +116,11 @@
                                                     <span class="color-red">
                                                         ₹ {{item.discountPrice}}
                                                     </span>
+                                                </div>
+                                            {% endif %}
+                                            {% if item.isReturnable %}
+                                                <div class="book-status color-red weight-400 font-16">
+                                                    Can Return
                                                 </div>
                                             {% endif %}
                                         </div>
@@ -248,6 +258,11 @@
                                                 </span>
                                             </div>
                                         {% endif %}
+                                        {% if item.book.isReturnable %}
+                                            <div class="book-status color-red weight-400 font-16">
+                                                Can Return
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
                                     Delivery between APRIL 11-APRIL 12
@@ -322,6 +337,11 @@
                                 <div class="book-status color-red weight-400 font-16">
                                     {{ book.bookCondition | capfirst }}
                                 </div>
+                                {% if book.isReturnable %}
+                                    <div class="book-status color-red weight-400 font-16">
+                                        Can Return
+                                    </div>
+                                {% endif %}
                             </a>
                             <div class="book-add-to-cart">
                                 {% if book.id in userCart %}

@@ -53,6 +53,14 @@
                                                 </div>
                                             {% endif %}
                                         </div>
+                                        {% if item.book.isReturnable %}
+                                            <div class="book-status color-red weight-400 font-16">
+                                                Can Return
+                                            </div>
+                                        {% endif %}
+                                        <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
+                                            Total Quantity of Books Order - {{item.qty}}
+                                        </div>
                                         <div class="pt-1 cart-book-list-loop-delivery weight-500 font-16 color-black">
                                             Delivery between APRIL 11-APRIL 12
                                         </div>
@@ -102,21 +110,21 @@
                                 </div>
                             </div>
                             
-                            {% if not pickUp == "self" %}
+                            {% comment %} {% if not pickUp == "self" %}
                                 <div class="shipping-charge">
                                     {{shippingChargesForm | crispy}}
                                 </div>
                                 <div class="charge"></div>
-                            {% endif %}
-                            {% if not shippingChargesForm.charges.value == "enquire" %}
+                            {% endif %} {% endcomment %}
+                            {% comment %} {% if not shippingChargesForm.charges.value == "enquire" %} {% endcomment %}
                                 <div class="color-red">Final Shipping Amount {{amountPayable.shippingAmount}}</div>
                                 {% if not amountPayable.shippingAmount %}
                                     <div class="color-red">Free Shipping Available</div>
                                 {% endif %}
-                            {% endif %}
+                            {% comment %} {% endif %} {% endcomment %}
                             <div class="amount-payable-total d-flex justify-content-between">
                                 <div class="amount-payable-total-text weight-500 font-18 color-black">
-                                    Total Payable (COD)
+                                    Total Payable
                                 </div>
                                 <div class="amount-payable-total-total color-red weight-500 font-18">
                                     ₹ {{amountPayable.totalPayable}}
@@ -125,10 +133,9 @@
                                 
                             
                         </div>
-                        {% if shippingChargesForm.charges.value == "enquire" %}
+                        {% comment %} {% if shippingChargesForm.charges.value == "enquire" %}
                                 For International Shiiping please contact us via contact us form.
-                        {% else %}
-                            <small>All Orders will be cash on delivery for now</small>
+                        {% else %} {% endcomment %}
                             <div class="procced">
                                 <form method="POST">
                                     {% csrf_token %}
@@ -140,7 +147,7 @@
                                     <button name="UPI" type="submit">Pay with UPI</button>
                                 </form>
                             </div>
-                        {% endif %}
+                        {% comment %} {% endif %} {% endcomment %}
                     </div>
                 {% endif %}
             {% else %}
@@ -149,6 +156,6 @@
         </div>
     </div>
 {% endblock content %}
-{% block js %}
+{% comment %} {% block js %}
     <script src="{% static 'js/overview.js' %}"></script>
-{% endblock js %}
+{% endblock js %} {% endcomment %}

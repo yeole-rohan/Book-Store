@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-r8khkz-l_1somj)(r@^swsj1k@6w7bvu(!uyigx36(a_r+i-0p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '43.225.52.55', 'www.famousbookshop.in', 'famousbookshop.in']
-
+ALLOWED_HOSTS = ['127.0.0.1', '43.225.52.55', 'www.famousbookshop.in', 'famousbookshop.in', '5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ["https://5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app"]
 
 # Application definition
 
@@ -180,3 +180,6 @@ PAYTM_CHANNEL_ID = 'WEB'
 PAYTM_INDUSTRY_TYPE_ID = 'Retail'
 
 LOGIN_URL = "/account/login/"
+
+PHONEPAY_URL = "https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay"
+PHONEPAY_MERCHANT_ID = "PGTESTPAYUAT91"

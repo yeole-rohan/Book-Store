@@ -1,19 +1,21 @@
 from django.http import JsonResponse
 from django.contrib import messages
 from Book.models import Book
-import json, datetime, requests, base64, hashlib
-from django.db.models import F
+import json, datetime, requests, base64, hashlib, uuid
+from django.db.models import F, Sum, ExpressionWrapper, FloatField
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Cart, CouponCode
 from Order.models import Order
 from Wishlist.models import Wishlist
+from Book.models import PinCodeStateCharges
 from User.models import DeliveryAddress
 from .forms import PromoCodeForm, DeliveryAddressForm, ShippingChargesForm
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
-from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER
+from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER, PHONEPAY_URL, PHONEPAY_MERCHANT_ID
 
 """
 This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
@@ -74,7 +76,7 @@ def view_cart(request):
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
         wish_items = Wishlist.objects.filter(user=request.user)
-        amountPayable = paymentCost(cart_items)
+        amountPayable = paymentCost(cart_items, None)
         if request.method == "POST" and "coupon" in request.POST:
             promoCodeForm = PromoCodeForm(request.POST or None)
             if promoCodeForm.is_valid():
@@ -83,11 +85,11 @@ def view_cart(request):
                 if CouponCode.objects.filter(user=request.user, coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now()).exists():
                     coupon = CouponCode.objects.get(user=request.user, coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now())
                     Cart.objects.filter(user=request.user).update(coupon_code=coupon)
-                    amountPayable = paymentCost(cart_items)
+                    amountPayable = paymentCost(cart_items, None)
                 elif CouponCode.objects.filter(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now()).exists():
                     coupon = CouponCode.objects.get(coupon_code__iexact=code, expiry_time__gte=datetime.datetime.now())
                     Cart.objects.filter(user=request.user).update(coupon_code=coupon)
-                    amountPayable = paymentCost(cart_items)
+                    amountPayable = paymentCost(cart_items, None)
                 else:
                     messages.error(request, "Promocode is expired.")
     elif 'cart' in request.COOKIES:
@@ -100,50 +102,61 @@ def view_cart(request):
             print(cart_items)
     return render(request, 'cart.html', context={'bestSeller':bestSeller, 'featuredBooks':featuredBooks,'cart_items': cart_items, 'wish_items' : wish_items, "amountPayable" : amountPayable, 'promoCodeForm' : promoCodeForm})
 
-def paymentCost(cart_items):
+def paymentCost(cart_items, pinCode):
+    print(pinCode, "pinCode")
     amountPayable = {}
     discount_percentage = list(cart_items.values_list("coupon_code__discount_percentage", flat=True))
     mrpTotal, discount, totalPayable, withOutDiscount, couponDiscount, mumbaiCharge, india, east, shippingAmount = 0, 0, 0, 0, 0, 0, 0, 0, 0
     isFree = False
+    totalCartItems = cart_items.aggregate(totalQuantity = Sum("qty"))
+    firstCart = cart_items.first()
+    
     for item in cart_items:
-        mrpTotal += item.book.price * item.qty
-       
-        if item.charges and not item.charges == "enquire":
-            if item.charges == "40":
-                mumbaiCharge = mumbaiCharge + 40
-            if item.charges == "50":
-                india = india + 50
-            if item.charges == "70":
-                east = east + 70
+        print(item.book.price, "item.book.price \n\n\n")
+        mrpTotal += int(item.book.price * item.qty)
         if item.book.discountPrice:
             discount += item.book.discountPrice * item.qty
         else:
             withOutDiscount += mrpTotal
     totalPayable = discount + withOutDiscount
+
+    print(totalCartItems, "totalCartItems", mrpTotal )
+    if pinCode:
+        print(pinCode.freeShippingOn)
+        if pinCode.freeShippingOn:
+            print("inside",totalCartItems['totalQuantity'] <= 3 and mrpTotal <= pinCode.freeShippingOn)
+            if totalCartItems['totalQuantity'] <= 3 and mrpTotal <= pinCode.freeShippingOn:
+                shippingAmount = int(pinCode.initialCharge)
+                print("shippingAmount calculated inside", shippingAmount)
+            elif totalCartItems['totalQuantity'] > 3 and totalCartItems['totalQuantity'] <= 6 and mrpTotal <= pinCode.freeShippingOn:
+                shippingAmount = int(pinCode.initialCharge + pinCode.threeBookCharge)
+            elif totalCartItems['totalQuantity'] > 6 and mrpTotal <= pinCode.freeShippingOn:
+                maxCharge = int(int(totalCartItems['totalQuantity'] - 6) / 3) * pinCode.sixBookCharge
+                if maxCharge:
+                    shippingAmount = int(pinCode.initialCharge + pinCode.threeBookCharge + maxCharge)
+                else:
+                    shippingAmount = int(pinCode.initialCharge + pinCode.threeBookCharge + pinCode.sixBookCharge)
+            else:
+                shippingAmount = 0
+                isFree = True
+            print("shippingAmount calculated", shippingAmount)
+        else:
+            if totalCartItems['totalQuantity'] <= 3:
+                shippingAmount = int(pinCode.initialCharge)
+            elif totalCartItems['totalQuantity'] > 3 and totalCartItems['totalQuantity'] <= 6:
+                shippingAmount =int(pinCode.initialCharge + pinCode.threeBookCharge)
+            elif totalCartItems['totalQuantity'] > 6:
+                maxCharge = int(int(totalCartItems['totalQuantity'] - 6) / 3) * pinCode.sixBookCharge
+                if maxCharge:
+                    shippingAmount = int(pinCode.initialCharge + pinCode.threeBookCharge + maxCharge)
+                else:
+                    shippingAmount = int(pinCode.initialCharge + pinCode.threeBookCharge + pinCode.sixBookCharge)
+
+
     if discount_percentage and not discount_percentage[0] == None:
         couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
         totalPayable -= couponDiscount
-    charge = cart_items.first().charges if cart_items else 0
     
-    if mrpTotal > 500 and charge == "40":
-        isFree = True
-        shippingAmount = 0
-    elif cart_items and charge == "40":
-        shippingAmount = mumbaiCharge
-    
-    if mrpTotal > 700 and charge == "50":
-        isFree = True
-        shippingAmount = 0
-    elif cart_items and charge == "50":
-        shippingAmount = india
-    
-    if mrpTotal > 1000 and charge == "70":
-        isFree = True
-        shippingAmount = 0
-    elif cart_items and charge == "70":
-        shippingAmount = east
-    if cart_items and charge == "enquire":
-        shippingAmount = 0
     cart_items.update(shippingCharge = int(shippingAmount))
     amountPayable['mrpTotal'] = mrpTotal
     amountPayable['totalDiscount'] = discount
@@ -157,7 +170,7 @@ def paymentCost(cart_items):
 @login_required
 def selectAddress(request):
     cart_items = Cart.objects.filter(user=request.user)
-    amountPayable = paymentCost(cart_items)
+    amountPayable = paymentCost(cart_items, None)
     addressList = DeliveryAddress.objects.filter(user=request.user)
     deliveryAddressForm = DeliveryAddressForm()
     if request.method=="POST":
@@ -168,111 +181,116 @@ def selectAddress(request):
                 Cart.objects.filter(user=request.user).update(
                     pickType=deliveryType)
             else:
+                deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address"))
+                pinCharge = PinCodeStateCharges.objects.get(state=deliveryAddress.state)
                 Cart.objects.filter(user=request.user).update(
-                    deliveryAddress=DeliveryAddress.objects.get(id=request.POST.get("address")))
+                    deliveryAddress=deliveryAddress, shippingCharge=pinCharge.initialCharge)
             return redirect("cart:overview")
     return render(request, 'selectAddress.html', context={"amountPayable" : amountPayable, 'addressList' : addressList, 'deliveryAddressForm' :deliveryAddressForm})
 
 @login_required
 def overview(request):
     cart_items = Cart.objects.filter(user=request.user)
-    amountPayable = paymentCost(cart_items)
+    merchantId = PHONEPAY_MERCHANT_ID
+    deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
+    print("deliveryAddress",deliveryAddress)
+    pinCode = PinCodeStateCharges.objects.get(state__iexact=deliveryAddress.state)
+    amountPayable = paymentCost(cart_items, pinCode)
     failedCheckout = []
     pickUp = cart_items.first().pickType
-    deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
-    charge = cart_items.first().charges
-    if charge:
-        shippingChargesForm = ShippingChargesForm(initial={"charges" : "".join(charge)})
-    else:
-        shippingChargesForm = ShippingChargesForm()
+    # charge = cart_items.first().charges
+    # if charge:
+    #     shippingChargesForm = ShippingChargesForm(initial={"charges" : "".join(charge)})
+    # else:
+    #     shippingChargesForm = ShippingChargesForm()
     if request.method=="POST" and "COD" in request.POST:
         idList = []
+        merchantTransactionId = generate_merchant_transaction_id(merchantId)
         for cart in cart_items:
-            if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty):
+            if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count():
                 Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
-                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId)
                 idList.append(orderId.id)
             else:
-                failedCheckout.append(cart.book.title)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=False, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId)
+                failedCheckout.append(orderId.id)
         if failedCheckout:
-            messages.warning(request, "Some order failed to place due order quantity.")
+            subject = "Failed Orders for {}".format(request.user.email)
+            loginHTMLTemplate = render_to_string("email-template/order.html", context={"orderList" : Order.objects.filter(id__in=failedCheckout).order_by("-created"), "isFailed":True })
+            body = strip_tags(loginHTMLTemplate)
+            send_mail(subject, body, EMAIL_USER, [request.user.email], html_message=loginHTMLTemplate)
+            send_mail(subject, body, EMAIL_USER, [EMAIL_USER], html_message=loginHTMLTemplate)
+            messages.warning(request, "Some order failed to place due order quantity. We have sent you seperate mail")
         else:
-            messages.success(request, "Your order has been placed.")
-        subject = "Order Confirmation"
-        loginHTMLTemplate = render_to_string("email-template/order.html", context={"orderList" : Order.objects.filter(id__in=idList).order_by("-created") }, )
+            messages.success(request, "Your order has been placed. Please check your mail.")
+        subject = "Order Confirmation for {}".format(request.user.email)
+        loginHTMLTemplate = render_to_string("email-template/order.html", context={"orderList" : Order.objects.filter(id__in=idList).order_by("-created"), "isFailed":False }, )
         body = strip_tags(loginHTMLTemplate)
         send_mail(subject, body, EMAIL_USER, [request.user.email], html_message=loginHTMLTemplate)
         send_mail(subject, body, EMAIL_USER, [EMAIL_USER], html_message=loginHTMLTemplate)
         cart_items.delete()
         return redirect("order:myOrders")
-    print(request.POST)
-    # if request.method == 'POST':
-    #     # Handle the incoming S2S Callback here
-    #     callback_data = request.POST
-    #     callback_data = base64.b64decode(callback_data)
-    #     print(callback_data, "callback data")
         
     if request.method=="POST" and "UPI" in request.POST:
-        url = "https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay"
-
-
-        data = {
-            "merchantId": "PGTESTPAYUAT91",
-            "merchantTransactionId": "MT7850590068188114",
-            "merchantUserId": "MUID123",
-            "amount": int(amountPayable['totalPayable']),
-            "redirectUrl": "https://www.famousbookshop.in/order/successful/",
-            "redirectMode": "POST",
-            "callbackUrl": "https://www.famousbookshop.in/order/order-details/",
-            "mobileNumber": "8928958148",
-            "paymentInstrument": {
-                "type": "PAY_PAGE"
-            }
-        }
-        # Convert the payload dictionary to a JSON string
-        json_string = json.dumps(data)
-
-        # # Convert the dictionary to a JSON string
-        # json_string = json.dumps(data)
-        # print(base64data)
-        # verifyHash = hashlib.sha256(base64data+'/pg/v1/pay05992a0b-5254-4f37-86fb-e23bb79ea7e7').hexdigest()
-        # base64data = base64.b64encode(json_string.encode('utf-8')).decode('utf-8')
-        # Encode the JSON string to Base64
-        encoded_data_bytes = base64.b64encode(json_string.encode('utf-8'))
-
-        # Convert the bytes to a UTF-8 string
-        encoded_data_str = encoded_data_bytes.decode('utf-8')
-        print("encoded_data_str", encoded_data_str)
-        # Generate the X-VERIFY token
-        hash_string = encoded_data_str + "/pg/v1/pay" + "05992a0b-5254-4f37-86fb-e23bb79ea7e7"
-        hashed_token = hashlib.sha256(hash_string.encode('utf-8')).hexdigest()
-        payload = {
-            "request" : encoded_data_str
-        }
-        print("verifyHash", hashed_token)
-        headers = {
-            "accept": "application/json",
-            "Content-Type": "application/json",
-            "X-VERIFY": "{}###1".format(hashed_token),
-        }
-        print(headers, "headers")
-        response = requests.post(url, json=payload, headers=headers)
-
+        response = isPaymentRequest(merchantId, amountPayable['totalPayable'])
         if response.status_code == 200:
             print("Payment request successful.")
-            print("Response:")
-            print(response.json())
             res = response.json()
+            print(res)
             if res['success']:
-                resdata = res['data']
                 redirectURL = res['data']['instrumentResponse']['redirectInfo']
+                cart_items.update(merchantTransactionId=res['data']['merchantTransactionId'])
                 return redirect(redirectURL['url'])
         else:
-            print("Payment request failed.")
-            print(f"Status code: {response.status_code}")
-            print("Response:")
-            print(response.text)
-    return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items, "shippingChargesForm" : shippingChargesForm, "pickUp" :pickUp})
+            messages.error(request, "Payment request failed. Try Again")
+            return redirect("cart:overview")
+    return render(request, 'overview.html', context={"amountPayable" : amountPayable, 'address' : deliveryAddress,'cart_items' : cart_items, "pickUp" :pickUp})
+
+def isPaymentRequest(merchantId, totalPayable):
+    URL = PHONEPAY_URL
+        
+    merchantTransactionId = generate_merchant_transaction_id(merchantId)
+    data = {
+        "merchantId": merchantId,
+        "merchantTransactionId":merchantTransactionId,
+        "merchantUserId":"MU933037302229373",
+        "amount": int(totalPayable)*100,
+        "redirectUrl": "https://5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app/order/successful/",
+        "redirectMode": "POST",
+        "callbackUrl": "https://5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app/order/order-details/",
+        "paymentInstrument": {
+            "type": "PAY_PAGE"
+        }
+    }
+    # Convert the payload dictionary to a JSON string
+    json_string = json.dumps(data)
+
+    # Encode the JSON string to Base64
+    encoded_data_bytes = base64.b64encode(json_string.encode('utf-8'))
+
+    # Convert the bytes to a UTF-8 string
+    encoded_data_str = encoded_data_bytes.decode('utf-8')
+    # Generate the X-VERIFY token
+    hash_string = encoded_data_str + "/pg/v1/pay" + "05992a0b-5254-4f37-86fb-e23bb79ea7e7"
+    hashed_token = hashlib.sha256(hash_string.encode('utf-8')).hexdigest()
+    payload = {
+        "request" : encoded_data_str
+    }
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+        "X-VERIFY": "{}###1".format(hashed_token),
+    }
+    return requests.post(URL, json=payload, headers=headers)
+
+def generate_merchant_transaction_id(merchant_id):
+    unique_uuid = uuid.uuid4().hex[:36 - len(merchant_id) - 1]  # Subtract 1 for the underscore
+    if Order.objects.filter(merchantTransactionId__iexact=unique_uuid).count() > 0:
+        generate_merchant_transaction_id(merchant_id)
+    else:
+        merchant_transaction_id = f"{merchant_id}_{unique_uuid}"
+
+    return merchant_transaction_id
 
 def update_charge(request):
     if request.method=="POST":
@@ -333,7 +351,7 @@ def update_quantity(request):
                 return JsonResponse({'success': False, 'message': 'Quantity must be below {}'.format(cart_item.book.quantity)})
             else:
                 Cart.objects.filter(id=int(cart_id)).update(qty=qty)
-                return JsonResponse({'success': True, 'message': 'Book qty updated.'})
+                return JsonResponse({'success': True, 'message': 'Order qty updated.'})
         else:
             return JsonResponse({'success': False, 'message': 'Log in for qty update'})
     else:
