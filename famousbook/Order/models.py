@@ -41,7 +41,7 @@ class Order(models.Model):
     trackingNumber = models.CharField(_("Tracking Number"), max_length=200, default="")
     merchantTransactionId = models.TextField(_("Merchant Id"),default='', blank=True, null=True)
     transactionId = models.TextField(_("Transaction Id"), default='', blank=True, null=True)
-    totalAmount = models.PositiveIntegerField(_("Total Amount"), default=0)
+    totalAmount = models.FloatField(_("Total Amount"), default=0)
     state = models.TextField(_("Payment State"), default='', blank=True, null=True)
     payType = models.TextField(_("Pay Type"), default="PAY_PAGE")
     dispatchTime = models.PositiveIntegerField(_("Dispatch Time"), default=2)

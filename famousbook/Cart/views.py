@@ -115,12 +115,13 @@ def paymentCost(cart_items, pinCode):
         print(item.book.price, "item.book.price \n\n\n")
         mrpTotal += int(item.book.price * item.qty)
         if item.book.discountPrice:
-            discount += item.book.discountPrice * item.qty
+            discount += round(float(item.book.price - item.book.discountPrice), 2)
         else:
-            withOutDiscount += mrpTotal
-    totalPayable = discount + withOutDiscount
+            withOutDiscount += float(item.book.price)
+    print()
+    totalPayable = mrpTotal - discount
 
-    print(totalCartItems, "totalCartItems", mrpTotal )
+    print(totalCartItems, "totalCartItems", mrpTotal, totalPayable, discount, withOutDiscount )
     if pinCode:
         print(pinCode.freeShippingOn)
         if pinCode.freeShippingOn:
@@ -154,15 +155,18 @@ def paymentCost(cart_items, pinCode):
 
 
     if discount_percentage and not discount_percentage[0] == None:
-        couponDiscount = round(totalPayable * float(discount_percentage[0]/100), 2)
+        print(totalPayable * float(discount_percentage[0]/100), "how much")
+        couponDiscount = totalPayable * float(discount_percentage[0]/100)
         totalPayable -= couponDiscount
+        print("minus coupon", totalPayable)
     
     cart_items.update(shippingCharge = int(shippingAmount))
     amountPayable['mrpTotal'] = mrpTotal
-    amountPayable['totalDiscount'] = discount
-    amountPayable['totalSaving'] = float(mrpTotal - discount) + couponDiscount
-    amountPayable["couponDiscount"] = couponDiscount
-    amountPayable['totalPayable'] = totalPayable + shippingAmount
+    amountPayable['totalDiscount'] = round(discount,2)
+    amountPayable['totalSaving'] = round(float(discount + couponDiscount), 2)
+    amountPayable["couponDiscount"] = round(couponDiscount, 2)
+    print(round(float(totalPayable + shippingAmount), 2), "round")
+    amountPayable['totalPayable'] = round(float(totalPayable + shippingAmount), 2)
     amountPayable["shippingAmount"] = shippingAmount
     amountPayable["isFree"] = isFree
     return amountPayable
@@ -254,10 +258,10 @@ def isPaymentRequest(merchantId, totalPayable):
         "merchantId": merchantId,
         "merchantTransactionId":merchantTransactionId,
         "merchantUserId":"MU933037302229373",
-        "amount": int(totalPayable)*100,
-        "redirectUrl": "https://5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app/order/successful/",
+        "amount": int(totalPayable*100),
+        "redirectUrl": "https://www.famousbookshop.in/order/successful/",
         "redirectMode": "POST",
-        "callbackUrl": "https://5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app/order/order-details/",
+        "callbackUrl": "https://www.famousbookshop.in/order/order-details/",
         "paymentInstrument": {
             "type": "PAY_PAGE"
         }

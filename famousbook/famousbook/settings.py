@@ -27,8 +27,7 @@ SECRET_KEY = 'django-insecure-r8khkz-l_1somj)(r@^swsj1k@6w7bvu(!uyigx36(a_r+i-0p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '43.225.52.55', 'www.famousbookshop.in', 'famousbookshop.in', '5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ["https://5af3-2409-4042-12-5e06-18ac-5cfa-b501-a512.ngrok-free.app"]
+ALLOWED_HOSTS = ['127.0.0.1', '43.225.52.55', 'www.famousbookshop.in', 'famousbookshop.in']
 
 # Application definition
 
