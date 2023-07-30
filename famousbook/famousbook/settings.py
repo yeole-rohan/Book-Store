@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     'User',
     'Cart',
-    'Booking',
     'Book',
     'Order',
     'Wishlist',

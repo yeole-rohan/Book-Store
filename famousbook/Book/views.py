@@ -410,7 +410,7 @@ def advanceSearch(request):
         language = request.POST.get("language[]") if request.POST.get("language[]") else []
         price = request.POST.getlist("price[]") if request.POST.get("price[]") else []
         discountPrice = request.POST.getlist("discountPrice[]") if request.POST.get("discountPrice[]") else []
-
+        print(categoryList, binding, language, price, discountPrice)
         
         # Create a list to store the Q objects for price filtering
         price_query_list = []
@@ -420,15 +420,15 @@ def advanceSearch(request):
             # Split the range into minimum and maximum values
             min_price, max_price = price_range.split('-')
             # Create a Q object to represent the range
-            price_query = Q(price__range=(min_price, max_price))
+            price_query = Q(price__range=(int(min_price), int(max_price)))
             # Add the Q object to the list
             price_query_list.append(price_query)
-
+        print(price_query_list, "price query")
         # Combine the Q objects for price filtering using OR operator
         combined_price_query = Q()
         for query in price_query_list:
             combined_price_query |= query
-
+        print("combined_price_query", combined_price_query)
         # Create a list to store the Q objects for discount price filtering
         discount_price_query_list = []
 
@@ -447,6 +447,7 @@ def advanceSearch(request):
             combined_discount_price_query |= query
         # Filter the products based on price and discount price ranges
         bookList = Book.objects.filter( Q(primaryCategory__name__icontains=categoryList) | Q(secondaryCategory__name__icontains=categoryList) | Q(bookBinding__icontains=binding) | Q(bookLanguage__icontains=language), isPublished=True, quantity__gt=0)
+        print(bookList, "bookList")
         # Remove duplicates from the query results
         bookList = bookList.distinct()
         if bookList:
