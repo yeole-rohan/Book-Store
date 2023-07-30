@@ -209,10 +209,10 @@ def overview(request):
         for cart in cart_items:
             if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count():
                 Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
-                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId,deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                 idList.append(orderId.id)
             else:
-                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=False, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=False, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId, deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                 failedCheckout.append(orderId.id)
         if failedCheckout:
             subject = "Failed Orders for {}".format(request.user.email)

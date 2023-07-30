@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Order
 import requests, base64, json, hashlib
 from django.http import JsonResponse
-from Book.models import Book, User
+from Book.models import Book, PinCodeStateCharges
 from django.db.models import F
+from User.models import DeliveryAddress
 from Cart.models import Cart
 from Wishlist.models import Wishlist
 from django.contrib.auth.decorators import login_required
@@ -74,13 +75,16 @@ def orderDetailsFromUPI(request):
                 failedCheckout = []
                 cart_items = Cart.objects.filter(merchantTransactionId=decoded_data['data']['merchantTransactionId'])
                 email = cart_items.first().user.email
+                deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
+                print("deliveryAddress",deliveryAddress)
+                pinCode = PinCodeStateCharges.objects.get(state__iexact=deliveryAddress.state)
                 for cart in cart_items:
                     if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count():
                         Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
-                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge,merchantTransactionId=decoded_data['data']["merchantTransactionId"], transactionId=decoded_data['data']['transactionId'], totalAmount=int(decoded_data['data']['amount']/100), state=decoded_data['data']['state'], paymentType="online")
+                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge,merchantTransactionId=decoded_data['data']["merchantTransactionId"], transactionId=decoded_data['data']['transactionId'], totalAmount=int(decoded_data['data']['amount']/100), state=decoded_data['data']['state'], paymentType="online",deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                         idList.append(orderId.id)
                     else:
-                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, shippingCharge=cart.shippingCharge, payType="COD", paymentType="online",orderPlaced=False)
+                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, shippingCharge=cart.shippingCharge, payType="COD", paymentType="online",orderPlaced=False, deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                         failedCheckout.append(orderId.id)
 
                 if failedCheckout:

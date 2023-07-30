@@ -147,7 +147,11 @@ def userContact(request):
         if queryForm.is_valid():
             queryForm = queryForm.save(commit=False)
             queryForm.user = request.user
+            purposeContact = request.POST.get("purposeContact")
+            message = request.POST.get("message")
             queryForm.save()
+            subject = "Contact Us Query"
+            send_mail(subject, "{} is contacting for {} with {}".format(request.user.email,purposeContact.replace("-", " "), message ), EMAIL_USER, [EMAIL_USER],)
             messages.success(request, "Message Saved")
             return redirect("user:userContact")
         else:
@@ -162,7 +166,7 @@ def editPassword(request):
             user = form.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Your password was successfully updated.')
-            return redirect('userProfile')
+            return redirect('user:editPassword')
         else:
             messages.error(request, 'Falied to update your password. Please check the errors.')
     else:
@@ -201,7 +205,7 @@ def loginView(request):
                 except:
                     messages.error(request, "User not found.")
         else:
-            messages.error(request, "Enter Mobile or Email Id")
+            messages.error(request, "Enter Email Id")
     return render(request, template_name="login.html", context={'email_or_mobile' : email_or_mobile, 'isMobile' : isMobile, 'isPassword' : isPassword, 'hideNext' : hideNext})
 
 
@@ -236,7 +240,7 @@ def signUp(request):
                 messages.error(request, "Enter valid email")
                 return redirect("user:signUp")
         else:
-            messages.error(request, "Enter Mobile or Email Id")
+            messages.error(request, "Enter Email Id")
             return redirect("user:signUp")
 
     if request.method == "POST" and "isPassword" in request.POST:

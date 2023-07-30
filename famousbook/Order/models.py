@@ -44,6 +44,8 @@ class Order(models.Model):
     totalAmount = models.PositiveIntegerField(_("Total Amount"), default=0)
     state = models.TextField(_("Payment State"), default='', blank=True, null=True)
     payType = models.TextField(_("Pay Type"), default="PAY_PAGE")
+    dispatchTime = models.PositiveIntegerField(_("Dispatch Time"), default=2)
+    deliveryTime = models.PositiveIntegerField(_("Delivery Time"), default=5)
     created = models.DateTimeField(_("Order created date"),auto_now_add=True)
     last_updated = models.DateTimeField(_("Order last updated"), auto_now=True)
 
