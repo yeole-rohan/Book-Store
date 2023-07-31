@@ -41,7 +41,7 @@ class Book(models.Model):
     )
     PRINT_BINDING = (
         ('paperback', 'Paperback'),
-        ('hardcore', 'Hardcore')
+        ('hardcover', 'Hardcover')
     )
     LANGUAGE = (
         ('en', 'English'),
@@ -73,9 +73,9 @@ class Book(models.Model):
     discountPercentage = models.PositiveIntegerField(_("Selling Percentage"), default=0, blank=True, null=True)
     description = models.TextField(_("Book Description"), default="", blank=True, null=True)
     bookLanguage = models.CharField(_("book Language"), choices=LANGUAGE, default="english", max_length=50)
-    publisher = models.CharField(_("Book Pubisher"), max_length=500, default="", blank=True, null=True)
+    publisher = models.CharField(_("Book Publisher"), max_length=500, default="", blank=True, null=True)
     readingAge = models.PositiveIntegerField(_("Reading Age"), default=0, blank=True, null=True)
-    isbn = models.CharField(_("ISBN Number"), max_length=200, default="", blank=True, null=True)
+    isbn = models.CharField(_("ISBN"), max_length=200, default="", blank=True, null=True)
     noOfPages = models.PositiveIntegerField(_("Number of Pages"), default=0, blank=True, null=True)
     publishedDate = models.CharField(_("Book Published Date"),max_length=200, blank=True, null=True)
     bookPrintedIn = models.CharField(_("Book Printed In"),choices=PRINTED_IN, default="india", max_length=50)
