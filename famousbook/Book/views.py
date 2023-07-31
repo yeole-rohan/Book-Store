@@ -248,7 +248,7 @@ def bulkSheetUpload(request):
 
                         print(Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists())
                         if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
-                            book = Book.objects.create(title= row['Title'], bookURL=row['Image Url'],publisher=row['Publisher'],publishedDate=row['Published Date'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Summary'] if row['Summary'] else '', primaryCategory=primary, secondaryCategory=None, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage=language,  noOfPages=int(row['Pages']) )
+                            book = Book.objects.create(title= row['Title'], bookURL=row['Image Url'],publisher=row['Publisher'],publishedDate=row['Published Date'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Summary'] if row['Summary'] else '', primaryCategory=primary, secondaryCategory=None, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage=language,  noOfPages=int(row['Pages']),bookCondition=row['Condition'] )
                             book.save()
                             passedISBN.append(str(row['ISBN']).replace(".0", ""))
                         else:
