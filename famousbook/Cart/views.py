@@ -36,7 +36,7 @@ def add_to_cart(request):
             if not created:
                 return JsonResponse({'success': False, 'message': 'Book is already in your cart.'})
             
-            return JsonResponse({'success': True, 'message': 'Book added to cart.', "cartCount" : Cart.objects.filter(user=request.user).count()})
+            return JsonResponse({'success': True, 'message': 'Book added to cart.', "cartCount" : Cart.objects.filter(user=request.user).exclude(book__quantity__lte=0).count()})
         else:
             cart_items = []
             cart_cookie = request.COOKIES.get('cart')
@@ -75,6 +75,7 @@ def view_cart(request):
         featuredBooks = Book.objects.filter(isPublished=True, quantity__gt=0)
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
+        cart_items.filter(product__quantity__lte=0).delete()
         wish_items = Wishlist.objects.filter(user=request.user)
         amountPayable = paymentCost(cart_items, None)
         if request.method == "POST" and "coupon" in request.POST:
@@ -174,6 +175,7 @@ def paymentCost(cart_items, pinCode):
 @login_required
 def selectAddress(request):
     cart_items = Cart.objects.filter(user=request.user)
+    cart_items.filter(product__quantity__lte=0).delete()
     amountPayable = paymentCost(cart_items, None)
     addressList = DeliveryAddress.objects.filter(user=request.user)
     deliveryAddressForm = DeliveryAddressForm()
@@ -195,6 +197,7 @@ def selectAddress(request):
 @login_required
 def overview(request):
     cart_items = Cart.objects.filter(user=request.user)
+    cart_items.filter(product__quantity__lte=0).delete()
     merchantId = PHONEPAY_MERCHANT_ID
     deliveryAddress=DeliveryAddress.objects.get(id=list(cart_items.values_list("deliveryAddress", flat=True))[0])
     print("deliveryAddress",deliveryAddress)
@@ -311,6 +314,7 @@ def update_charge(request):
         ch = request.POST.get("ch")
         cart_item = Cart.objects.filter(
             user=request.user).update(charges=ch)
+        cart_item.filter(product__quantity__lte=0).delete()
         if  cart_item:
             return JsonResponse({'success': True, 'message': 'charges updated.'})
         else:
@@ -364,7 +368,8 @@ def update_quantity(request):
             if qty > cart_item.book.quantity:
                 return JsonResponse({'success': False, 'message': 'Quantity must be below {}'.format(cart_item.book.quantity)})
             else:
-                Cart.objects.filter(id=int(cart_id)).update(qty=qty)
+                cart = Cart.objects.filter(id=int(cart_id)).update(qty=qty)
+                cart.filter(product__quantity__lte=0).delete()
                 return JsonResponse({'success': True, 'message': 'Order qty updated.'})
         else:
             return JsonResponse({'success': False, 'message': 'Log in for qty update'})
@@ -380,6 +385,7 @@ This function adds an item to the user's wishlist and removes it from their cart
 @login_required
 def toWishList(request, itemId):
     getCart = Cart.objects.filter(id=int(itemId), user=request.user)
+    getCart.filter(product__quantity__lte=0).delete()
     if getCart:
         Wishlist.objects.create(user=request.user, book=getCart[0].book)
         getCart.delete()

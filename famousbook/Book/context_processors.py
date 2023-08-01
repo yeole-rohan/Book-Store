@@ -16,7 +16,7 @@ def primaryCategory(request):
             userCart = json.loads(cart_cookie)
     else:
         userCart = list(Cart.objects.filter(
-            user=request.user).values_list("book", flat=True))
+            user=request.user).exclude(book__quantity__lte=0).values_list("book", flat=True))
         wishList = list(Wishlist.objects.filter(user=request.user).values_list("book", flat= True))
     return {"bookCategory" : bookCategory, 'userCart' : userCart, "wishList" : wishList}
 
