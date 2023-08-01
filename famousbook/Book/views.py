@@ -232,10 +232,15 @@ def bulkSheetUpload(request):
                 bookLanguageList = ['english', 'hindi', 'marathi']
                 for index, row in df.iterrows():
                     print("row",str(row['ISBN']))
-                    if PrimaryCategory.objects.filter(name=row.get('Genres')).exists():
-                        primary = PrimaryCategory.objects.get(name=row.get('Genres'))
+                    if PrimaryCategory.objects.filter(name=row.get('Primary Category')).exists():
+                        primary = PrimaryCategory.objects.get(name=row.get('Primary Category'))
                     else:
                         primary = None
+
+                    if SecondaryCategory.objects.filter(name=row.get("Secondary Category")).count():
+                        secondary = SecondaryCategory.objects.get(name=row.get("Secondary Category"))
+                    else:
+                        secondary = None
                     try:
                         if "eng" in row['Language'].lower():
                             language = "en"
@@ -248,7 +253,7 @@ def bulkSheetUpload(request):
 
                         print(Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists())
                         if not Book.objects.filter(isbn__iexact=str(row['ISBN'])).exists():
-                            book = Book.objects.create(title= row['Title'], bookURL=row['Image Url'],publisher=row['Publisher'],publishedDate=row['Published Date'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Summary'] if row['Summary'] else '', primaryCategory=primary, secondaryCategory=None, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage=language,  noOfPages=int(row['Pages']),bookCondition=row['Condition'] )
+                            book = Book.objects.create(title= row['Title'], bookURL=row['Image Url'],publisher=row['Publisher'],publishedDate=row['Published Date'], isbn=str(row['ISBN']).replace(".0", ""), author=row['Author'], description=row['Summary'] if row['Summary'] else '', primaryCategory=primary, secondaryCategory=secondary, bookBinding= row['Format'].lower() if row['Format'].lower() in bindingList else 'paperback', bookLanguage=language,  noOfPages=int(row['Pages']),bookCondition=row['Condition'], quantity=int(row.get("Quantity")), genre=row.get("Genres") )
                             book.save()
                             passedISBN.append(str(row['ISBN']).replace(".0", ""))
                         else:

@@ -86,6 +86,7 @@ class Book(models.Model):
     quantity = models.PositiveIntegerField(_("Book Quantity"), default=0)
     book_type=models.CharField(_("Book Type"), choices=BOOK_TYPE, default="single", max_length=50)
     created = models.DateTimeField(_("Book created date"),auto_now_add=True)
+    genre = models.CharField(_("Genre"), max_length=200, null=True, blank=True)
     last_updated = models.DateTimeField(_("Book last updated"), auto_now=True)
 
     class Meta:
