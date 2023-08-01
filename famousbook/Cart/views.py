@@ -15,7 +15,7 @@ from .forms import PromoCodeForm, DeliveryAddressForm, ShippingChargesForm
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
-from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER, PHONEPAY_URL, PHONEPAY_MERCHANT_ID
+from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER, PHONEPAY_URL, PHONEPAY_MERCHANT_ID, PHONEPAY_SALT_KEY
 
 """
 This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
@@ -237,10 +237,13 @@ def overview(request):
         
     if request.method=="POST" and "UPI" in request.POST:
         response = isPaymentRequest(merchantId, amountPayable['totalPayable'])
+        print(response, "response, hit upi")
+        res = response.json()
+        print(res, "res")
         if response.status_code == 200:
             print("Payment request successful.")
             res = response.json()
-            print(res)
+            print(res, "res")
             if res['success']:
                 redirectURL = res['data']['instrumentResponse']['redirectInfo']
                 cart_items.update(merchantTransactionId=res['data']['merchantTransactionId'])
@@ -254,10 +257,11 @@ def isPaymentRequest(merchantId, totalPayable):
     URL = PHONEPAY_URL
         
     merchantTransactionId = generate_merchant_transaction_id(merchantId)
+    merchantUserId = generate_merchant_user_id(merchantId)
     data = {
         "merchantId": merchantId,
         "merchantTransactionId":merchantTransactionId,
-        "merchantUserId":"MU933037302229373",
+        "merchantUserId":merchantUserId,
         "amount": int(totalPayable*100),
         "redirectUrl": "https://www.famousbookshop.in/order/successful/",
         "redirectMode": "POST",
@@ -274,8 +278,10 @@ def isPaymentRequest(merchantId, totalPayable):
 
     # Convert the bytes to a UTF-8 string
     encoded_data_str = encoded_data_bytes.decode('utf-8')
+    print(PHONEPAY_SALT_KEY,"PHONEPAY_SALT_KEY")
     # Generate the X-VERIFY token
-    hash_string = encoded_data_str + "/pg/v1/pay" + "05992a0b-5254-4f37-86fb-e23bb79ea7e7"
+    hash_string = encoded_data_str + "/pg/v1/pay"+PHONEPAY_SALT_KEY
+    # + "05992a0b-5254-4f37-86fb-e23bb79ea7e7"
     hashed_token = hashlib.sha256(hash_string.encode('utf-8')).hexdigest()
     payload = {
         "request" : encoded_data_str
@@ -295,6 +301,10 @@ def generate_merchant_transaction_id(merchant_id):
         merchant_transaction_id = f"{merchant_id}_{unique_uuid}"
 
     return merchant_transaction_id
+
+def generate_merchant_user_id(merchant_id):
+    unique_uuid = uuid.uuid4().hex[:30 - len(merchant_id) - 1]  # Subtract 1 for the underscore
+    return f"{merchant_id}_{unique_uuid}"
 
 def update_charge(request):
     if request.method=="POST":

@@ -168,16 +168,13 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-
-# Paytm Details
-
-PAYTM_MERCHANT_ID = '<your_merchant_id>'
-PAYTM_SECRET_KEY = '<your_paytm_secret_key>'
-PAYTM_WEBSITE = 'WEBSTAGING'
-PAYTM_CHANNEL_ID = 'WEB'
-PAYTM_INDUSTRY_TYPE_ID = 'Retail'
-
 LOGIN_URL = "/account/login/"
 
-PHONEPAY_URL = "https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay"
-PHONEPAY_MERCHANT_ID = "PGTESTPAYUAT91"
+# Phonepay Details
+#Staging
+#PHONEPAY_URL = "https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay"
+
+#Live
+PHONEPAY_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay"
+PHONEPAY_MERCHANT_ID = "M1OVMFS0G8CQ"
+PHONEPAY_SALT_KEY = '652d6e24-fc27-4e22-992b-fb890a81b412'
