@@ -365,12 +365,15 @@ def update_quantity(request):
         qty = int(request.POST.get("qty"))
         if request.user.is_authenticated:
             cart_item = Cart.objects.get(id=int(cart_id))
-            if qty > cart_item.book.quantity:
-                return JsonResponse({'success': False, 'message': 'Quantity must be below {}'.format(cart_item.book.quantity)})
+            if cart_item.book.quantity:
+                if qty > cart_item.book.quantity:
+                    return JsonResponse({'success': False, 'message': 'Quantity must be below {}'.format(cart_item.book.quantity)})
+                else:
+                    cart = Cart.objects.filter(id=int(cart_id)).update(qty=qty)
+                    cart.filter(product__quantity__lte=0).delete()
+                    return JsonResponse({'success': True, 'message': 'Order qty updated.'})
             else:
-                cart = Cart.objects.filter(id=int(cart_id)).update(qty=qty)
-                cart.filter(product__quantity__lte=0).delete()
-                return JsonResponse({'success': True, 'message': 'Order qty updated.'})
+                return JsonResponse({'success': False, 'message': 'Book is unavailable, please refresh the page.'})
         else:
             return JsonResponse({'success': False, 'message': 'Log in for qty update'})
     else:
