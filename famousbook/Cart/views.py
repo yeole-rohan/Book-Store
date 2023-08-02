@@ -260,7 +260,7 @@ def isPaymentRequest(merchantId, totalPayable):
     URL = PHONEPAY_URL
         
     merchantTransactionId = generate_merchant_transaction_id(merchantId)
-    merchantUserId = generate_merchant_user_id(merchantId)
+    merchantUserId = generate_merchant_user_id()
     data = {
         "merchantId": merchantId,
         "merchantTransactionId":merchantTransactionId,
@@ -305,9 +305,9 @@ def generate_merchant_transaction_id(merchant_id):
 
     return merchant_transaction_id
 
-def generate_merchant_user_id(merchant_id):
-    unique_uuid = uuid.uuid4().hex[:30 - len(merchant_id) - 1]  # Subtract 1 for the underscore
-    return f"{merchant_id}_{unique_uuid}"
+def generate_merchant_user_id():
+    unique_uuid = uuid.uuid4().hex[:36]  # Subtract 1 for the underscore
+    return f"{unique_uuid}"
 
 def update_charge(request):
     if request.method=="POST":
