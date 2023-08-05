@@ -32,7 +32,7 @@
                                             ({{item.book.get_bookBinding_display}}) | Released: {{item.book.publishedDate}}
                                         </div>
                                         <div class="pt-1 cart-book-list-loop-author weight-500 font-16 ">
-                                            By: {{item.book.author | truncatechars:"30"}} 
+                                            By: {{item.book.author}} 
                                         </div>
                                         <div class="pt-1 cart-book-list-loop-publisher weight-500 font-16 ">
                                             Publisher: {{item.book.publisher}}
@@ -48,10 +48,11 @@
                                                 <div class="cart-book-list-loop-sp weight-500 font-16 ">
                                                     Best Price*
                                                     <span class="color-red">
-                                                        ₹ {{item.book.discountPrice}} {% if item.shippingCharge %}
-                                                        +  Shipping Charge - {{item.shippingCharge}}
-                                                    {% endif %}
+                                                        ₹ {{item.book.discountPrice}}, 
                                                     </span>
+                                                    <span class="color-red">
+                                                        Total Order Value - {{item.orderValue}}
+                                                </span>
                                                 </div>
                                             {% endif %}
                                            

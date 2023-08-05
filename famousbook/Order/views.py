@@ -79,12 +79,13 @@ def orderDetailsFromUPI(request):
                 print("deliveryAddress",deliveryAddress)
                 pinCode = PinCodeStateCharges.objects.get(state__iexact=deliveryAddress.state)
                 for cart in cart_items:
-                    if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count():
+                    getOrderValue = orderValue(couponPercentage=cart.coupon_code.discount_percentage, MRP=cart.book.price, bestPrice=cart.book.discountPrice)
+                    if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count() > 0:
                         Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
-                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType="deliver",deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge,merchantTransactionId=decoded_data['data']["merchantTransactionId"], transactionId=decoded_data['data']['transactionId'], totalAmount=float(decoded_data['data']['amount']/100), state=decoded_data['data']['state'], paymentType="online",deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
+                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType="deliver",deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, orderValue = getOrderValue, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge,merchantTransactionId=decoded_data['data']["merchantTransactionId"], transactionId=decoded_data['data']['transactionId'], totalAmount=float(decoded_data['data']['amount']/100), state=decoded_data['data']['state'], paymentType="online",deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                         idList.append(orderId.id)
                     else:
-                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, shippingCharge=cart.shippingCharge, payType="COD", paymentType="online",orderPlaced=False, deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
+                        orderId = Order.objects.create(user=cart.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, shippingCharge=cart.shippingCharge, payType="COD", orderValue = getOrderValue, paymentType="online",orderPlaced=False, deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                         failedCheckout.append(orderId.id)
 
                 if failedCheckout:
@@ -104,6 +105,13 @@ def orderDetailsFromUPI(request):
         except UnicodeDecodeError:
             return JsonResponse({"error": "Error decoding callback data."}, status=400)
     return JsonResponse({"error": "Invalid request method."}, status=400)
+
+def orderValue(couponPercentage, MRP, bestPrice):
+    if bestPrice:
+        orderValueForItem = bestPrice * float(couponPercentage[0]/100)
+    else:
+        orderValueForItem = MRP * float(couponPercentage[0]/100)
+    return float(orderValueForItem)
 
 @csrf_exempt
 def successful(request):

@@ -16,7 +16,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from famousbook.settings import EMAIL_HOST_USER as EMAIL_USER, PHONEPAY_URL, PHONEPAY_MERCHANT_ID, PHONEPAY_SALT_KEY
-
+from Order.views import orderValue
 """
 This function adds a book to the user's cart. If the user is authenticated, the book is added to their cart in the database. If the user is not authenticated, the book is added to their cart in the session. If the book is already in the cart, the function returns a message indicating that the book is already in the cart.
 @param request - the HTTP request object
@@ -214,12 +214,13 @@ def overview(request):
         idList = []
         merchantTransactionId = generate_merchant_transaction_id(merchantId)
         for cart in cart_items:
-            if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count():
+            getOrderValue = orderValue(couponPercentage=cart.coupon_code.discount_percentage, MRP=cart.book.price, bestPrice=cart.book.discountPrice)
+            if Book.objects.filter(id=cart.book.id, quantity__gte=cart.qty).count() > 0:
                 Book.objects.select_for_update().filter(id=cart.book.id).update(quantity=F("quantity") - cart.qty)
-                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId,deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, orderValue=getOrderValue, charges=cart.charges, orderPlaced=True, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId,deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                 idList.append(orderId.id)
             else:
-                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, charges=cart.charges, orderPlaced=False, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId, deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
+                orderId = Order.objects.create(user=request.user, book=cart.book, qty=cart.qty,pickType=cart.pickType,deliveryAddress=cart.deliveryAddress,coupon_code=cart.coupon_code, orderValue=getOrderValue, charges=cart.charges, orderPlaced=False, shippingCharge=cart.shippingCharge, payType="COD", merchantTransactionId=merchantTransactionId, deliveryTime =pinCode.deliveryEstimate, dispatchTime=pinCode.dispatchTime)
                 failedCheckout.append(orderId.id)
         if failedCheckout:
             subject = "Failed Orders for {}".format(request.user.email)
@@ -294,10 +295,11 @@ def isPaymentRequest(merchantId, totalPayable):
         "Content-Type": "application/json",
         "X-VERIFY": "{}###1".format(hashed_token),
     }
+    print(payload, "payload", '\n\n', "headers", headers)
     return requests.post(URL, json=payload, headers=headers)
 
 def generate_merchant_transaction_id(merchant_id):
-    unique_uuid = uuid.uuid4().hex[:36 - len(merchant_id) - 1]  # Subtract 1 for the underscore
+    unique_uuid = uuid.uuid4().hex[:30 - len(merchant_id) - 1]  # Subtract 1 for the underscore
     if Order.objects.filter(merchantTransactionId__iexact=unique_uuid).count() > 0:
         generate_merchant_transaction_id(merchant_id)
     else:
@@ -306,7 +308,7 @@ def generate_merchant_transaction_id(merchant_id):
     return merchant_transaction_id
 
 def generate_merchant_user_id():
-    unique_uuid = uuid.uuid4().hex[:36]  # Subtract 1 for the underscore
+    unique_uuid = uuid.uuid4().hex[:35]  # Subtract 1 for the underscore
     return f"{unique_uuid}"
 
 def update_charge(request):
@@ -370,7 +372,6 @@ def update_quantity(request):
                     return JsonResponse({'success': False, 'message': 'Quantity must be below {}'.format(cart_item.book.quantity)})
                 else:
                     cart = Cart.objects.filter(id=int(cart_id)).update(qty=qty)
-                    cart.filter(book__quantity__lte=0).delete()
                     return JsonResponse({'success': True, 'message': 'Order qty updated.'})
             else:
                 return JsonResponse({'success': False, 'message': 'Book is unavailable, please refresh the page.'})
