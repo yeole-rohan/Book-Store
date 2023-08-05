@@ -22,8 +22,7 @@ with open(os.path.join(BASE_DIR, "env.json")) as config_file:
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r8khkz-l_1somj)(r@^swsj1k@6w7bvu(!uyigx36(a_r+i-0p'
-
+SECRET_KEY = config["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -161,8 +160,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.famousbookshop.in"
 EMAIL_USE_TLS = False
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "admin@famousbookshop.in"
-EMAIL_HOST_PASSWORD = "NogieYO9"
+EMAIL_HOST_USER = config["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = config["EMAIL_HOST_PASSWORD"]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -176,7 +175,6 @@ LOGIN_URL = "/account/login/"
 # PHONEPAY_MERCHANT_ID = "PGTESTPAYUAT91"
 # PHONEPAY_SALT_KEY = "05992a0b-5254-4f37-86fb-e23bb79ea7e7"
 
-#Live
-PHONEPAY_URL = "https://api.phonepe.com/apis/hermes/pg/v1/pay"
-PHONEPAY_MERCHANT_ID = "M1OVMFS0G8CQ"
-PHONEPAY_SALT_KEY = '652d6e24-fc27-4e22-992b-fb890a81b412'
+PHONEPAY_URL = config["PHONEPAY_URL"]
+PHONEPAY_MERCHANT_ID = config["PHONEPAY_MERCHANT_ID"]
+PHONEPAY_SALT_KEY = config["PHONEPAY_SALT_KEY"]
